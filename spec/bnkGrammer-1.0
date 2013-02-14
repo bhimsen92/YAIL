@@ -1,0 +1,32 @@
+/**
+    This is the first version of the grammer for bnK Functional Language.
+*/
+
+program : exprList
+          ;
+          
+exprList : expr exprList
+         | epsilon
+         ;
+
+expr : function NAME '(' argList ')' '{' exprList '}'
+     | factor
+     ;
+
+func_call : NAME '(' parameter_list ')'
+          ;
+
+argList : NAME ',' NAME
+        | NAME
+        ;
+
+parameter_list : factor ',' factor
+               | factor
+               ;
+
+factor: func_call
+      | spawn func_call
+      | sync
+      | NAME
+      | NUMBER
+      ;
