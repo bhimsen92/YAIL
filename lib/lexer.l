@@ -5,6 +5,7 @@
 #include "nodes/node.h"
 #include "y.tab.h"
 using namespace std;
+using namespace bnk_astNodes;
 
 %}
 newline    \n
@@ -20,26 +21,35 @@ string     \"(.*)\"
 "function" {
                 return FUNCTION;
            }
-           
-"spawn"    {
-                return SPAWN;
+"Int"      {
+                return INTEGER_T;
            }
-           
-"sync"     {
-                return SYNC;
+
+"Double"   {
+                return DOUBLE_T;
            }
-           
-{string}   {
-                Node *string = new String( yytext );
-                yylval.node = string;
-                return STRING;                
-           }
+
+"String"   {
+                return STRING_T;
+           }          
            
 {ident}    {
                 Node *ident = new Identifier( yytext );
                 yylval.node = ident;
-                return IDENT;
+                return IDENTIFIER;
            }
+
+{digits}   {
+                Node *integer = new Integer( yytext );
+                yylval.node = integer;
+                return INTEGER;
+           }
+
+{string}   {
+                Node *string = new String( yytext );
+                yylval.node = string;
+                return STRING;                
+           }           
            
 {whiteSpace} {
                 ; /* Ignore */

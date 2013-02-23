@@ -1,26 +1,29 @@
 #include<iostream>
 #include<cstdlib>
 #include "object.h"
+#include "../nodes/tokens.h"
 using namespace std;
 
 #ifndef __NUMBER_TYPE
 #define __NUMBER_TYPE
 
-class Number : public Object{
+namespace bnk_types{
+class Integer : public Object{
     protected:
-              int number;
+              int value;
     public:
-            Number( int num ) : Object( "number" ){
-                number = num;
+            Integer( int num ) : Object( __integer_t ){
+                value = num;
             }
-            Number() : Object( "number" ){
-                number = 0;
+            Integer() : Object( __integer_t ){
+                value = 0;
             }
             int getValue(void){
-                return number;
+                return value;
             }
             void setValue( int num ){
-                number = num;
+                value = num;
             }
 };
+}
 #endif

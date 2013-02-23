@@ -6,7 +6,8 @@ using namespace std;
 
 #ifndef __NODE_TYPE
 #define __NODE_TYPE
-    
+namespace bnk_astNodes{
+
 class Node{
     protected:
                int nodeType;
@@ -27,7 +28,7 @@ class Identifier: public Node{
     protected:
                char* name;
     public:
-           Identifier( char* n ): Node( __ident ){
+           Identifier( char* n ): Node( __identifier ){
                 name = new char[ strlen(n) + 1 ];
                 strcpy( name, n );
            }
@@ -68,6 +69,65 @@ class String: public Node{
              }
 };
 
+class Integer: public Node{
+    private:
+        int value;
+
+    public:
+        Integer( char* str ): Node( __integer ){
+            toInteger(str);
+        }
+        void toInteger( char* str ){            
+            char *pEnd = str + strlen( str ) - 1;
+            int multiplier = 1;
+            value = 0;
+            for( ; pEnd >= str; pEnd-- ){
+                value += ( (*pEnd - '0') * multiplier );
+                multiplier *= 10;
+            }
+        }
+        int getValue(void){
+            return value;
+        }
+        void setValue( int val ){
+            value = val;
+        }
+};
+
+class Type: public Node{
+    private:
+            int type;
+    public:
+            Type( int _type ): Node( __type ){
+                type = _type;
+            }
+
+            int getType(void){
+                return type;
+            }
+
+            void setType(int _type){
+                type = _type;
+            }
+};
+
+class Expression: public Node{
+    private:
+            Node *expNode;
+    public:
+            Expression( Node* n ): Node( __expression ){
+                expNode = n;
+            }
+
+            Node* getNode(void){
+                return expNode;
+            }
+
+            void setNode( Node* n ){
+                expNode = n;
+            }
+};
+
 class Operator: public Node{
     protected:
               list<Node*> *operands;
@@ -92,12 +152,12 @@ class List : public Node{
              List( int nodeType ): Node( nodeType ){
              }
              
-             void push( Node* node ){
+             void push_back( Node* node ){
                 nodeList.push_back(node);
              }
              
-             Node* pop(void){
-                Node* rval = get(0);
+             Node* pop_front(void){
+                Node* rval = nodeList.front();
                 nodeList.pop_front();
                 return rval;
              }
@@ -116,8 +176,21 @@ class List : public Node{
              void clear(){
                 nodeList.clear();
              }
+
+             int empty(){
+                return nodeList.empty();
+             }
 };
 
+class VariableList : public List{
+    public:
+        VariableList( int nodeType ): List( nodeType )
+        {
+
+        }
+};
+
+/*
 class ParameterList : public List{
     public:
              ParameterList() : List( __params ){
@@ -128,7 +201,7 @@ class ArgumentList : public List{
     public:
              ArgumentList() : List( __args ){
              }
-};
+};*/
 
 class StatementList : public List{
     public:
@@ -136,7 +209,7 @@ class StatementList : public List{
              }
 };
 
-class FunctionCall : public Node{
+/*class FunctionCall : public Node{
     protected:
               Identifier *functName;
               ParameterList *plist;
@@ -170,5 +243,6 @@ class FunctionDefinition : public Node{
            Identifier* getFunctName(void){
                 return functName;
            }
-};
+};*/
+}
 #endif

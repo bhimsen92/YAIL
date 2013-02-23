@@ -38,20 +38,28 @@
       know about them.  */
    enum yytokentype {
      FUNCTION = 258,
-     IDENT = 259,
-     SPAWN = 260,
-     STRING = 261,
-     NUMBER = 262,
-     SYNC = 263
+     NOTHING = 259,
+     EMPTY = 260,
+     INTEGER_T = 261,
+     DOUBLE_T = 262,
+     STRING_T = 263,
+     IDENTIFIER = 264,
+     STRING = 265,
+     INTEGER = 266,
+     DOUBLE = 267
    };
 #endif
 /* Tokens.  */
 #define FUNCTION 258
-#define IDENT 259
-#define SPAWN 260
-#define STRING 261
-#define NUMBER 262
-#define SYNC 263
+#define NOTHING 259
+#define EMPTY 260
+#define INTEGER_T 261
+#define DOUBLE_T 262
+#define STRING_T 263
+#define IDENTIFIER 264
+#define STRING 265
+#define INTEGER 266
+#define DOUBLE 267
 
 
 
@@ -61,14 +69,14 @@ typedef union YYSTYPE
 {
 
 /* Line 2068 of yacc.c  */
-#line 30 "parser.yacc"
+#line 39 "parser.yacc"
 
-    Node *node;
+    bnk_astNodes::Node *node;
 
 
 
 /* Line 2068 of yacc.c  */
-#line 72 "y.tab.h"
+#line 80 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

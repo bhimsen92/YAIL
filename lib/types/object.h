@@ -5,16 +5,39 @@ using namespace std;
 
 #ifndef __OBJECT_TYPE
 #define __OBJECT_TYPE
+namespace bnk_types{
+	class Object{
+    	protected:
+        	      char    *name;
+                int     dataType;
+                Object* value;
+    	public:
+        	      Object( char* n, int type, Object* val ){
+            	     name = n;
+                   dataType = type;
+                   value = val;
+              	}
 
-class Object{
-    protected:
-              char type[64];
-    public:
-              Object( const char* typeString ){
-                strcpy( type, typeString );
-              }
-              char* getType(void){
-                return type;
-              }
-};
+                Object( int type ){
+                  dataType = type;
+                }
+
+              	int getDataType(void){
+                	return dataType;
+              	}
+
+                char* getName(void){
+                  return name;
+                }
+
+                Object* getValue(void){
+                  return value;
+                }
+
+                virtual void dummy(void){
+                  
+                }
+
+	};
+}
 #endif

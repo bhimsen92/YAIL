@@ -1,23 +1,26 @@
 #include<iostream>
 #include<cstdlib>
+#include<string>
 #include<map>
 #include<stack>
 #include "types/object.h"
 #include "concurrent/thread.h"
 
 using namespace std;
+using namespace bnk_types;
+
 #ifndef __CONTEXT
 #define __CONTEXT
 
 class Context{
     private:
-            map<char*, Object*> symbolTable;
+            map<string, Object*> symbolTable;
             stack<Thread*> spawnStack;
     public:
             /** 
             * getter functions 
             */
-            map< char*, Object* > getSymbolTable(){
+            map< string, Object* > getSymbolTable(){
                 return symbolTable;
             }
             
@@ -28,7 +31,7 @@ class Context{
             /**
             * setter functions.
             */
-            void setSymbolTable( map< char*, Object* > symTab ){
+            void setSymbolTable( map< string, Object* > symTab ){
                 symbolTable = symTab;
             }
             
@@ -36,10 +39,11 @@ class Context{
                 spawnStack = sStack;
             }
             
-            void put( char* ident, Object* value ){
+            void put( string ident, Object* value ){
                 symbolTable[ ident ] = value;
             }
-            Object* get( char* ident ){
+            Object* get( string ident ){
+
                 return symbolTable[ ident ];
             }
 };

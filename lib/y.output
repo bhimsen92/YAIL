@@ -1,413 +1,340 @@
+Terminals unused in grammar
+
+   FUNCTION
+
+
 Grammar
 
     0 $accept: program $end
 
     1 program: statementList
 
-    2 statementList: statement
+    2 statementList: empty
     3              | statementList statement
 
-    4 statement: funct_def
-    5          | SPAWN funct_call ';'
-    6          | SYNC ';'
-    7          | expr ';'
+    4 statement: variableDefinition ';'
 
-    8 funct_def: FUNCTION IDENT '(' arglist ')' '{' statementList '}'
+    5 $@1: /* empty */
 
-    9 arglist: /* empty */
-   10        | IDENT
-   11        | arglist ',' IDENT
+    6 variableDefinition: type $@1 variableList
 
-   12 expr: funct_call
-   13     | factor
+    7 variableList: variableDeclarations
+    8             | variableList ',' variableDeclarations
 
-   14 funct_call: IDENT '(' params ')'
+    9 variableDeclarations: IDENTIFIER '=' expression
 
-   15 params: /* empty */
-   16       | expr
-   17       | params ',' expr
+   10 expression: atom
 
-   18 factor: IDENT
-   19       | NUMBER
-   20       | STRING
+   11 atom: IDENTIFIER
+   12     | INTEGER
+   13     | DOUBLE
+   14     | STRING
+   15     | NOTHING
+   16     | EMPTY
+   17     | '(' expression ')'
+
+   18 empty: /* empty */
+
+   19 type: INTEGER_T
+   20     | DOUBLE_T
+   21     | STRING_T
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
-'(' (40) 8 14
-')' (41) 8 14
-',' (44) 11 17
-';' (59) 5 6 7
-'{' (123) 8
-'}' (125) 8
+'(' (40) 17
+')' (41) 17
+',' (44) 8
+';' (59) 4
+'=' (61) 9
 error (256)
-FUNCTION (258) 8
-IDENT (259) 8 10 11 14 18
-SPAWN (260) 5
-STRING (261) 20
-NUMBER (262) 19
-SYNC (263) 6
+FUNCTION (258)
+NOTHING (259) 15
+EMPTY (260) 16
+INTEGER_T (261) 19
+DOUBLE_T (262) 20
+STRING_T (263) 21
+IDENTIFIER (264) 9 11
+STRING (265) 14
+INTEGER (266) 12
+DOUBLE (267) 13
 
 
 Nonterminals, with rules where they appear
 
-$accept (15)
+$accept (18)
     on left: 0
-program (16)
+program (19)
     on left: 1, on right: 0
-statementList (17)
-    on left: 2 3, on right: 1 3 8
-statement (18)
-    on left: 4 5 6 7, on right: 2 3
-funct_def (19)
-    on left: 8, on right: 4
-arglist (20)
-    on left: 9 10 11, on right: 8 11
-expr (21)
-    on left: 12 13, on right: 7 16 17
-funct_call (22)
-    on left: 14, on right: 5 12
-params (23)
-    on left: 15 16 17, on right: 14 17
-factor (24)
-    on left: 18 19 20, on right: 13
+statementList (20)
+    on left: 2 3, on right: 1 3
+statement (21)
+    on left: 4, on right: 3
+variableDefinition (22)
+    on left: 6, on right: 4
+$@1 (23)
+    on left: 5, on right: 6
+variableList (24)
+    on left: 7 8, on right: 6 8
+variableDeclarations (25)
+    on left: 9, on right: 7 8
+expression (26)
+    on left: 10, on right: 9 17
+atom (27)
+    on left: 11 12 13 14 15 16 17, on right: 10
+empty (28)
+    on left: 18, on right: 2
+type (29)
+    on left: 19 20 21, on right: 6
 
 
 state 0
 
     0 $accept: . program $end
 
-    FUNCTION  shift, and go to state 1
-    IDENT     shift, and go to state 2
-    SPAWN     shift, and go to state 3
-    STRING    shift, and go to state 4
-    NUMBER    shift, and go to state 5
-    SYNC      shift, and go to state 6
+    $default  reduce using rule 18 (empty)
 
-    program        go to state 7
-    statementList  go to state 8
-    statement      go to state 9
-    funct_def      go to state 10
-    expr           go to state 11
-    funct_call     go to state 12
-    factor         go to state 13
+    program        go to state 1
+    statementList  go to state 2
+    empty          go to state 3
 
 
 state 1
 
-    8 funct_def: FUNCTION . IDENT '(' arglist ')' '{' statementList '}'
+    0 $accept: program . $end
 
-    IDENT  shift, and go to state 14
+    $end  shift, and go to state 4
 
 
 state 2
 
-   14 funct_call: IDENT . '(' params ')'
-   18 factor: IDENT .
+    1 program: statementList .
+    3 statementList: statementList . statement
 
-    '('  shift, and go to state 15
+    INTEGER_T  shift, and go to state 5
+    DOUBLE_T   shift, and go to state 6
+    STRING_T   shift, and go to state 7
 
-    $default  reduce using rule 18 (factor)
+    $default  reduce using rule 1 (program)
+
+    statement           go to state 8
+    variableDefinition  go to state 9
+    type                go to state 10
 
 
 state 3
 
-    5 statement: SPAWN . funct_call ';'
-
-    IDENT  shift, and go to state 16
-
-    funct_call  go to state 17
-
-
-state 4
-
-   20 factor: STRING .
-
-    $default  reduce using rule 20 (factor)
-
-
-state 5
-
-   19 factor: NUMBER .
-
-    $default  reduce using rule 19 (factor)
-
-
-state 6
-
-    6 statement: SYNC . ';'
-
-    ';'  shift, and go to state 18
-
-
-state 7
-
-    0 $accept: program . $end
-
-    $end  shift, and go to state 19
-
-
-state 8
-
-    1 program: statementList .
-    3 statementList: statementList . statement
-
-    FUNCTION  shift, and go to state 1
-    IDENT     shift, and go to state 2
-    SPAWN     shift, and go to state 3
-    STRING    shift, and go to state 4
-    NUMBER    shift, and go to state 5
-    SYNC      shift, and go to state 6
-
-    $default  reduce using rule 1 (program)
-
-    statement   go to state 20
-    funct_def   go to state 10
-    expr        go to state 11
-    funct_call  go to state 12
-    factor      go to state 13
-
-
-state 9
-
-    2 statementList: statement .
+    2 statementList: empty .
 
     $default  reduce using rule 2 (statementList)
 
 
-state 10
-
-    4 statement: funct_def .
-
-    $default  reduce using rule 4 (statement)
-
-
-state 11
-
-    7 statement: expr . ';'
-
-    ';'  shift, and go to state 21
-
-
-state 12
-
-   12 expr: funct_call .
-
-    $default  reduce using rule 12 (expr)
-
-
-state 13
-
-   13 expr: factor .
-
-    $default  reduce using rule 13 (expr)
-
-
-state 14
-
-    8 funct_def: FUNCTION IDENT . '(' arglist ')' '{' statementList '}'
-
-    '('  shift, and go to state 22
-
-
-state 15
-
-   14 funct_call: IDENT '(' . params ')'
-
-    IDENT   shift, and go to state 2
-    STRING  shift, and go to state 4
-    NUMBER  shift, and go to state 5
-
-    $default  reduce using rule 15 (params)
-
-    expr        go to state 23
-    funct_call  go to state 12
-    params      go to state 24
-    factor      go to state 13
-
-
-state 16
-
-   14 funct_call: IDENT . '(' params ')'
-
-    '('  shift, and go to state 15
-
-
-state 17
-
-    5 statement: SPAWN funct_call . ';'
-
-    ';'  shift, and go to state 25
-
-
-state 18
-
-    6 statement: SYNC ';' .
-
-    $default  reduce using rule 6 (statement)
-
-
-state 19
+state 4
 
     0 $accept: program $end .
 
     $default  accept
 
 
-state 20
+state 5
+
+   19 type: INTEGER_T .
+
+    $default  reduce using rule 19 (type)
+
+
+state 6
+
+   20 type: DOUBLE_T .
+
+    $default  reduce using rule 20 (type)
+
+
+state 7
+
+   21 type: STRING_T .
+
+    $default  reduce using rule 21 (type)
+
+
+state 8
 
     3 statementList: statementList statement .
 
     $default  reduce using rule 3 (statementList)
 
 
+state 9
+
+    4 statement: variableDefinition . ';'
+
+    ';'  shift, and go to state 11
+
+
+state 10
+
+    6 variableDefinition: type . $@1 variableList
+
+    $default  reduce using rule 5 ($@1)
+
+    $@1  go to state 12
+
+
+state 11
+
+    4 statement: variableDefinition ';' .
+
+    $default  reduce using rule 4 (statement)
+
+
+state 12
+
+    6 variableDefinition: type $@1 . variableList
+
+    IDENTIFIER  shift, and go to state 13
+
+    variableList          go to state 14
+    variableDeclarations  go to state 15
+
+
+state 13
+
+    9 variableDeclarations: IDENTIFIER . '=' expression
+
+    '='  shift, and go to state 16
+
+
+state 14
+
+    6 variableDefinition: type $@1 variableList .
+    8 variableList: variableList . ',' variableDeclarations
+
+    ','  shift, and go to state 17
+
+    $default  reduce using rule 6 (variableDefinition)
+
+
+state 15
+
+    7 variableList: variableDeclarations .
+
+    $default  reduce using rule 7 (variableList)
+
+
+state 16
+
+    9 variableDeclarations: IDENTIFIER '=' . expression
+
+    NOTHING     shift, and go to state 18
+    EMPTY       shift, and go to state 19
+    IDENTIFIER  shift, and go to state 20
+    STRING      shift, and go to state 21
+    INTEGER     shift, and go to state 22
+    DOUBLE      shift, and go to state 23
+    '('         shift, and go to state 24
+
+    expression  go to state 25
+    atom        go to state 26
+
+
+state 17
+
+    8 variableList: variableList ',' . variableDeclarations
+
+    IDENTIFIER  shift, and go to state 13
+
+    variableDeclarations  go to state 27
+
+
+state 18
+
+   15 atom: NOTHING .
+
+    $default  reduce using rule 15 (atom)
+
+
+state 19
+
+   16 atom: EMPTY .
+
+    $default  reduce using rule 16 (atom)
+
+
+state 20
+
+   11 atom: IDENTIFIER .
+
+    $default  reduce using rule 11 (atom)
+
+
 state 21
 
-    7 statement: expr ';' .
+   14 atom: STRING .
 
-    $default  reduce using rule 7 (statement)
+    $default  reduce using rule 14 (atom)
 
 
 state 22
 
-    8 funct_def: FUNCTION IDENT '(' . arglist ')' '{' statementList '}'
+   12 atom: INTEGER .
 
-    IDENT  shift, and go to state 26
-
-    $default  reduce using rule 9 (arglist)
-
-    arglist  go to state 27
+    $default  reduce using rule 12 (atom)
 
 
 state 23
 
-   16 params: expr .
+   13 atom: DOUBLE .
 
-    $default  reduce using rule 16 (params)
+    $default  reduce using rule 13 (atom)
 
 
 state 24
 
-   14 funct_call: IDENT '(' params . ')'
-   17 params: params . ',' expr
+   17 atom: '(' . expression ')'
 
-    ')'  shift, and go to state 28
-    ','  shift, and go to state 29
+    NOTHING     shift, and go to state 18
+    EMPTY       shift, and go to state 19
+    IDENTIFIER  shift, and go to state 20
+    STRING      shift, and go to state 21
+    INTEGER     shift, and go to state 22
+    DOUBLE      shift, and go to state 23
+    '('         shift, and go to state 24
+
+    expression  go to state 28
+    atom        go to state 26
 
 
 state 25
 
-    5 statement: SPAWN funct_call ';' .
+    9 variableDeclarations: IDENTIFIER '=' expression .
 
-    $default  reduce using rule 5 (statement)
+    $default  reduce using rule 9 (variableDeclarations)
 
 
 state 26
 
-   10 arglist: IDENT .
+   10 expression: atom .
 
-    $default  reduce using rule 10 (arglist)
+    $default  reduce using rule 10 (expression)
 
 
 state 27
 
-    8 funct_def: FUNCTION IDENT '(' arglist . ')' '{' statementList '}'
-   11 arglist: arglist . ',' IDENT
+    8 variableList: variableList ',' variableDeclarations .
 
-    ')'  shift, and go to state 30
-    ','  shift, and go to state 31
+    $default  reduce using rule 8 (variableList)
 
 
 state 28
 
-   14 funct_call: IDENT '(' params ')' .
+   17 atom: '(' expression . ')'
 
-    $default  reduce using rule 14 (funct_call)
+    ')'  shift, and go to state 29
 
 
 state 29
 
-   17 params: params ',' . expr
+   17 atom: '(' expression ')' .
 
-    IDENT   shift, and go to state 2
-    STRING  shift, and go to state 4
-    NUMBER  shift, and go to state 5
-
-    expr        go to state 32
-    funct_call  go to state 12
-    factor      go to state 13
-
-
-state 30
-
-    8 funct_def: FUNCTION IDENT '(' arglist ')' . '{' statementList '}'
-
-    '{'  shift, and go to state 33
-
-
-state 31
-
-   11 arglist: arglist ',' . IDENT
-
-    IDENT  shift, and go to state 34
-
-
-state 32
-
-   17 params: params ',' expr .
-
-    $default  reduce using rule 17 (params)
-
-
-state 33
-
-    8 funct_def: FUNCTION IDENT '(' arglist ')' '{' . statementList '}'
-
-    FUNCTION  shift, and go to state 1
-    IDENT     shift, and go to state 2
-    SPAWN     shift, and go to state 3
-    STRING    shift, and go to state 4
-    NUMBER    shift, and go to state 5
-    SYNC      shift, and go to state 6
-
-    statementList  go to state 35
-    statement      go to state 9
-    funct_def      go to state 10
-    expr           go to state 11
-    funct_call     go to state 12
-    factor         go to state 13
-
-
-state 34
-
-   11 arglist: arglist ',' IDENT .
-
-    $default  reduce using rule 11 (arglist)
-
-
-state 35
-
-    3 statementList: statementList . statement
-    8 funct_def: FUNCTION IDENT '(' arglist ')' '{' statementList . '}'
-
-    FUNCTION  shift, and go to state 1
-    IDENT     shift, and go to state 2
-    SPAWN     shift, and go to state 3
-    STRING    shift, and go to state 4
-    NUMBER    shift, and go to state 5
-    SYNC      shift, and go to state 6
-    '}'       shift, and go to state 36
-
-    statement   go to state 20
-    funct_def   go to state 10
-    expr        go to state 11
-    funct_call  go to state 12
-    factor      go to state 13
-
-
-state 36
-
-    8 funct_def: FUNCTION IDENT '(' arglist ')' '{' statementList '}' .
-
-    $default  reduce using rule 8 (funct_def)
+    $default  reduce using rule 17 (atom)

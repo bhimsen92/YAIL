@@ -4,15 +4,23 @@
 #define __TOKENS
 
 enum {
-    __ident,
+    __identifier,
     __funct_call,
-    __number,
+    __integer,
     __string,
     __funct_def,
     __params,
     __args,
     __stmtlist,
     __spawn,
-    __sync
+    __sync,
+    __assignment,
+    __integer_t,
+    __double_t,
+    __string_t,
+    __list_t,
+    __type,
+    __expression,
+    __var_definition
 };
 #endif
