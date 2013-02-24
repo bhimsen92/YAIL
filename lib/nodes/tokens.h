@@ -18,6 +18,7 @@ enum {
     __integer_t,
     __double_t,
     __string_t,
+    __function_t,
     __list_t,
     __type,
     __expression,

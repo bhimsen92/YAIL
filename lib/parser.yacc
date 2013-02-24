@@ -40,13 +40,14 @@ int counter = 0;
     bnk_astNodes::Node *node;
 };
 
-%token FUNCTION NOTHING EMPTY INTEGER_T DOUBLE_T STRING_T
+%token FUNCTION NOTHING EMPTY INTEGER_T DOUBLE_T STRING_T FUNCTION_T
 %token <node> IDENTIFIER
 %token <node> STRING
 %token <node> INTEGER
 %token <node> DOUBLE
 
 %type <node> program statement statementList variableList variableDeclarations variableDefinition expression atom type
+%type <node> functionDefinition returnType formalParameters formalParameterList formalParameterDef functionBody
 %%
 program: statementList {
                           programAST = CAST_TO( StatementList, $1 );
@@ -73,7 +74,51 @@ statement: variableDefinition ';'  {
                                       $$ = $1;
                                       removeType();
                                    }
+
+         | functionDefinition      {
+                                      $$ = $1;
+                                   }
          ;
+
+functionDefinition: FUNCTION IDENTIFIER '(' formalParameters ')' ':' returnType functionBody {
+                                                                                                list<Node*> *operands = new list<Node*>();
+                                                                                                operands->push_back( $2 );
+                                                                                                operands->push_back( $4 );
+                                                                                                operands->push_back( $7 );
+                                                                                                operands->push_back( $8 );
+                                                                                                Operator *functDef = new Operator( __funct_def, 4, operands );
+                                                                                                $$ = functDef;
+                                                                                             }
+                  ;
+
+returnType : type { $$ = $1; }
+           ;
+
+functionBody : '{' statementList '}' { $$ = $2; }
+             ;
+formalParameters : empty                   { $$ = NULL; }
+                 | formalParameterList     { $$ = $1;   }
+                 ;
+
+formalParameterList : formalParameterDef                        {
+                                                                   FormalParameterList *fpList = new FormalParameterList();
+                                                                   fpList->push_back( $1 );
+                                                                   $$ = fpList;
+                                                                }
+                    | formalParameterList ',' formalParameterDef {
+                                                                    FormalParameterList *fpList = CAST_TO( FormalParameterList, $1 );
+                                                                    if( fpList != NULL ){
+                                                                      fpList->push_back( $3 );
+                                                                    }                                            
+                                                                    $$ = fpList;
+                                                                 }
+                    ;
+
+formalParameterDef : type IDENTIFIER    {
+                                            FormalParameter *fParameter = new FormalParameter( $1, $2 );
+                                            $$ = fParameter;
+                                        }
+                   ;
 
 variableDefinition: type { putType( $1->getType() ); } variableList {
                                                               list<Node*> *operands = new list<Node*>();
@@ -130,9 +175,10 @@ atom  : IDENTIFIER    { $$ = $1; }
 empty:
      ;
 
-type: INTEGER_T {  $$ = new Type( __integer_t ); }
-    | DOUBLE_T  {  $$ = new Type( __double_t );  }    
-    | STRING_T  {  $$ = new Type( __string_t );  }
+type: INTEGER_T  {  $$ = new Type( __integer_t ); }
+    | DOUBLE_T   {  $$ = new Type( __double_t );  }    
+    | STRING_T   {  $$ = new Type( __string_t );  }
+    | FUNCTION_T { $$ = new Type( __function_t ); }
     ;
 %%
 

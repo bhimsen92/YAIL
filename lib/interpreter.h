@@ -10,6 +10,7 @@
 #include "types/object.h"
 #include "types/string.h"
 #include "types/number.h"
+#include "types/udf.h"
 
 using namespace std;
 using namespace bnk_astNodes;
@@ -82,6 +83,19 @@ class Interpreter{
                                     }
                                   }
                                 }
+                                break;
+                case __funct_def:
+                                Operator *functDefNode;
+                                functDefNode = CAST_TO( Operator, astNode );
+                                if( functDefNode != NULL ){
+                                  // get the operands
+                                  list<Node*> *operands = functDefNode->getOperands();
+                                  Identifier  *functName = CAST_TO( Identifier, operands->front() );
+                                  if( functName != NULL ){
+                                    UserDefinedFunction *funct = new UserDefinedFunction( operands );
+                                    execContext->put( functName->getName(), funct );
+                                  }
+                                }                                
                                 break;
 
            }

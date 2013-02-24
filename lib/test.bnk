@@ -1,1 +1,6 @@
 Int a = 12, b = 124;
+
+function doSomething( Int a ):Int
+{
+	Int c = 12;
+}

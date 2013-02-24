@@ -31,7 +31,11 @@ string     \"(.*)\"
 
 "String"   {
                 return STRING_T;
-           }          
+           }
+
+"Function" {
+                return FUNCTION_T;
+           }
            
 {ident}    {
                 Node *ident = new Identifier( yytext );

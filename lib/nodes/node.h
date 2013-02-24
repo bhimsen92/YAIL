@@ -2,6 +2,7 @@
 #include<cstring>
 #include<list>
 #include "tokens.h"
+#include "../bnKapi.h"
 using namespace std;
 
 #ifndef __NODE_TYPE
@@ -190,13 +191,39 @@ class VariableList : public List{
         }
 };
 
-/*
-class ParameterList : public List{
+class FormalParameterList : public List{
     public:
-             ParameterList() : List( __params ){
+             FormalParameterList() : List( __params ){
              }
 };
 
+class FormalParameter: public Node{
+    private:
+            int   dataType;
+            char* parameterName;
+    public:
+            FormalParameter( int _type, char* pName ): Node( __params ){
+                dataType = _type;
+                parameterName = pName;
+            }
+
+            FormalParameter( Node* _type, Node* ident ): Node( __params ){
+                dataType = _type->getType();
+                Identifier *id = CAST_TO( Identifier, ident );
+                if( id != NULL ){
+                    parameterName = id->getName();
+                }
+            }
+
+            int getDataType(void){
+                return dataType;
+            }
+
+            char* getParameterName(void){
+                return parameterName;
+            }            
+};
+/*
 class ArgumentList : public List{
     public:
              ArgumentList() : List( __args ){

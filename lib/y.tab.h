@@ -43,10 +43,11 @@
      INTEGER_T = 261,
      DOUBLE_T = 262,
      STRING_T = 263,
-     IDENTIFIER = 264,
-     STRING = 265,
-     INTEGER = 266,
-     DOUBLE = 267
+     FUNCTION_T = 264,
+     IDENTIFIER = 265,
+     STRING = 266,
+     INTEGER = 267,
+     DOUBLE = 268
    };
 #endif
 /* Tokens.  */
@@ -56,10 +57,11 @@
 #define INTEGER_T 261
 #define DOUBLE_T 262
 #define STRING_T 263
-#define IDENTIFIER 264
-#define STRING 265
-#define INTEGER 266
-#define DOUBLE 267
+#define FUNCTION_T 264
+#define IDENTIFIER 265
+#define STRING 266
+#define INTEGER 267
+#define DOUBLE 268
 
 
 
@@ -76,7 +78,7 @@ typedef union YYSTYPE
 
 
 /* Line 2068 of yacc.c  */
-#line 80 "y.tab.h"
+#line 82 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

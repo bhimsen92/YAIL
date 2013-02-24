@@ -1,8 +1,3 @@
-Terminals unused in grammar
-
-   FUNCTION
-
-
 Grammar
 
     0 $accept: program $end
@@ -13,87 +8,119 @@ Grammar
     3              | statementList statement
 
     4 statement: variableDefinition ';'
+    5          | functionDefinition
 
-    5 $@1: /* empty */
+    6 functionDefinition: FUNCTION IDENTIFIER '(' formalParameters ')' ':' returnType functionBody
 
-    6 variableDefinition: type $@1 variableList
+    7 returnType: type
 
-    7 variableList: variableDeclarations
-    8             | variableList ',' variableDeclarations
+    8 functionBody: '{' statementList '}'
 
-    9 variableDeclarations: IDENTIFIER '=' expression
+    9 formalParameters: empty
+   10                 | formalParameterList
 
-   10 expression: atom
+   11 formalParameterList: formalParameterDef
+   12                    | formalParameterList ',' formalParameterDef
 
-   11 atom: IDENTIFIER
-   12     | INTEGER
-   13     | DOUBLE
-   14     | STRING
-   15     | NOTHING
-   16     | EMPTY
-   17     | '(' expression ')'
+   13 formalParameterDef: type IDENTIFIER
 
-   18 empty: /* empty */
+   14 $@1: /* empty */
 
-   19 type: INTEGER_T
-   20     | DOUBLE_T
-   21     | STRING_T
+   15 variableDefinition: type $@1 variableList
+
+   16 variableList: variableDeclarations
+   17             | variableList ',' variableDeclarations
+
+   18 variableDeclarations: IDENTIFIER '=' expression
+
+   19 expression: atom
+
+   20 atom: IDENTIFIER
+   21     | INTEGER
+   22     | DOUBLE
+   23     | STRING
+   24     | NOTHING
+   25     | EMPTY
+   26     | '(' expression ')'
+
+   27 empty: /* empty */
+
+   28 type: INTEGER_T
+   29     | DOUBLE_T
+   30     | STRING_T
+   31     | FUNCTION_T
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
-'(' (40) 17
-')' (41) 17
-',' (44) 8
+'(' (40) 6 26
+')' (41) 6 26
+',' (44) 12 17
+':' (58) 6
 ';' (59) 4
-'=' (61) 9
+'=' (61) 18
+'{' (123) 8
+'}' (125) 8
 error (256)
-FUNCTION (258)
-NOTHING (259) 15
-EMPTY (260) 16
-INTEGER_T (261) 19
-DOUBLE_T (262) 20
-STRING_T (263) 21
-IDENTIFIER (264) 9 11
-STRING (265) 14
-INTEGER (266) 12
-DOUBLE (267) 13
+FUNCTION (258) 6
+NOTHING (259) 24
+EMPTY (260) 25
+INTEGER_T (261) 28
+DOUBLE_T (262) 29
+STRING_T (263) 30
+FUNCTION_T (264) 31
+IDENTIFIER (265) 6 13 18 20
+STRING (266) 23
+INTEGER (267) 21
+DOUBLE (268) 22
 
 
 Nonterminals, with rules where they appear
 
-$accept (18)
+$accept (22)
     on left: 0
-program (19)
+program (23)
     on left: 1, on right: 0
-statementList (20)
-    on left: 2 3, on right: 1 3
-statement (21)
-    on left: 4, on right: 3
-variableDefinition (22)
-    on left: 6, on right: 4
-$@1 (23)
-    on left: 5, on right: 6
-variableList (24)
-    on left: 7 8, on right: 6 8
-variableDeclarations (25)
-    on left: 9, on right: 7 8
-expression (26)
-    on left: 10, on right: 9 17
-atom (27)
-    on left: 11 12 13 14 15 16 17, on right: 10
-empty (28)
-    on left: 18, on right: 2
-type (29)
-    on left: 19 20 21, on right: 6
+statementList (24)
+    on left: 2 3, on right: 1 3 8
+statement (25)
+    on left: 4 5, on right: 3
+functionDefinition (26)
+    on left: 6, on right: 5
+returnType (27)
+    on left: 7, on right: 6
+functionBody (28)
+    on left: 8, on right: 6
+formalParameters (29)
+    on left: 9 10, on right: 6
+formalParameterList (30)
+    on left: 11 12, on right: 10 12
+formalParameterDef (31)
+    on left: 13, on right: 11 12
+variableDefinition (32)
+    on left: 15, on right: 4
+$@1 (33)
+    on left: 14, on right: 15
+variableList (34)
+    on left: 16 17, on right: 15 17
+variableDeclarations (35)
+    on left: 18, on right: 16 17
+expression (36)
+    on left: 19, on right: 18 26
+atom (37)
+    on left: 20 21 22 23 24 25 26, on right: 19
+empty (38)
+    on left: 27, on right: 2 9
+type (39)
+    on left: 28 29 30 31, on right: 7 13 15
 
 
 state 0
 
     0 $accept: . program $end
 
-    $default  reduce using rule 18 (empty)
+    $default  reduce using rule 27 (empty)
 
     program        go to state 1
     statementList  go to state 2
@@ -112,15 +139,18 @@ state 2
     1 program: statementList .
     3 statementList: statementList . statement
 
-    INTEGER_T  shift, and go to state 5
-    DOUBLE_T   shift, and go to state 6
-    STRING_T   shift, and go to state 7
+    FUNCTION    shift, and go to state 5
+    INTEGER_T   shift, and go to state 6
+    DOUBLE_T    shift, and go to state 7
+    STRING_T    shift, and go to state 8
+    FUNCTION_T  shift, and go to state 9
 
     $default  reduce using rule 1 (program)
 
-    statement           go to state 8
-    variableDefinition  go to state 9
-    type                go to state 10
+    statement           go to state 10
+    functionDefinition  go to state 11
+    variableDefinition  go to state 12
+    type                go to state 13
 
 
 state 3
@@ -139,202 +169,391 @@ state 4
 
 state 5
 
-   19 type: INTEGER_T .
+    6 functionDefinition: FUNCTION . IDENTIFIER '(' formalParameters ')' ':' returnType functionBody
 
-    $default  reduce using rule 19 (type)
+    IDENTIFIER  shift, and go to state 14
 
 
 state 6
 
-   20 type: DOUBLE_T .
+   28 type: INTEGER_T .
 
-    $default  reduce using rule 20 (type)
+    $default  reduce using rule 28 (type)
 
 
 state 7
 
-   21 type: STRING_T .
+   29 type: DOUBLE_T .
 
-    $default  reduce using rule 21 (type)
+    $default  reduce using rule 29 (type)
 
 
 state 8
+
+   30 type: STRING_T .
+
+    $default  reduce using rule 30 (type)
+
+
+state 9
+
+   31 type: FUNCTION_T .
+
+    $default  reduce using rule 31 (type)
+
+
+state 10
 
     3 statementList: statementList statement .
 
     $default  reduce using rule 3 (statementList)
 
 
-state 9
+state 11
+
+    5 statement: functionDefinition .
+
+    $default  reduce using rule 5 (statement)
+
+
+state 12
 
     4 statement: variableDefinition . ';'
 
-    ';'  shift, and go to state 11
+    ';'  shift, and go to state 15
 
 
-state 10
+state 13
 
-    6 variableDefinition: type . $@1 variableList
+   15 variableDefinition: type . $@1 variableList
 
-    $default  reduce using rule 5 ($@1)
+    $default  reduce using rule 14 ($@1)
 
-    $@1  go to state 12
+    $@1  go to state 16
 
 
-state 11
+state 14
+
+    6 functionDefinition: FUNCTION IDENTIFIER . '(' formalParameters ')' ':' returnType functionBody
+
+    '('  shift, and go to state 17
+
+
+state 15
 
     4 statement: variableDefinition ';' .
 
     $default  reduce using rule 4 (statement)
 
 
-state 12
-
-    6 variableDefinition: type $@1 . variableList
-
-    IDENTIFIER  shift, and go to state 13
-
-    variableList          go to state 14
-    variableDeclarations  go to state 15
-
-
-state 13
-
-    9 variableDeclarations: IDENTIFIER . '=' expression
-
-    '='  shift, and go to state 16
-
-
-state 14
-
-    6 variableDefinition: type $@1 variableList .
-    8 variableList: variableList . ',' variableDeclarations
-
-    ','  shift, and go to state 17
-
-    $default  reduce using rule 6 (variableDefinition)
-
-
-state 15
-
-    7 variableList: variableDeclarations .
-
-    $default  reduce using rule 7 (variableList)
-
-
 state 16
 
-    9 variableDeclarations: IDENTIFIER '=' . expression
+   15 variableDefinition: type $@1 . variableList
 
-    NOTHING     shift, and go to state 18
-    EMPTY       shift, and go to state 19
-    IDENTIFIER  shift, and go to state 20
-    STRING      shift, and go to state 21
-    INTEGER     shift, and go to state 22
-    DOUBLE      shift, and go to state 23
-    '('         shift, and go to state 24
+    IDENTIFIER  shift, and go to state 18
 
-    expression  go to state 25
-    atom        go to state 26
+    variableList          go to state 19
+    variableDeclarations  go to state 20
 
 
 state 17
 
-    8 variableList: variableList ',' . variableDeclarations
+    6 functionDefinition: FUNCTION IDENTIFIER '(' . formalParameters ')' ':' returnType functionBody
 
-    IDENTIFIER  shift, and go to state 13
+    INTEGER_T   shift, and go to state 6
+    DOUBLE_T    shift, and go to state 7
+    STRING_T    shift, and go to state 8
+    FUNCTION_T  shift, and go to state 9
 
-    variableDeclarations  go to state 27
+    $default  reduce using rule 27 (empty)
+
+    formalParameters     go to state 21
+    formalParameterList  go to state 22
+    formalParameterDef   go to state 23
+    empty                go to state 24
+    type                 go to state 25
 
 
 state 18
 
-   15 atom: NOTHING .
+   18 variableDeclarations: IDENTIFIER . '=' expression
 
-    $default  reduce using rule 15 (atom)
+    '='  shift, and go to state 26
 
 
 state 19
 
-   16 atom: EMPTY .
+   15 variableDefinition: type $@1 variableList .
+   17 variableList: variableList . ',' variableDeclarations
 
-    $default  reduce using rule 16 (atom)
+    ','  shift, and go to state 27
+
+    $default  reduce using rule 15 (variableDefinition)
 
 
 state 20
 
-   11 atom: IDENTIFIER .
+   16 variableList: variableDeclarations .
 
-    $default  reduce using rule 11 (atom)
+    $default  reduce using rule 16 (variableList)
 
 
 state 21
 
-   14 atom: STRING .
+    6 functionDefinition: FUNCTION IDENTIFIER '(' formalParameters . ')' ':' returnType functionBody
 
-    $default  reduce using rule 14 (atom)
+    ')'  shift, and go to state 28
 
 
 state 22
 
-   12 atom: INTEGER .
+   10 formalParameters: formalParameterList .
+   12 formalParameterList: formalParameterList . ',' formalParameterDef
 
-    $default  reduce using rule 12 (atom)
+    ','  shift, and go to state 29
+
+    $default  reduce using rule 10 (formalParameters)
 
 
 state 23
 
-   13 atom: DOUBLE .
+   11 formalParameterList: formalParameterDef .
 
-    $default  reduce using rule 13 (atom)
+    $default  reduce using rule 11 (formalParameterList)
 
 
 state 24
 
-   17 atom: '(' . expression ')'
+    9 formalParameters: empty .
 
-    NOTHING     shift, and go to state 18
-    EMPTY       shift, and go to state 19
-    IDENTIFIER  shift, and go to state 20
-    STRING      shift, and go to state 21
-    INTEGER     shift, and go to state 22
-    DOUBLE      shift, and go to state 23
-    '('         shift, and go to state 24
-
-    expression  go to state 28
-    atom        go to state 26
+    $default  reduce using rule 9 (formalParameters)
 
 
 state 25
 
-    9 variableDeclarations: IDENTIFIER '=' expression .
+   13 formalParameterDef: type . IDENTIFIER
 
-    $default  reduce using rule 9 (variableDeclarations)
+    IDENTIFIER  shift, and go to state 30
 
 
 state 26
 
-   10 expression: atom .
+   18 variableDeclarations: IDENTIFIER '=' . expression
 
-    $default  reduce using rule 10 (expression)
+    NOTHING     shift, and go to state 31
+    EMPTY       shift, and go to state 32
+    IDENTIFIER  shift, and go to state 33
+    STRING      shift, and go to state 34
+    INTEGER     shift, and go to state 35
+    DOUBLE      shift, and go to state 36
+    '('         shift, and go to state 37
+
+    expression  go to state 38
+    atom        go to state 39
 
 
 state 27
 
-    8 variableList: variableList ',' variableDeclarations .
+   17 variableList: variableList ',' . variableDeclarations
 
-    $default  reduce using rule 8 (variableList)
+    IDENTIFIER  shift, and go to state 18
+
+    variableDeclarations  go to state 40
 
 
 state 28
 
-   17 atom: '(' expression . ')'
+    6 functionDefinition: FUNCTION IDENTIFIER '(' formalParameters ')' . ':' returnType functionBody
 
-    ')'  shift, and go to state 29
+    ':'  shift, and go to state 41
 
 
 state 29
 
-   17 atom: '(' expression ')' .
+   12 formalParameterList: formalParameterList ',' . formalParameterDef
 
-    $default  reduce using rule 17 (atom)
+    INTEGER_T   shift, and go to state 6
+    DOUBLE_T    shift, and go to state 7
+    STRING_T    shift, and go to state 8
+    FUNCTION_T  shift, and go to state 9
+
+    formalParameterDef  go to state 42
+    type                go to state 25
+
+
+state 30
+
+   13 formalParameterDef: type IDENTIFIER .
+
+    $default  reduce using rule 13 (formalParameterDef)
+
+
+state 31
+
+   24 atom: NOTHING .
+
+    $default  reduce using rule 24 (atom)
+
+
+state 32
+
+   25 atom: EMPTY .
+
+    $default  reduce using rule 25 (atom)
+
+
+state 33
+
+   20 atom: IDENTIFIER .
+
+    $default  reduce using rule 20 (atom)
+
+
+state 34
+
+   23 atom: STRING .
+
+    $default  reduce using rule 23 (atom)
+
+
+state 35
+
+   21 atom: INTEGER .
+
+    $default  reduce using rule 21 (atom)
+
+
+state 36
+
+   22 atom: DOUBLE .
+
+    $default  reduce using rule 22 (atom)
+
+
+state 37
+
+   26 atom: '(' . expression ')'
+
+    NOTHING     shift, and go to state 31
+    EMPTY       shift, and go to state 32
+    IDENTIFIER  shift, and go to state 33
+    STRING      shift, and go to state 34
+    INTEGER     shift, and go to state 35
+    DOUBLE      shift, and go to state 36
+    '('         shift, and go to state 37
+
+    expression  go to state 43
+    atom        go to state 39
+
+
+state 38
+
+   18 variableDeclarations: IDENTIFIER '=' expression .
+
+    $default  reduce using rule 18 (variableDeclarations)
+
+
+state 39
+
+   19 expression: atom .
+
+    $default  reduce using rule 19 (expression)
+
+
+state 40
+
+   17 variableList: variableList ',' variableDeclarations .
+
+    $default  reduce using rule 17 (variableList)
+
+
+state 41
+
+    6 functionDefinition: FUNCTION IDENTIFIER '(' formalParameters ')' ':' . returnType functionBody
+
+    INTEGER_T   shift, and go to state 6
+    DOUBLE_T    shift, and go to state 7
+    STRING_T    shift, and go to state 8
+    FUNCTION_T  shift, and go to state 9
+
+    returnType  go to state 44
+    type        go to state 45
+
+
+state 42
+
+   12 formalParameterList: formalParameterList ',' formalParameterDef .
+
+    $default  reduce using rule 12 (formalParameterList)
+
+
+state 43
+
+   26 atom: '(' expression . ')'
+
+    ')'  shift, and go to state 46
+
+
+state 44
+
+    6 functionDefinition: FUNCTION IDENTIFIER '(' formalParameters ')' ':' returnType . functionBody
+
+    '{'  shift, and go to state 47
+
+    functionBody  go to state 48
+
+
+state 45
+
+    7 returnType: type .
+
+    $default  reduce using rule 7 (returnType)
+
+
+state 46
+
+   26 atom: '(' expression ')' .
+
+    $default  reduce using rule 26 (atom)
+
+
+state 47
+
+    8 functionBody: '{' . statementList '}'
+
+    $default  reduce using rule 27 (empty)
+
+    statementList  go to state 49
+    empty          go to state 3
+
+
+state 48
+
+    6 functionDefinition: FUNCTION IDENTIFIER '(' formalParameters ')' ':' returnType functionBody .
+
+    $default  reduce using rule 6 (functionDefinition)
+
+
+state 49
+
+    3 statementList: statementList . statement
+    8 functionBody: '{' statementList . '}'
+
+    FUNCTION    shift, and go to state 5
+    INTEGER_T   shift, and go to state 6
+    DOUBLE_T    shift, and go to state 7
+    STRING_T    shift, and go to state 8
+    FUNCTION_T  shift, and go to state 9
+    '}'         shift, and go to state 50
+
+    statement           go to state 10
+    functionDefinition  go to state 11
+    variableDefinition  go to state 12
+    type                go to state 13
+
+
+state 50
+
+    8 functionBody: '{' statementList '}' .
+
+    $default  reduce using rule 8 (functionBody)
