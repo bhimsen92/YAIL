@@ -47,7 +47,8 @@ int counter = 0;
 %token <node> DOUBLE
 
 %type <node> program statement statementList variableList variableDeclarations variableDefinition expression atom type
-%type <node> functionDefinition returnType formalParameters formalParameterList formalParameterDef functionBody
+%type <node> functionDefinition returnType formalParameters formalParameterList formalParameterDef functionBody arglist arguments functCall
+
 %%
 program: statementList {
                           programAST = CAST_TO( StatementList, $1 );
@@ -65,12 +66,13 @@ statementList: empty                   {
                                             stmtList = CAST_TO( StatementList, $1 );
                                             if( stmtList != NULL ){
                                               stmtList->push_back( $2 );
-                                            }                 
+                                            }
                                             $$ = stmtList;
                                        }
              ;
 
 statement: variableDefinition ';'  {
+                                      _debugMessage( "In statement..." );
                                       $$ = $1;
                                       removeType();
                                    }
@@ -78,6 +80,7 @@ statement: variableDefinition ';'  {
          | functionDefinition      {
                                       $$ = $1;
                                    }
+         | expression ';'          { $$ = $1; }
          ;
 
 functionDefinition: FUNCTION IDENTIFIER '(' formalParameters ')' ':' returnType functionBody {
@@ -147,14 +150,11 @@ variableList: variableDeclarations                 {
             ;
 
 variableDeclarations: IDENTIFIER '=' expression {
-                                                    //Identifier *id = CAST_TO( Identifier, $1 );
-                                                    //_debugMessage( id->getName() );
                                                     list<Node*> *operands = new list<Node*>();
                                                     operands->push_back( new Type( getType() ) );
                                                     operands->push_back( $1 );
                                                     operands->push_back( $3 );
                                                     Operator *node = new Operator( __assignment, 3, operands );
-                                                    //_debugMessage( "seen vardecl" );
                                                     $$ = node;
                                                 }
                     ;
@@ -170,16 +170,48 @@ atom  : IDENTIFIER    { $$ = $1; }
       | STRING        { $$ = $1; }
       | NOTHING       { ; }
       | EMPTY         { ; }
+      | functCall     { $$ = $1; }
       | '(' expression ')'  { ; }
 
-empty:
+empty :
+      ;
+
+type : INTEGER_T  {  $$ = new Type( __integer_t ); }
+     | DOUBLE_T   {  $$ = new Type( __double_t );  }    
+     | STRING_T   {  $$ = new Type( __string_t );  }
+     | FUNCTION_T { $$ = new Type( __function_t ); }
      ;
 
-type: INTEGER_T  {  $$ = new Type( __integer_t ); }
-    | DOUBLE_T   {  $$ = new Type( __double_t );  }    
-    | STRING_T   {  $$ = new Type( __string_t );  }
-    | FUNCTION_T { $$ = new Type( __function_t ); }
-    ;
+functCall : IDENTIFIER '(' arguments ')'  {
+                                              list<Node*> *operands = new list<Node*>();
+                                              operands->push_back( $1 );
+                                              operands->push_back( $3 );
+                                              Operator *functCall = new Operator( __funct_call, 2, operands );
+                                              $$ = functCall;
+                                              _debugMessage( "saw function call, all is well..." );
+                                          }
+          ;
+
+arguments : empty                  {
+                                      $$ = NULL;
+                                   }
+                                   
+          | arglist                {  $$ = $1; }
+          ;
+
+arglist : expression                 {
+                                        ArgumentList *arglist = new ArgumentList();
+                                        arglist->push_back( $1 );
+                                        $$ = $1;
+                                        _debugMessage( "In arguments..." );
+                                     }
+
+        | arglist ',' expression     {                                          
+                                        ArgumentList *arglist = CAST_TO( ArgumentList, $1 );
+                                        arglist->push_back( $3 );
+                                        $$ = arglist;  
+                                     }
+        ;
 %%
 
 void yyerror( const char* error ){

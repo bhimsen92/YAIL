@@ -223,12 +223,12 @@ class FormalParameter: public Node{
                 return parameterName;
             }            
 };
-/*
+
 class ArgumentList : public List{
     public:
              ArgumentList() : List( __args ){
              }
-};*/
+};
 
 class StatementList : public List{
     public:

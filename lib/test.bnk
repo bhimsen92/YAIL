@@ -1,6 +1,8 @@
 Int a = 12, b = 124;
 
-function doSomething( Int a ):Int
+function doSomething( Int a ):Function
 {
-	Int c = 12;
+	Int b = 12;
 }
+
+doSomething(12);
