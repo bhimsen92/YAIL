@@ -1,0 +1,71 @@
+program: statementList
+       ;
+statementList: empty
+             | statementList statement
+             ;
+
+statement: variableDefinition ';'
+         | functionDefinition
+         | expression ';'
+         ;
+
+functionDefinition: FUNCTION IDENTIFIER '(' formalParameters ')' ':' returnType functionBody
+                  ;
+
+returnType : type
+           ;
+
+functionBody : '{' statementList '}'
+             ;
+formalParameters : empty     
+                 | formalParameterList
+                 ;
+
+formalParameterList : formalParameterDef
+                    | formalParameterList ',' formalParameterDef
+                    ;
+
+formalParameterDef : type IDENTIFIER
+                   ;
+
+variableDefinition: type variableList
+                  ;
+
+variableList: variableDeclarations
+            | variableList ',' variableDeclarations
+            ;
+
+variableDeclarations: IDENTIFIER '=' expression
+                    ;
+
+expression: atom
+          ;
+
+atom  : IDENTIFIER
+      | INTEGER
+      | DOUBLE
+      | STRING
+      | NOTHING
+      | EMPTY
+      | functCall
+      | '(' expression ')'
+
+empty :
+      ;
+
+type : INTEGER_T
+     | DOUBLE_T
+     | STRING_T
+     | FUNCTION_T
+     ;
+
+functCall : IDENTIFIER '(' arguments ')'
+          ;
+
+arguments : empty                
+          | arglist
+          ;
+
+arglist : expression 
+        | arglist ',' expression 
+        ;
