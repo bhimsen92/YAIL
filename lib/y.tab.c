@@ -1465,7 +1465,7 @@ yyreduce:
                           programAST = CAST_TO( StatementList, (yyvsp[(1) - (1)].node) );
                           if( programAST != NULL ){
                             (yyval.node) = (yyvsp[(1) - (1)].node);
-                            _debugMessage( "ParsingDone....:)" );
+                            //_debugMessage( "ParsingDone....:)" );
                           }
                        }
     break;
@@ -1498,7 +1498,7 @@ yyreduce:
 /* Line 1806 of yacc.c  */
 #line 74 "parser.yacc"
     {
-                                      _debugMessage( "In statement..." );
+                                      //_debugMessage( "In statement..." );
                                       (yyval.node) = (yyvsp[(1) - (2)].node);
                                       removeType();
                                    }
@@ -1757,10 +1757,10 @@ yyreduce:
     {
                                               list<Node*> *operands = new list<Node*>();
                                               operands->push_back( (yyvsp[(1) - (4)].node) );
-                                              operands->push_back( (yyvsp[(3) - (4)].node) );
+                                              operands->push_back( (yyvsp[(3) - (4)].node) );                                              
                                               Operator *functCall = new Operator( __funct_call, 2, operands );
                                               (yyval.node) = functCall;
-                                              _debugMessage( "saw function call, all is well..." );
+                                              //_debugMessage( "saw function call, all is well..." );
                                           }
     break;
 
@@ -1788,7 +1788,7 @@ yyreduce:
                                         ArgumentList *arglist = new ArgumentList();
                                         arglist->push_back( (yyvsp[(1) - (1)].node) );
                                         (yyval.node) = (yyvsp[(1) - (1)].node);
-                                        _debugMessage( "In arguments..." );
+                                        //_debugMessage( "In arguments..." );
                                      }
     break;
 
@@ -2049,17 +2049,17 @@ int main(){
     Context *ctx = new Context();
     Interpreter interp;
     int length;
-    cout<< "length of statement list: "<< programAST->getLength()<<endl;
+    //cout<< "length of statement list: "<< programAST->getLength()<<endl;
     length = programAST->getLength();
     for( int i = 0; i < length; i++ ){
       if( !programAST->empty() ){
         interp.evaluate( programAST->pop_front(), ctx, -1 );
       }
     }
-    bnk_types::Object *val = ctx->get( string("b") );
+    /*bnk_types::Object *val = ctx->get( string("b") );
     bnk_types::Integer *i = CAST_TO( bnk_types::Integer, val );
     if( i != NULL )
-      cout<<"value b: "<<i->getValue()<<endl;
+      cout<<"value b: "<<i->getValue()<<endl;*/
     return 0;
 }
 

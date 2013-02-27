@@ -1,8 +1,4 @@
-Int a = 12, b = 124;
+print("Bhimsen is a good boy....!!!");
 
-function doSomething( Int a ):Function
-{
-	Int b = 12;
-}
 
-doSomething(12);
+print("Hello world!!!");

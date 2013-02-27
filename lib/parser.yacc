@@ -54,7 +54,7 @@ program: statementList {
                           programAST = CAST_TO( StatementList, $1 );
                           if( programAST != NULL ){
                             $$ = $1;
-                            _debugMessage( "ParsingDone....:)" );
+                            //_debugMessage( "ParsingDone....:)" );
                           }
                        }
        ;
@@ -72,7 +72,7 @@ statementList: empty                   {
              ;
 
 statement: variableDefinition ';'  {
-                                      _debugMessage( "In statement..." );
+                                      //_debugMessage( "In statement..." );
                                       $$ = $1;
                                       removeType();
                                    }
@@ -185,10 +185,10 @@ type : INTEGER_T  {  $$ = new Type( __integer_t ); }
 functCall : IDENTIFIER '(' arguments ')'  {
                                               list<Node*> *operands = new list<Node*>();
                                               operands->push_back( $1 );
-                                              operands->push_back( $3 );
+                                              operands->push_back( $3 );                                              
                                               Operator *functCall = new Operator( __funct_call, 2, operands );
                                               $$ = functCall;
-                                              _debugMessage( "saw function call, all is well..." );
+                                              //_debugMessage( "saw function call, all is well..." );
                                           }
           ;
 
@@ -203,7 +203,7 @@ arglist : expression                 {
                                         ArgumentList *arglist = new ArgumentList();
                                         arglist->push_back( $1 );
                                         $$ = $1;
-                                        _debugMessage( "In arguments..." );
+                                        //_debugMessage( "In arguments..." );
                                      }
 
         | arglist ',' expression     {                                          
@@ -230,10 +230,10 @@ int main(){
         interp.evaluate( programAST->pop_front(), ctx, -1 );
       }
     }
-    bnk_types::Object *val = ctx->get( string("b") );
+    /*bnk_types::Object *val = ctx->get( string("b") );
     bnk_types::Integer *i = CAST_TO( bnk_types::Integer, val );
     if( i != NULL )
-      cout<<"value b: "<<i->getValue()<<endl;
+      cout<<"value b: "<<i->getValue()<<endl;*/
     return 0;
 }
 
