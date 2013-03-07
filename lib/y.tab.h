@@ -38,30 +38,46 @@
       know about them.  */
    enum yytokentype {
      FUNCTION = 258,
-     NOTHING = 259,
-     EMPTY = 260,
-     INTEGER_T = 261,
-     DOUBLE_T = 262,
-     STRING_T = 263,
-     FUNCTION_T = 264,
-     IDENTIFIER = 265,
-     STRING = 266,
-     INTEGER = 267,
-     DOUBLE = 268
+     INTEGER_T = 259,
+     DOUBLE_T = 260,
+     STRING_T = 261,
+     FUNCTION_T = 262,
+     OR = 263,
+     AND = 264,
+     EQUAL = 265,
+     LE = 266,
+     GE = 267,
+     IF = 268,
+     ELSE = 269,
+     NOT = 270,
+     IDENTIFIER = 271,
+     STRING = 272,
+     INTEGER = 273,
+     DOUBLE = 274,
+     NOTHING = 275,
+     EMPTY = 276
    };
 #endif
 /* Tokens.  */
 #define FUNCTION 258
-#define NOTHING 259
-#define EMPTY 260
-#define INTEGER_T 261
-#define DOUBLE_T 262
-#define STRING_T 263
-#define FUNCTION_T 264
-#define IDENTIFIER 265
-#define STRING 266
-#define INTEGER 267
-#define DOUBLE 268
+#define INTEGER_T 259
+#define DOUBLE_T 260
+#define STRING_T 261
+#define FUNCTION_T 262
+#define OR 263
+#define AND 264
+#define EQUAL 265
+#define LE 266
+#define GE 267
+#define IF 268
+#define ELSE 269
+#define NOT 270
+#define IDENTIFIER 271
+#define STRING 272
+#define INTEGER 273
+#define DOUBLE 274
+#define NOTHING 275
+#define EMPTY 276
 
 
 
@@ -78,7 +94,7 @@ typedef union YYSTYPE
 
 
 /* Line 2068 of yacc.c  */
-#line 82 "y.tab.h"
+#line 98 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

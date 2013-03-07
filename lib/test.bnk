@@ -1,4 +1,2 @@
-print("Bhimsen is a good boy....!!!");
-
-
-print("Hello world!!!");
+Int a = 1 - 3 * 100, b = a + 301;
+print(b);

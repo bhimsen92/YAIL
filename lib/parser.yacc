@@ -2,13 +2,13 @@
 #include<iostream>
 #include<cstdlib>
 #include<stack>
-#include "bnKapi.h"
-#include "nodes/tokens.h"
-#include "nodes/node.h"
-#include "interpreter.h"
-#include "context.h"
-#include "types/object.h"
-#include "types/number.h"
+#include "headers/bnKapi.h"
+#include "headers/tokens.h"
+#include "headers/node.h"
+#include "headers/interpreter.h"
+#include "headers/context.h"
+#include "headers/object.h"
+#include "headers/number.h"
 
 #include<list>
 using namespace std;
@@ -40,21 +40,24 @@ int counter = 0;
     bnk_astNodes::Node *node;
 };
 
-%token FUNCTION NOTHING EMPTY INTEGER_T DOUBLE_T STRING_T FUNCTION_T
+%token FUNCTION INTEGER_T DOUBLE_T STRING_T FUNCTION_T OR AND EQUAL LE GE IF ELSE NOT
 %token <node> IDENTIFIER
 %token <node> STRING
 %token <node> INTEGER
 %token <node> DOUBLE
+%token <node> NOTHING
+%token <node> EMPTY
 
 %type <node> program statement statementList variableList variableDeclarations variableDefinition expression atom type
 %type <node> functionDefinition returnType formalParameters formalParameterList formalParameterDef functionBody arglist arguments functCall
+%type <node> block conditionalExpression orExp andExp equality relationalOp term power unary
 
 %%
 program: statementList {
                           programAST = CAST_TO( StatementList, $1 );
                           if( programAST != NULL ){
                             $$ = $1;
-                            //_debugMessage( "ParsingDone....:)" );
+                            _debugMessage( "ParsingDone....:)" );
                           }
                        }
        ;
@@ -62,6 +65,7 @@ statementList: empty                   {
                                             stmtList = new StatementList();
                                             $$ = stmtList;
                                        }
+
              | statementList statement {
                                             stmtList = CAST_TO( StatementList, $1 );
                                             if( stmtList != NULL ){
@@ -79,9 +83,93 @@ statement: variableDefinition ';'  {
 
          | functionDefinition      {
                                       $$ = $1;
-                                   }
+                                   }         
+         | IF '(' conditionalExpression ')' block                 {
+                                                                      list<Node*> *operands = new list<Node*>();
+                                                                      operands->push_back( $3 );
+                                                                      operands->push_back( $5 );
+                                                                      Operator *ifNode = new Operator( __if, 2, operands );
+                                                                      $$ = ifNode;
+                                                                  }
+         | IF '(' conditionalExpression ')' block ELSE block      {
+                                                                      list<Node*> *operands = new list<Node*>();
+                                                                      operands->push_back( $3 );
+                                                                      operands->push_back( $5 );
+                                                                      operands->push_back( $7 );
+                                                                      Operator *ifElseNode = new Operator( __ifelse, 3, operands );
+                                                                      $$ = ifElseNode;
+                                                                  }
          | expression ';'          { $$ = $1; }
          ;
+
+block : statement                              {  $$ = $1; }
+      | '{' statementList '}'                  {  $$ = $2; }
+      ;
+
+conditionalExpression: orExp                   { $$ = $1; }
+                     ;
+
+orExp : andExp                                 { $$ = $1; }
+      | orExp OR andExp                        {
+                                                  list<Node*> *operands = new list<Node*>();
+                                                  operands->push_back( $1 );
+                                                  operands->push_back( $3 );
+                                                  Operator *orExpNode = new Operator( __or, 2, operands );
+                                                  $$ = orExpNode;
+                                               }
+      ;
+
+andExp: equality                               { $$ = $1; }
+      | andExp AND equality                    {
+                                                  list<Node*> *operands = new list<Node*>();
+                                                  operands->push_back( $1 );
+                                                  operands->push_back( $3 );
+                                                  Operator *andNode = new Operator( __and, 2, operands );
+                                                  $$ = andNode;
+                                               }
+      ;
+
+equality: relationalOp                         {  $$ = $1; }
+        | equality EQUAL relationalOp          { 
+                                                  list<Node*> *operands = new list<Node*>();
+                                                  operands->push_back( $1 );
+                                                  operands->push_back( $3 );
+                                                  Operator *equality = new Operator( __equality, 2, operands );
+                                                  $$ = equality;
+                                               }
+        ;
+
+relationalOp: expression '<' expression        {
+                                                  list<Node*> *operands = new list<Node*>();
+                                                  operands->push_back( $1 );
+                                                  operands->push_back( $3 );
+                                                  Operator *ltRelOpNode = new Operator( __lt, 2, operands );
+                                                  $$ = ltRelOpNode;
+                                               }
+            | expression LE expression         {
+                                                  list<Node*> *operands = new list<Node*>();
+                                                  operands->push_back( $1 );
+                                                  operands->push_back( $3 );
+                                                  Operator *leRelOpNode = new Operator( __le, 2, operands );
+                                                  $$ = leRelOpNode;
+                                               }
+            | expression '>' expression        {
+                                                  list<Node*> *operands = new list<Node*>();
+                                                  operands->push_back( $1 );
+                                                  operands->push_back( $3 );
+                                                  Operator *gtRelOpNode = new Operator( __gt, 2, operands );
+                                                  $$ = gtRelOpNode;
+                                               }
+            | expression GE expression         {
+                                                  list<Node*> *operands = new list<Node*>();
+                                                  operands->push_back( $1 );
+                                                  operands->push_back( $3 );
+                                                  Operator *geRelOpNode = new Operator( __ge, 2, operands );
+                                                  $$ = geRelOpNode;
+                                               }
+            | expression                       { $$ = $1; }
+            ;
+
 
 functionDefinition: FUNCTION IDENTIFIER '(' formalParameters ')' ':' returnType functionBody {
                                                                                                 list<Node*> *operands = new list<Node*>();
@@ -159,19 +247,73 @@ variableDeclarations: IDENTIFIER '=' expression {
                                                 }
                     ;
 
-expression: atom      {
-                          $$ = new Expression( $1 );
-                      }
+expression: expression '+' term           {
+                                              list<Node*> *operands = new list<Node*>();
+                                              operands->push_back( $1 );
+                                              operands->push_back( $3 );
+                                              Operator *plusNode = new Operator( __addition, 2, operands );
+                                              $$ = plusNode;
+                                          }
+          | expression '-' term           {
+                                              list<Node*> *operands = new list<Node*>();
+                                              operands->push_back( $1 );
+                                              operands->push_back( $3 );
+                                              Operator *subtractionNode = new Operator( __subtraction, 2, operands );
+                                              $$ = subtractionNode;
+                                          }
+          | term                          { $$ = $1; }
           ;
+
+term: term '*' power                     {
+                                              list<Node*> *operands = new list<Node*>();
+                                              operands->push_back( $1 );
+                                              operands->push_back( $3 );
+                                              Operator *multiplicationNode = new Operator( __multiplication, 2, operands );
+                                              $$ = multiplicationNode;
+                                          }
+    | term '/' power                      {
+                                              list<Node*> *operands = new list<Node*>();
+                                              operands->push_back( $1 );
+                                              operands->push_back( $3 );
+                                              Operator *divNode = new Operator( __div, 2, operands );
+                                              $$ = divNode;
+                                          }
+    | power                               { $$ = $1; }
+    ;
+
+power : power '^' unary                     {
+                                              list<Node*> *operands = new list<Node*>();
+                                              operands->push_back( $1 );
+                                              operands->push_back( $3 );
+                                              Operator *powerNode = new Operator( __power, 2, operands );
+                                              $$ = powerNode;
+                                          }
+      | unary                             { $$ = $1; }
+      ;
+
+unary: NOT unary                          {
+                                              list<Node*> *operands = new list<Node*>();
+                                              operands->push_back( $2 );
+                                              Operator *notNode = new Operator( __not, 1, operands );
+                                              $$ = notNode;
+                                          }
+     | '-' unary                          {
+                                              list<Node*> *operands = new list<Node*>();
+                                              operands->push_back( $2 );
+                                              Operator *uMinusNode = new Operator( __uminus, 1, operands );
+                                              $$ = uMinusNode;
+                                          }
+     | atom                               { $$ = $1; }
+     ;
 
 atom  : IDENTIFIER    { $$ = $1; }
       | INTEGER       { $$ = $1; }
-      | DOUBLE        { ; }
+      | DOUBLE        { $$ = $1; }
       | STRING        { $$ = $1; }
-      | NOTHING       { ; }
-      | EMPTY         { ; }
+      | NOTHING       { $$ = $1; }
+      | EMPTY         { $$ = $1; }
       | functCall     { $$ = $1; }
-      | '(' expression ')'  { ; }
+      | '(' conditionalExpression ')'  { $$ = $2; }
 
 empty :
       ;

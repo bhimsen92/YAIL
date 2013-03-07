@@ -2,7 +2,7 @@
 #include<iostream>
 #include<cstdlib>
 #include<cstring>
-#include "nodes/node.h"
+#include "headers/node.h"
 #include "y.tab.h"
 using namespace std;
 using namespace bnk_astNodes;
@@ -35,6 +35,45 @@ string     \"(.*)\"
 
 "Function" {
                 return FUNCTION_T;
+           }
+
+"if"       {
+                return IF;
+           }
+
+"else"     {
+                return ELSE;
+           }
+
+"and"      {
+                return AND;
+           }
+
+"or"       {
+                return OR;
+           }
+
+"not"      {
+                return NOT;
+           }
+
+"Nothing"         {
+                      Node *nothingNode = new Nothing();
+                      yylval.node = nothingNode;
+                      return NOTHING;
+                  }
+"EMPTY"    {
+                Node *emptyNode = new Empty();
+                yylval.node = emptyNode;
+                return EMPTY;
+           }
+
+"<="       {
+                return LE;
+           }
+
+">="       {
+                return GE;
            }
            
 {ident}    {
