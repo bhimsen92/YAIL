@@ -146,7 +146,7 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                     break;
         case __or:
                                     Operator *orNode;
-                                    orNode = CAST_TO( bnk_astNodes::Operator, astNode );                                    
+                                    orNode = CAST_TO( bnk_astNodes::Operator, astNode );
                                     break;
     }
     return NULL;
