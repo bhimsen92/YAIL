@@ -9,6 +9,8 @@
 #include "headers/number.h"
 #include "headers/udf.h"
 #include "headers/builtins.h"
+#include "headers/binaryop.h"
+
 using namespace std;
 
 bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, int dataTypeInfo ){
@@ -79,9 +81,9 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                   Identifier *id = CAST_TO( Identifier, operands->front() );
                                   if( id != NULL ){
                                     operands->pop_front();
-                                    // get the expression node.                                                            
+                                    // get the expression node.                                         
                                     Object *value = this->evaluate( operands->front(), execContext, dataType );
-                                    execContext->put( string( id->getName() ), value );                                    
+                                    execContext->put( string( id->getName() ), value );               
                                   }
                                 }
                                 break;
@@ -123,37 +125,34 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                     // cast to Operator Node.
                                     Operator *addNode;
                                     addNode = CAST_TO( bnk_astNodes::Operator, astNode );
-                                    return this->execOperation( __addition, addNode, execContext );
+                                    return this->execOperation( addNode, execContext, new AdditionOperation() );
                                     break;
         case __subtraction:
                                     Operator *subNode;
                                     subNode = CAST_TO( bnk_astNodes::Operator, astNode );
-                                    return this->execOperation( __subtraction, subNode, execContext );
+                                    return this->execOperation( subNode, execContext, new SubtractionOperation() );
                                     break;
         case __multiplication:
                                     Operator *mulNode;
                                     mulNode = CAST_TO( bnk_astNodes::Operator, astNode );
-                                    return this->execOperation( __multiplication, mulNode, execContext );
+                                    return this->execOperation( mulNode, execContext, new MultiplicationOperation() );
                                     break;
         case __div:
                                     Operator *divNode;
                                     divNode = CAST_TO( bnk_astNodes::Operator, astNode );
-                                    return this->execOperation( __div, divNode, execContext );
+                                    return this->execOperation( divNode, execContext, new DivOperation() );
                                     break;
         case __power:
                                     break;
         case __or:
                                     Operator *orNode;
-                                    orNode = CAST_TO( bnk_astNodes::Operator, astNode );
-
+                                    orNode = CAST_TO( bnk_astNodes::Operator, astNode );                                    
                                     break;
-
-
     }
     return NULL;
 }
 
-Object* Interpreter::execOperation( int opType, Operator* opNode, Context* execContext ){
+Object* Interpreter::execOperation( Operator* opNode, Context* execContext, BinaryOperation* op ){
     // get the operands.
     list<Node*> *operands = opNode->getOperands();
     // get the firstOp
@@ -161,63 +160,15 @@ Object* Interpreter::execOperation( int opType, Operator* opNode, Context* execC
     operands->pop_front();
     Object *secondOp = this->evaluate( operands->front(), execContext, -1 );
     operands->pop_front();
-    if( this->isCompatible( opType, firstOp, secondOp ) ){
-        // if compatible.
-        if( opType == __addition )
-            return this->add( firstOp, secondOp );
-        else if( opType == __subtraction )
-            return this->sub( firstOp, secondOp );
-        else if( opType == __multiplication )
-            return this->mul( firstOp, secondOp );
-        else if( opType == __div )
-            return this->div( firstOp, secondOp );
-        /*else if( opType == __power )
-              return this->power( firstOp, secondOp );*/
+    // set the operands to the operation object.
+    op->setFirstOperand( firstOp );
+    op->setSecondOperand( secondOp );
+    if( op->isCompatible() ){
+        return op->executeOperation();
     }
     else{
         errorMessage( "Incompatible Operands" );
         exit(1);
-    }
-}
-Object* Interpreter::add( Object *a, Object *b ){
-    // cast to integer.
-    bnk_types::Integer *ia = CAST_TO( bnk_types::Integer, a );
-    bnk_types::Integer *ib = CAST_TO( bnk_types::Integer, b );
-    if( ia != NULL && ib != NULL ){
-        return new bnk_types::Integer( ia->getValue() + ib->getValue() );
-    }
-}
-
-Object* Interpreter::sub( Object *a, Object *b ){
-    // cast to integer.
-    bnk_types::Integer *ia = CAST_TO( bnk_types::Integer, a );
-    bnk_types::Integer *ib = CAST_TO( bnk_types::Integer, b );
-    if( ia != NULL && ib != NULL ){
-            return new bnk_types::Integer( ia->getValue() - ib->getValue() );
-    }
-}
-
-Object* Interpreter::mul( Object *a, Object *b ){
-    // cast to integer.
-    bnk_types::Integer *ia = CAST_TO( bnk_types::Integer, a );
-    bnk_types::Integer *ib = CAST_TO( bnk_types::Integer, b );
-    if( ia != NULL && ib != NULL ){
-        return new bnk_types::Integer( ia->getValue() * ib->getValue() );
-    }
-}
-
-Object* Interpreter::div( Object *a, Object *b ){
-    // cast to integer.
-    bnk_types::Integer *ia = CAST_TO( bnk_types::Integer, a );
-    bnk_types::Integer *ib = CAST_TO( bnk_types::Integer, b );
-    if( ia != NULL && ib != NULL ){
-        return new bnk_types::Integer( ia->getValue() / ib->getValue() );
-    }
-}
-
-bool Interpreter::isCompatible( int opType, Object *a, Object *b ){
-    if( opType == __addition ){
-        return ( ( a->getTypeClass() == NumberClass ) && ( b->getTypeClass() == NumberClass ) );
     }
 }
 
@@ -260,6 +211,7 @@ BuiltInFunction Interpreter::getBuiltInFunction( Identifier *functName ){
     string name = functName->getName();
     return builtins[ name ];
 }
+
 void Interpreter::errorMessage( const char* message ){
     cout<<"Error: "<<message<<endl;
 }

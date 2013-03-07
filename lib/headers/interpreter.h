@@ -9,6 +9,8 @@
 #include "tokens.h"
 #include "context.h"
 #include "object.h"
+#include "binaryop.h"
+
 using namespace std;
 using namespace bnk_astNodes;
 //using namespace bnk_builtins;
@@ -23,12 +25,7 @@ class Interpreter{
             this->loadBuiltIns();
         }
         bnk_types::Object* evaluate( Node* astNode, Context* execContext, int dataTypeInfo );
-        Object* execOperation( int opType, Operator* opNode, Context* execContext );        
-        Object* add( Object *a, Object *b );
-        Object* sub( Object *a, Object *b );
-        Object* mul( Object *a, Object *b );
-        Object* div( Object *a, Object *b );
-        bool isCompatible( int opType, Object *a, Object *b );
+        Object* execOperation( Operator* opNode, Context* execContext, BinaryOperation *op );
         bool isBuiltInFunction( Identifier *functName );
         bool isUserDefinedFunction( Identifier *functName );
         Object* evaluateBuiltInFunction( Identifier *functName, list<Node*> *operands, Context *execContext );

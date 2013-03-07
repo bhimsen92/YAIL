@@ -2,7 +2,9 @@
 #include<cstdlib>
 #include<cstring>
 #include "../headers/object.h"
+#include "../headers/value.h"
 using namespace std;
+using namespace bnk;
 
 namespace bnk_types{
     Object::Object( int t ){
@@ -20,5 +22,13 @@ namespace bnk_types{
 
     int Object::getTypeClass(void){
         return typeClass;
+    }
+    
+    Value* Object::getValue(void){
+        return value;
+    }
+    
+    void Object::setValue( Value *val ){
+        value = val;
     }
 }

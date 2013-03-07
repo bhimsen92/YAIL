@@ -24,7 +24,7 @@ namespace bnk_builtins{
 								bnk_types::Integer *integer;
 								integer = CAST_TO( bnk_types::Integer, obj );
 								if( integer != NULL ){
-									cout<<integer->getValue()<<endl;
+									cout<<integer->getValue()->getIntVal()<<endl;
 								}
 								break;
 			}
