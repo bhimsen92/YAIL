@@ -1,2 +1,16 @@
 Int a = 1 + 24 - 100;
-print(a);
+
+function doSomething( Int b ):Int
+{
+    print( "In function.." );
+    print(b + 2 * 6);
+}
+
+function helloWorld():Int
+{
+    print( "Hello world!!" );
+}
+
+Function c = doSomething;
+
+c(100);

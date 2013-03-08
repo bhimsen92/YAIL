@@ -53,8 +53,8 @@ class Type: public Node{
             int type;
     public:
             Type( int _type );
-            int getType(void);
-            void setType(int _type);
+            int getDataType(void);
+            void setDataType(int _type);
 };
 
 class Expression: public Node{

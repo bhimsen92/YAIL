@@ -83,7 +83,7 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                     operands->pop_front();
                                     // get the expression node.                                         
                                     Object *value = this->evaluate( operands->front(), execContext, dataType );
-                                    execContext->put( string( id->getName() ), value );               
+                                    execContext->put( string( id->getName() ), value );
                                   }
                                 }
                                 break;
@@ -111,7 +111,7 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                     if( this->isBuiltInFunction( functName ) ){
                                       this->evaluateBuiltInFunction( functName, operands, execContext );
                                     }
-                                    else if( this->isUserDefinedFunction( functName ) ){
+                                    else if( this->isUserDefinedFunction( functName, execContext ) ){
                                       this->evaluateUserDefinedFunction( functName, operands, execContext );
                                     }
                                     else{
@@ -126,28 +126,45 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                     Operator *addNode;
                                     addNode = CAST_TO( bnk_astNodes::Operator, astNode );
                                     return this->execOperation( addNode, execContext, new AdditionOperation() );
-                                    break;
         case __subtraction:
                                     Operator *subNode;
                                     subNode = CAST_TO( bnk_astNodes::Operator, astNode );
                                     return this->execOperation( subNode, execContext, new SubtractionOperation() );
-                                    break;
         case __multiplication:
                                     Operator *mulNode;
                                     mulNode = CAST_TO( bnk_astNodes::Operator, astNode );
                                     return this->execOperation( mulNode, execContext, new MultiplicationOperation() );
-                                    break;
         case __div:
                                     Operator *divNode;
                                     divNode = CAST_TO( bnk_astNodes::Operator, astNode );
                                     return this->execOperation( divNode, execContext, new DivOperation() );
-                                    break;
         case __power:
                                     break;
         case __or:
                                     Operator *orNode;
                                     orNode = CAST_TO( bnk_astNodes::Operator, astNode );
-                                    break;
+                                    return this->execOperation( orNode, execContext, new OrOperation() );
+        case __and:
+                                    Operator *andNode;
+                                    andNode = CAST_TO( bnk_astNodes::Operator, astNode );
+                                    return this->execOperation( andNode, execContext, new AndOperation() );
+        case __lt:
+                                    Operator *ltNode;
+                                    ltNode = CAST_TO( bnk_astNodes::Operator, astNode );
+                                    return this->execOperation( ltNode, execContext, new LessThanOperator() );
+        case __gt:
+                                    Operator *gtNode;
+                                    gtNode = CAST_TO( bnk_astNodes::Operator, astNode );
+                                    return this->execOperation( gtNode, execContext, new GreaterThanOperator() );
+        case __le:
+                                    Operator *leNode;
+                                    leNode = CAST_TO( bnk_astNodes::Operator, astNode );
+                                    return this->execOperation( leNode, execContext, new LessThanOrEqualOperator() );
+        case __ge:
+                                    Operator *geNode;
+                                    geNode = CAST_TO( bnk_astNodes::Operator, astNode );
+                                    return this->execOperation( geNode, execContext, new GreaterThanOrEqualOperator() );
+                                    
     }
     return NULL;
 }
@@ -182,7 +199,15 @@ bool Interpreter::isBuiltInFunction( Identifier *functName ){
     }
 }
 
-bool Interpreter::isUserDefinedFunction( Identifier *functName ){
+bool Interpreter::isUserDefinedFunction( Identifier *functName, Context *execContext ){
+    string name = functName->getName();
+    Object *value = execContext->get( name );
+    if( value != NULL ){
+        if( this->isCallable( value ) ){
+            return true;
+        }
+    }
+    // either the value is not a function or else it does not exist.
     return false;
 }
 
@@ -197,10 +222,50 @@ Object* Interpreter::evaluateBuiltInFunction( Identifier *functName, list<Node*>
     }
     BuiltInFunction function = getBuiltInFunction( functName );
     function(args);
-    }
+}
 
-Object* Interpreter::evaluateUserDefinedFunction( Identifier *functName, list<Node*> *operands, Context *execContext ){
-    ;
+Object* Interpreter::evaluateUserDefinedFunction( Identifier *functName, list<Node*> *arguments, Context *execContext ){
+    Object *f = execContext->get( functName->getName() );
+    UserDefinedFunction *function = CAST_TO( UserDefinedFunction, f );
+    Context *newContext = new Context();
+    // pop the function name.
+    arguments->pop_front();
+    
+    if( function != NULL ){
+        // get formal parameter list.
+        FormalParameterList *fpList = function->getFormalParameterList();
+        // check whether fpList and argument list length is equal or not.
+        if( fpList->getLength() == arguments->size() ){
+            // go through each formal parameters, check their type,
+            // if everything is OK, then put it inside the new context.
+            int i, length = fpList->getLength();
+            for( i = 0; i < length; i++ ){
+                FormalParameter *fParameter = CAST_TO( FormalParameter, fpList->get(i) );
+                Object *argVal = this->evaluate( arguments->front(), execContext, -1 );
+                // check fParameter and argVal type match or not.
+                // if not throw error.
+                if( fParameter->getDataType() == argVal->getDataType() ){
+                    newContext->put( string( fParameter->getParameterName() ), argVal );
+                }
+                else{
+                    errorMessage( "Type mismatch in function call." );
+                    exit(1);
+                }
+                arguments->pop_front();
+            }
+            // get the statement list and start executing the statments.
+            StatementList *stmtList = function->getStatementList();
+            int stLength = stmtList->getLength();
+            for( i = 0; i < stLength; i++ ){
+                this->evaluate( stmtList->get(i), newContext, -1 );
+            }
+        }
+        else{
+            errorMessage( "argument length mismatch" );
+            exit(1);
+        }
+    }
+    return NULL;
 }
 
 void Interpreter::loadBuiltIns(void){
@@ -214,4 +279,8 @@ BuiltInFunction Interpreter::getBuiltInFunction( Identifier *functName ){
 
 void Interpreter::errorMessage( const char* message ){
     cout<<"Error: "<<message<<endl;
+}
+
+bool Interpreter::isCallable( Object *value ){
+    return ( value->getDataType() == __function_t );
 }

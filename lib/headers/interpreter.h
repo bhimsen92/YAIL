@@ -24,10 +24,11 @@ class Interpreter{
         Interpreter(){
             this->loadBuiltIns();
         }
+        bool isCallable( Object* obj );
         bnk_types::Object* evaluate( Node* astNode, Context* execContext, int dataTypeInfo );
         Object* execOperation( Operator* opNode, Context* execContext, BinaryOperation *op );
         bool isBuiltInFunction( Identifier *functName );
-        bool isUserDefinedFunction( Identifier *functName );
+        bool isUserDefinedFunction( Identifier *functName, Context *execContext );
         Object* evaluateBuiltInFunction( Identifier *functName, list<Node*> *operands, Context *execContext );
         Object* evaluateUserDefinedFunction( Identifier *functName, list<Node*> *operands, Context *execContext );
         void loadBuiltIns(void);

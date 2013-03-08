@@ -57,7 +57,7 @@ program: statementList {
                           programAST = CAST_TO( StatementList, $1 );
                           if( programAST != NULL ){
                             $$ = $1;
-                            _debugMessage( "ParsingDone....:)" );
+                            //_debugMessage( "ParsingDone....:)" );
                           }
                        }
        ;
@@ -187,7 +187,7 @@ returnType : type { $$ = $1; }
 
 functionBody : '{' statementList '}' { $$ = $2; }
              ;
-formalParameters : empty                   { $$ = NULL; }
+formalParameters : empty                   { $$ = new FormalParameterList(); }
                  | formalParameterList     { $$ = $1;   }
                  ;
 
@@ -216,6 +216,7 @@ variableDefinition: type { putType( $1->getType() ); } variableList {
                                                               operands->push_back( $1 );
                                                               operands->push_back( $3 );
                                                               Operator *vDefinitionNode = new Operator( __var_definition, 2, operands );
+                                                              removeType();
                                                               $$ = vDefinitionNode;
                                                          }
                   ;
@@ -327,7 +328,9 @@ type : INTEGER_T  {  $$ = new Type( __integer_t ); }
 functCall : IDENTIFIER '(' arguments ')'  {
                                               list<Node*> *operands = new list<Node*>();
                                               operands->push_back( $1 );
-                                              operands->push_back( $3 );                                              
+                                              if( $3 != NULL ){
+                                                  operands->push_back( $3 );
+                                              }
                                               Operator *functCall = new Operator( __funct_call, 2, operands );
                                               $$ = functCall;
                                               //_debugMessage( "saw function call, all is well..." );

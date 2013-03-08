@@ -7,7 +7,7 @@ namespace bnk_types{
         // get the function name.
         Identifier *name = CAST_TO( Identifier, operands->front() );
 		if( name != NULL ){
-            functName = name->getName();					
+            functName = name->getName();		
 			operands->pop_front();
 			// get the formalParameter list.
 			fpList = CAST_TO( FormalParameterList, operands->front() );
@@ -16,10 +16,13 @@ namespace bnk_types{
 				// get the returnType.
 				Type *dataType = CAST_TO( Type, operands->front() );
 				if( dataType != NULL ){
-                    returnType = dataType->getType();
+                    returnType = dataType->getDataType();
                     operands->pop_front();
                     // get the statementList of the function.
-                    StatementList *functBody = CAST_TO( StatementList, operands->front() );
+                    functBody = CAST_TO( StatementList, operands->front() );
+                    if( functBody == NULL ){
+                        cout<<"Error in udf.."<<endl;
+                    }
                 }
             }
         }

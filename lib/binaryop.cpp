@@ -4,6 +4,7 @@
 #include "./headers/binaryop.h"
 #include "./headers/value.h"
 #include "./headers/number.h"
+#include "./headers/bool.h"
 
 using namespace std;
 using namespace bnk_types;
@@ -23,13 +24,13 @@ Object* BinaryOperation::executeOperation(void){
         if( sOpType == __integer_t ){
             ib = secondOp->getValue()->getIntVal();
             // so it is a simple int + int operation.
-            ir = this->exec( ia, ib );
-            rval = new Integer( ir );
+            rval = this->exec( ia, ib );
+            //rval = new Integer( ir );
             finalType = __integer_t;
         }
         else{
             db = secondOp->getValue()->getDoubleVal();
-            dr = (double)this->exec( ia, db );
+            rval = this->exec( ia, db );
             finalType = __double_t;
         }
     }
@@ -42,7 +43,7 @@ Object* BinaryOperation::executeOperation(void){
         else{
             db = secondOp->getValue()->getDoubleVal();
         }
-        dr = this->exec( da, db );
+        rval = this->exec( da, db );
         finalType = __double_t;
     }
     return rval;
@@ -52,19 +53,43 @@ bool BinaryOperation::isCompatible(void){
     return ( ( firstOp->getTypeClass() == NumberClass ) && ( secondOp->getTypeClass() == NumberClass ) );
 }
 
-int AdditionOperation::exec( int a, int b ){
-    return a + b;
+Object* AdditionOperation::exec( int a, int b ){
+    return new Integer( a + b );
 }
 
 
-int SubtractionOperation::exec( int a, int b ){
-    return a - b;
+Object* SubtractionOperation::exec( int a, int b ){
+    return new Integer( a - b );
 }
 
-int MultiplicationOperation::exec( int a, int b ){
-    return a * b;
+Object* MultiplicationOperation::exec( int a, int b ){
+    return new Integer( a * b );
 }
 
-int DivOperation::exec( int a, int b ){
-    return a / b;
+Object* DivOperation::exec( int a, int b ){
+    return new Integer( a / b );
+}
+
+Object* OrOperation::exec( int a, int b ){
+    return new Boolean( a || b );   
+}
+
+Object* AndOperation::exec( int a, int b ){
+    return new Boolean( a && b );
+}
+
+Object* LessThanOperator::exec( int a, int b ){
+    return new Boolean( a < b );
+}
+
+Object* LessThanOrEqualOperator::exec( int a, int b ){
+    return new Boolean( a <= b );
+}
+
+Object* GreaterThanOperator::exec( int a, int b ){
+    return new Boolean( a > b );
+}
+
+Object* GreaterThanOrEqualOperator::exec( int a, int b ){
+    return new Boolean( a >= b );   
 }

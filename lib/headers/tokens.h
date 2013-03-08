@@ -17,7 +17,7 @@ enum {
     __assignment,
     __integer_t,
     __double_t,
-    __string_t,
+    __string_t, __boolean,
     __function_t,
     __list_t,
     __type,
@@ -31,7 +31,8 @@ enum {
 
 enum{
     NumberClass,
-    CharClass
+    CharClass,
+    BooleanClass
 };
 
 #endif

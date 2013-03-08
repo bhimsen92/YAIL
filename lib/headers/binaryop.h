@@ -18,9 +18,9 @@ class BinaryOperation{
                 secondOp = NULL;
             }
             Object* executeOperation(void);
-            virtual int exec( int, int ) = 0;
-            virtual double exec( int, double ) = 0;
-            virtual double exec( double, double ) = 0;
+            virtual Object* exec( int, int ) = 0;
+            virtual Object* exec( int, double ) = 0;
+            virtual Object* exec( double, double ) = 0;
             bool isCompatible(void);
             
             Object* getFirstOperand(void){
@@ -45,35 +45,89 @@ class AdditionOperation: public BinaryOperation{
     public:
             AdditionOperation(){
             }
-            int exec( int, int );
-            double exec( int, double ){ return 0.0; }
-            double exec( double, double ){ return 0.0; }
+            Object* exec( int, int );
+            Object* exec( int, double ){ return NULL; }
+            Object* exec( double, double ){ return NULL; }
 };
 
 class SubtractionOperation: public BinaryOperation{
     public:
             SubtractionOperation(){                
             }
-            int exec( int, int );
-            double exec( int, double ){ return 0.0; }
-            double exec( double, double ){ return 0.0; }            
+            Object* exec( int, int );
+            Object* exec( int, double ){ return NULL; }
+            Object* exec( double, double ){ return NULL; }            
 };
 
 class MultiplicationOperation: public BinaryOperation{
     public:
             MultiplicationOperation(){
             }
-            int exec( int, int );
-            double exec( int, double ){ return 0.0; }
-            double exec( double, double ){ return 0.0; }            
+            Object* exec( int, int );
+            Object* exec( int, double ){ return NULL; }
+            Object* exec( double, double ){ return NULL; }
 };
 
 class DivOperation: public BinaryOperation{
     public:
             DivOperation(){
             }
-            int exec( int, int );
-            double exec( int, double ){ return 0.0; }
-            double exec( double, double ){ return 0.0; }            
+            Object* exec( int, int );
+            Object* exec( int, double ){ return NULL; }
+            Object* exec( double, double ){ return NULL; }
+};
+
+class OrOperation: public BinaryOperation{
+    public:
+            OrOperation(){
+            }
+            Object* exec( int, int );
+            Object* exec( int, double ){ return NULL; }
+            Object* exec( double, double ){ return NULL; }
+};
+
+class AndOperation: public BinaryOperation{
+    public:
+            AndOperation(){
+            }
+            Object* exec( int, int );
+            Object* exec( int, double ){ return NULL; }
+            Object* exec( double, double ){ return NULL; }
+};
+
+class LessThanOperator: public BinaryOperation{
+    public:
+            LessThanOperator(){
+            }
+            Object* exec( int, int );
+            Object* exec( int, double ){ return NULL; }
+            Object* exec( double, double ){ return NULL; }
+};
+
+class GreaterThanOperator: public BinaryOperation{
+    public:
+            GreaterThanOperator(){
+            }
+            Object* exec( int, int );
+            Object* exec( int, double ){ return NULL; }
+            Object* exec( double, double ){ return NULL; }
+};
+
+class LessThanOrEqualOperator: public BinaryOperation{
+    public:
+            LessThanOrEqualOperator(){
+            }
+            Object* exec( int, int );
+            Object* exec( int, double ){ return NULL; }
+            Object* exec( double, double ){ return NULL; }
+};
+
+class GreaterThanOrEqualOperator: public BinaryOperation{
+    public:
+            GreaterThanOrEqualOperator(){
+            }
+            Object* exec( int, int );
+            Object* exec( int, double ){ return NULL; }
+            Object* exec( double, double ){ return NULL; }
 };
 #endif

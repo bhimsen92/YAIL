@@ -1,6 +1,7 @@
 #include<iostream>
 #include<cstring>
 #include<list>
+#include "../headers/bnKapi.h"
 #include "../headers/node.h"
 using namespace std;
 namespace bnk_astNodes{
@@ -70,11 +71,11 @@ namespace bnk_astNodes{
         type = _type;
     }
 
-    int Type::getType(void){
+    int Type::getDataType(void){
         return type;
     }
 
-    void Type::setType(int _type){
+    void Type::setDataType(int _type){
         type = _type;
     }
 /*
@@ -160,10 +161,17 @@ class Expression: public Node{
     }
 
     FormalParameter::FormalParameter( Node* _type, Node* ident ): Node( __params ){
-        dataType = _type->getType();
-        Identifier *id = CAST_TO( Identifier, ident );
-        if( id != NULL ){
-            parameterName = id->getName();
+        Type *t = CAST_TO( Type, _type );
+        if( t != NULL ){
+            dataType = t->getDataType();
+            Identifier *id = CAST_TO( Identifier, ident );
+            if( id != NULL ){
+                parameterName = id->getName();
+            }
+        }
+        else{
+            cout<<"formal parameter error."<<endl;
+            exit(1);
         }
     }
 
