@@ -1,6 +1,7 @@
 #include<iostream>
 #include<cstring>
 #include<list>
+#include<vector>
 #include "tokens.h"
 #include "bnKapi.h"
 
@@ -8,7 +9,7 @@
 #define __NODE_TYPE
 using namespace std;
 namespace bnk_astNodes{
-
+    
 class Node{
     protected:
                int nodeType;
@@ -16,6 +17,30 @@ class Node{
             Node( int nType );
             int getType(void);
             virtual void dummy(void){}
+};
+
+class Operands{
+  protected:
+            vector<Node*> operands;
+  public:
+            void push_back( Node* node ){
+                operands.push_back( node );
+            }
+            
+            Node* get( int index ){
+                if( index < operands.size() ){
+                    return operands[ index ];
+                }
+                return NULL;
+            }
+            
+            void pop_front(void){
+                operands.erase( operands.begin() );
+            }
+            
+            int size(void){
+                return operands.size();
+            }
 };
 
 class Identifier: public Node{
@@ -78,11 +103,11 @@ class Expression: public Node{
 
 class Operator: public Node{
     protected:
-              list<Node*> *operands;
+              Operands *operands;
               int nops;
     public:
-            Operator( int nType, int nOps, list<Node*> *ops );
-            list<Node*>* getOperands(void);
+            Operator( int nType, int nOps, Operands *ops );
+            Operands* getOperands(void);
             int getOpsLength(void);
 };
 

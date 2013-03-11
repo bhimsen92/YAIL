@@ -10,207 +10,209 @@ Grammar
     4 statement: variableDefinition ';'
     5          | functionDefinition
     6          | IF '(' conditionalExpression ')' block elseBlock
-    7          | expression ';'
+    7          | RETURN expression ';'
+    8          | expression ';'
 
-    8 elseBlock: ELSE block
-    9          | ELIF '(' conditionalExpression ')' block elseBlock
+    9 elseBlock: ELSE block
+   10          | ELIF '(' conditionalExpression ')' block elseBlock
 
-   10 block: statement
-   11      | '{' statementList '}'
+   11 block: statement
+   12      | '{' statementList '}'
 
-   12 conditionalExpression: orExp
+   13 conditionalExpression: orExp
 
-   13 orExp: andExp
-   14      | orExp OR andExp
+   14 orExp: andExp
+   15      | orExp OR andExp
 
-   15 andExp: equality
-   16       | andExp AND equality
+   16 andExp: equality
+   17       | andExp AND equality
 
-   17 equality: relationalOp
-   18         | equality EQUAL relationalOp
+   18 equality: relationalOp
+   19         | equality EQUAL relationalOp
 
-   19 relationalOp: expression '<' expression
-   20             | expression LE expression
-   21             | expression '>' expression
-   22             | expression GE expression
-   23             | expression
+   20 relationalOp: expression '<' expression
+   21             | expression LE expression
+   22             | expression '>' expression
+   23             | expression GE expression
+   24             | expression
 
-   24 functionDefinition: FUNCTION IDENTIFIER '(' formalParameters ')' ':' returnType functionBody
+   25 functionDefinition: FUNCTION IDENTIFIER '(' formalParameters ')' ':' returnType functionBody
 
-   25 returnType: type
+   26 returnType: type
 
-   26 functionBody: '{' statementList '}'
+   27 functionBody: '{' statementList '}'
 
-   27 formalParameters: empty
-   28                 | formalParameterList
+   28 formalParameters: empty
+   29                 | formalParameterList
 
-   29 formalParameterList: formalParameterDef
-   30                    | formalParameterList ',' formalParameterDef
+   30 formalParameterList: formalParameterDef
+   31                    | formalParameterList ',' formalParameterDef
 
-   31 formalParameterDef: type IDENTIFIER
+   32 formalParameterDef: type IDENTIFIER
 
-   32 $@1: /* empty */
+   33 $@1: /* empty */
 
-   33 variableDefinition: type $@1 variableList
+   34 variableDefinition: type $@1 variableList
 
-   34 variableList: variableDeclarations
-   35             | variableList ',' variableDeclarations
+   35 variableList: variableDeclarations
+   36             | variableList ',' variableDeclarations
 
-   36 variableDeclarations: IDENTIFIER '=' expression
+   37 variableDeclarations: IDENTIFIER '=' expression
 
-   37 expression: expression '+' term
-   38           | expression '-' term
-   39           | term
+   38 expression: expression '+' term
+   39           | expression '-' term
+   40           | term
 
-   40 term: term '*' power
-   41     | term '/' power
-   42     | power
+   41 term: term '*' power
+   42     | term '/' power
+   43     | power
 
-   43 power: power '^' unary
-   44      | unary
+   44 power: power '^' unary
+   45      | unary
 
-   45 unary: NOT unary
-   46      | '-' unary
-   47      | atom
+   46 unary: NOT unary
+   47      | '-' unary
+   48      | atom
 
-   48 atom: IDENTIFIER
-   49     | INTEGER
-   50     | DOUBLE
-   51     | STRING
-   52     | NOTHING
-   53     | EMPTY
-   54     | functCall
-   55     | '(' conditionalExpression ')'
+   49 atom: IDENTIFIER
+   50     | INTEGER
+   51     | DOUBLE
+   52     | STRING
+   53     | NOTHING
+   54     | EMPTY
+   55     | functCall
+   56     | '(' conditionalExpression ')'
 
-   56 empty: /* empty */
+   57 empty: /* empty */
 
-   57 type: INTEGER_T
-   58     | DOUBLE_T
-   59     | STRING_T
-   60     | FUNCTION_T
-   61     | NOTHING
+   58 type: INTEGER_T
+   59     | DOUBLE_T
+   60     | STRING_T
+   61     | FUNCTION_T
+   62     | NOTHING
 
-   62 functCall: IDENTIFIER '(' arguments ')'
+   63 functCall: IDENTIFIER '(' arguments ')'
 
-   63 arguments: empty
-   64          | arglist
+   64 arguments: empty
+   65          | arglist
 
-   65 arglist: expression
-   66        | arglist ',' expression
+   66 arglist: expression
+   67        | arglist ',' expression
 
 
 Terminals, with rules where they appear
 
 $end (0) 0
-'(' (40) 6 9 24 55 62
-')' (41) 6 9 24 55 62
-'*' (42) 40
-'+' (43) 37
-',' (44) 30 35 66
-'-' (45) 38 46
-'/' (47) 41
-':' (58) 24
-';' (59) 4 7
-'<' (60) 19
-'=' (61) 36
-'>' (62) 21
-'^' (94) 43
-'{' (123) 11 26
-'}' (125) 11 26
+'(' (40) 6 10 25 56 63
+')' (41) 6 10 25 56 63
+'*' (42) 41
+'+' (43) 38
+',' (44) 31 36 67
+'-' (45) 39 47
+'/' (47) 42
+':' (58) 25
+';' (59) 4 7 8
+'<' (60) 20
+'=' (61) 37
+'>' (62) 22
+'^' (94) 44
+'{' (123) 12 27
+'}' (125) 12 27
 error (256)
-FUNCTION (258) 24
-INTEGER_T (259) 57
-DOUBLE_T (260) 58
-STRING_T (261) 59
-FUNCTION_T (262) 60
-OR (263) 14
-AND (264) 16
-EQUAL (265) 18
-LE (266) 20
-GE (267) 22
+FUNCTION (258) 25
+INTEGER_T (259) 58
+DOUBLE_T (260) 59
+STRING_T (261) 60
+FUNCTION_T (262) 61
+OR (263) 15
+AND (264) 17
+EQUAL (265) 19
+LE (266) 21
+GE (267) 23
 IF (268) 6
-ELSE (269) 8
-NOT (270) 45
-ELIF (271) 9
-IDENTIFIER (272) 24 31 36 48 62
-STRING (273) 51
-INTEGER (274) 49
-DOUBLE (275) 50
-NOTHING (276) 52 61
-EMPTY (277) 53
+ELSE (269) 9
+NOT (270) 46
+ELIF (271) 10
+RETURN (272) 7
+IDENTIFIER (273) 25 32 37 49 63
+STRING (274) 52
+INTEGER (275) 50
+DOUBLE (276) 51
+NOTHING (277) 53 62
+EMPTY (278) 54
 
 
 Nonterminals, with rules where they appear
 
-$accept (38)
+$accept (39)
     on left: 0
-program (39)
+program (40)
     on left: 1, on right: 0
-statementList (40)
-    on left: 2 3, on right: 1 3 11 26
-statement (41)
-    on left: 4 5 6 7, on right: 3 10
-elseBlock (42)
-    on left: 8 9, on right: 6 9
-block (43)
-    on left: 10 11, on right: 6 8 9
-conditionalExpression (44)
-    on left: 12, on right: 6 9 55
-orExp (45)
-    on left: 13 14, on right: 12 14
-andExp (46)
-    on left: 15 16, on right: 13 14 16
-equality (47)
-    on left: 17 18, on right: 15 16 18
-relationalOp (48)
-    on left: 19 20 21 22 23, on right: 17 18
-functionDefinition (49)
-    on left: 24, on right: 5
-returnType (50)
-    on left: 25, on right: 24
-functionBody (51)
-    on left: 26, on right: 24
-formalParameters (52)
-    on left: 27 28, on right: 24
-formalParameterList (53)
-    on left: 29 30, on right: 28 30
-formalParameterDef (54)
-    on left: 31, on right: 29 30
-variableDefinition (55)
-    on left: 33, on right: 4
-$@1 (56)
-    on left: 32, on right: 33
-variableList (57)
-    on left: 34 35, on right: 33 35
-variableDeclarations (58)
-    on left: 36, on right: 34 35
-expression (59)
-    on left: 37 38 39, on right: 7 19 20 21 22 23 36 37 38 65 66
-term (60)
-    on left: 40 41 42, on right: 37 38 39 40 41
-power (61)
-    on left: 43 44, on right: 40 41 42 43
-unary (62)
-    on left: 45 46 47, on right: 43 44 45 46
-atom (63)
-    on left: 48 49 50 51 52 53 54 55, on right: 47
-empty (64)
-    on left: 56, on right: 2 27 63
-type (65)
-    on left: 57 58 59 60 61, on right: 25 31 33
-functCall (66)
-    on left: 62, on right: 54
-arguments (67)
-    on left: 63 64, on right: 62
-arglist (68)
-    on left: 65 66, on right: 64 66
+statementList (41)
+    on left: 2 3, on right: 1 3 12 27
+statement (42)
+    on left: 4 5 6 7 8, on right: 3 11
+elseBlock (43)
+    on left: 9 10, on right: 6 10
+block (44)
+    on left: 11 12, on right: 6 9 10
+conditionalExpression (45)
+    on left: 13, on right: 6 10 56
+orExp (46)
+    on left: 14 15, on right: 13 15
+andExp (47)
+    on left: 16 17, on right: 14 15 17
+equality (48)
+    on left: 18 19, on right: 16 17 19
+relationalOp (49)
+    on left: 20 21 22 23 24, on right: 18 19
+functionDefinition (50)
+    on left: 25, on right: 5
+returnType (51)
+    on left: 26, on right: 25
+functionBody (52)
+    on left: 27, on right: 25
+formalParameters (53)
+    on left: 28 29, on right: 25
+formalParameterList (54)
+    on left: 30 31, on right: 29 31
+formalParameterDef (55)
+    on left: 32, on right: 30 31
+variableDefinition (56)
+    on left: 34, on right: 4
+$@1 (57)
+    on left: 33, on right: 34
+variableList (58)
+    on left: 35 36, on right: 34 36
+variableDeclarations (59)
+    on left: 37, on right: 35 36
+expression (60)
+    on left: 38 39 40, on right: 7 8 20 21 22 23 24 37 38 39 66 67
+term (61)
+    on left: 41 42 43, on right: 38 39 40 41 42
+power (62)
+    on left: 44 45, on right: 41 42 43 44
+unary (63)
+    on left: 46 47 48, on right: 44 45 46 47
+atom (64)
+    on left: 49 50 51 52 53 54 55 56, on right: 48
+empty (65)
+    on left: 57, on right: 2 28 64
+type (66)
+    on left: 58 59 60 61 62, on right: 26 32 34
+functCall (67)
+    on left: 63, on right: 55
+arguments (68)
+    on left: 64 65, on right: 63
+arglist (69)
+    on left: 66 67, on right: 65 67
 
 
 state 0
 
     0 $accept: . program $end
 
-    $default  reduce using rule 56 (empty)
+    $default  reduce using rule 57 (empty)
 
     program        go to state 1
     statementList  go to state 2
@@ -236,27 +238,28 @@ state 2
     FUNCTION_T  shift, and go to state 9
     IF          shift, and go to state 10
     NOT         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-    STRING      shift, and go to state 13
-    INTEGER     shift, and go to state 14
-    DOUBLE      shift, and go to state 15
-    NOTHING     shift, and go to state 16
-    EMPTY       shift, and go to state 17
-    '('         shift, and go to state 18
-    '-'         shift, and go to state 19
+    RETURN      shift, and go to state 12
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 17
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '-'         shift, and go to state 20
 
     $default  reduce using rule 1 (program)
 
-    statement           go to state 20
-    functionDefinition  go to state 21
-    variableDefinition  go to state 22
-    expression          go to state 23
-    term                go to state 24
-    power               go to state 25
-    unary               go to state 26
-    atom                go to state 27
-    type                go to state 28
-    functCall           go to state 29
+    statement           go to state 21
+    functionDefinition  go to state 22
+    variableDefinition  go to state 23
+    expression          go to state 24
+    term                go to state 25
+    power               go to state 26
+    unary               go to state 27
+    atom                go to state 28
+    type                go to state 29
+    functCall           go to state 30
 
 
 state 3
@@ -275,863 +278,903 @@ state 4
 
 state 5
 
-   24 functionDefinition: FUNCTION . IDENTIFIER '(' formalParameters ')' ':' returnType functionBody
+   25 functionDefinition: FUNCTION . IDENTIFIER '(' formalParameters ')' ':' returnType functionBody
 
-    IDENTIFIER  shift, and go to state 30
+    IDENTIFIER  shift, and go to state 31
 
 
 state 6
 
-   57 type: INTEGER_T .
-
-    $default  reduce using rule 57 (type)
-
-
-state 7
-
-   58 type: DOUBLE_T .
+   58 type: INTEGER_T .
 
     $default  reduce using rule 58 (type)
 
 
-state 8
+state 7
 
-   59 type: STRING_T .
+   59 type: DOUBLE_T .
 
     $default  reduce using rule 59 (type)
 
 
-state 9
+state 8
 
-   60 type: FUNCTION_T .
+   60 type: STRING_T .
 
     $default  reduce using rule 60 (type)
+
+
+state 9
+
+   61 type: FUNCTION_T .
+
+    $default  reduce using rule 61 (type)
 
 
 state 10
 
     6 statement: IF . '(' conditionalExpression ')' block elseBlock
 
-    '('  shift, and go to state 31
+    '('  shift, and go to state 32
 
 
 state 11
 
-   45 unary: NOT . unary
+   46 unary: NOT . unary
 
     NOT         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-    STRING      shift, and go to state 13
-    INTEGER     shift, and go to state 14
-    DOUBLE      shift, and go to state 15
-    NOTHING     shift, and go to state 32
-    EMPTY       shift, and go to state 17
-    '('         shift, and go to state 18
-    '-'         shift, and go to state 19
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 33
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '-'         shift, and go to state 20
 
-    unary      go to state 33
-    atom       go to state 27
-    functCall  go to state 29
+    unary      go to state 34
+    atom       go to state 28
+    functCall  go to state 30
 
 
 state 12
 
-   48 atom: IDENTIFIER .
-   62 functCall: IDENTIFIER . '(' arguments ')'
+    7 statement: RETURN . expression ';'
 
-    '('  shift, and go to state 34
+    NOT         shift, and go to state 11
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 33
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '-'         shift, and go to state 20
 
-    $default  reduce using rule 48 (atom)
+    expression  go to state 35
+    term        go to state 25
+    power       go to state 26
+    unary       go to state 27
+    atom        go to state 28
+    functCall   go to state 30
 
 
 state 13
 
-   51 atom: STRING .
+   49 atom: IDENTIFIER .
+   63 functCall: IDENTIFIER . '(' arguments ')'
 
-    $default  reduce using rule 51 (atom)
-
-
-state 14
-
-   49 atom: INTEGER .
+    '('  shift, and go to state 36
 
     $default  reduce using rule 49 (atom)
 
 
+state 14
+
+   52 atom: STRING .
+
+    $default  reduce using rule 52 (atom)
+
+
 state 15
 
-   50 atom: DOUBLE .
+   50 atom: INTEGER .
 
     $default  reduce using rule 50 (atom)
 
 
 state 16
 
-   52 atom: NOTHING .
-   61 type: NOTHING .
+   51 atom: DOUBLE .
 
-    IDENTIFIER  reduce using rule 61 (type)
-    $default    reduce using rule 52 (atom)
+    $default  reduce using rule 51 (atom)
 
 
 state 17
 
-   53 atom: EMPTY .
+   53 atom: NOTHING .
+   62 type: NOTHING .
 
-    $default  reduce using rule 53 (atom)
+    IDENTIFIER  reduce using rule 62 (type)
+    $default    reduce using rule 53 (atom)
 
 
 state 18
 
-   55 atom: '(' . conditionalExpression ')'
+   54 atom: EMPTY .
 
-    NOT         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-    STRING      shift, and go to state 13
-    INTEGER     shift, and go to state 14
-    DOUBLE      shift, and go to state 15
-    NOTHING     shift, and go to state 32
-    EMPTY       shift, and go to state 17
-    '('         shift, and go to state 18
-    '-'         shift, and go to state 19
-
-    conditionalExpression  go to state 35
-    orExp                  go to state 36
-    andExp                 go to state 37
-    equality               go to state 38
-    relationalOp           go to state 39
-    expression             go to state 40
-    term                   go to state 24
-    power                  go to state 25
-    unary                  go to state 26
-    atom                   go to state 27
-    functCall              go to state 29
+    $default  reduce using rule 54 (atom)
 
 
 state 19
 
-   46 unary: '-' . unary
+   56 atom: '(' . conditionalExpression ')'
 
     NOT         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-    STRING      shift, and go to state 13
-    INTEGER     shift, and go to state 14
-    DOUBLE      shift, and go to state 15
-    NOTHING     shift, and go to state 32
-    EMPTY       shift, and go to state 17
-    '('         shift, and go to state 18
-    '-'         shift, and go to state 19
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 33
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '-'         shift, and go to state 20
 
-    unary      go to state 41
-    atom       go to state 27
-    functCall  go to state 29
+    conditionalExpression  go to state 37
+    orExp                  go to state 38
+    andExp                 go to state 39
+    equality               go to state 40
+    relationalOp           go to state 41
+    expression             go to state 42
+    term                   go to state 25
+    power                  go to state 26
+    unary                  go to state 27
+    atom                   go to state 28
+    functCall              go to state 30
 
 
 state 20
+
+   47 unary: '-' . unary
+
+    NOT         shift, and go to state 11
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 33
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '-'         shift, and go to state 20
+
+    unary      go to state 43
+    atom       go to state 28
+    functCall  go to state 30
+
+
+state 21
 
     3 statementList: statementList statement .
 
     $default  reduce using rule 3 (statementList)
 
 
-state 21
+state 22
 
     5 statement: functionDefinition .
 
     $default  reduce using rule 5 (statement)
 
 
-state 22
+state 23
 
     4 statement: variableDefinition . ';'
 
-    ';'  shift, and go to state 42
-
-
-state 23
-
-    7 statement: expression . ';'
-   37 expression: expression . '+' term
-   38           | expression . '-' term
-
-    ';'  shift, and go to state 43
-    '+'  shift, and go to state 44
-    '-'  shift, and go to state 45
+    ';'  shift, and go to state 44
 
 
 state 24
 
-   39 expression: term .
-   40 term: term . '*' power
-   41     | term . '/' power
+    8 statement: expression . ';'
+   38 expression: expression . '+' term
+   39           | expression . '-' term
 
-    '*'  shift, and go to state 46
-    '/'  shift, and go to state 47
-
-    $default  reduce using rule 39 (expression)
+    ';'  shift, and go to state 45
+    '+'  shift, and go to state 46
+    '-'  shift, and go to state 47
 
 
 state 25
 
-   42 term: power .
-   43 power: power . '^' unary
+   40 expression: term .
+   41 term: term . '*' power
+   42     | term . '/' power
 
-    '^'  shift, and go to state 48
+    '*'  shift, and go to state 48
+    '/'  shift, and go to state 49
 
-    $default  reduce using rule 42 (term)
+    $default  reduce using rule 40 (expression)
 
 
 state 26
 
-   44 power: unary .
+   43 term: power .
+   44 power: power . '^' unary
 
-    $default  reduce using rule 44 (power)
+    '^'  shift, and go to state 50
+
+    $default  reduce using rule 43 (term)
 
 
 state 27
 
-   47 unary: atom .
+   45 power: unary .
 
-    $default  reduce using rule 47 (unary)
+    $default  reduce using rule 45 (power)
 
 
 state 28
 
-   33 variableDefinition: type . $@1 variableList
+   48 unary: atom .
 
-    $default  reduce using rule 32 ($@1)
-
-    $@1  go to state 49
+    $default  reduce using rule 48 (unary)
 
 
 state 29
 
-   54 atom: functCall .
+   34 variableDefinition: type . $@1 variableList
 
-    $default  reduce using rule 54 (atom)
+    $default  reduce using rule 33 ($@1)
+
+    $@1  go to state 51
 
 
 state 30
 
-   24 functionDefinition: FUNCTION IDENTIFIER . '(' formalParameters ')' ':' returnType functionBody
+   55 atom: functCall .
 
-    '('  shift, and go to state 50
+    $default  reduce using rule 55 (atom)
 
 
 state 31
 
-    6 statement: IF '(' . conditionalExpression ')' block elseBlock
+   25 functionDefinition: FUNCTION IDENTIFIER . '(' formalParameters ')' ':' returnType functionBody
 
-    NOT         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-    STRING      shift, and go to state 13
-    INTEGER     shift, and go to state 14
-    DOUBLE      shift, and go to state 15
-    NOTHING     shift, and go to state 32
-    EMPTY       shift, and go to state 17
-    '('         shift, and go to state 18
-    '-'         shift, and go to state 19
-
-    conditionalExpression  go to state 51
-    orExp                  go to state 36
-    andExp                 go to state 37
-    equality               go to state 38
-    relationalOp           go to state 39
-    expression             go to state 40
-    term                   go to state 24
-    power                  go to state 25
-    unary                  go to state 26
-    atom                   go to state 27
-    functCall              go to state 29
+    '('  shift, and go to state 52
 
 
 state 32
 
-   52 atom: NOTHING .
+    6 statement: IF '(' . conditionalExpression ')' block elseBlock
 
-    $default  reduce using rule 52 (atom)
+    NOT         shift, and go to state 11
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 33
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '-'         shift, and go to state 20
+
+    conditionalExpression  go to state 53
+    orExp                  go to state 38
+    andExp                 go to state 39
+    equality               go to state 40
+    relationalOp           go to state 41
+    expression             go to state 42
+    term                   go to state 25
+    power                  go to state 26
+    unary                  go to state 27
+    atom                   go to state 28
+    functCall              go to state 30
 
 
 state 33
 
-   45 unary: NOT unary .
+   53 atom: NOTHING .
 
-    $default  reduce using rule 45 (unary)
+    $default  reduce using rule 53 (atom)
 
 
 state 34
 
-   62 functCall: IDENTIFIER '(' . arguments ')'
-
-    NOT         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-    STRING      shift, and go to state 13
-    INTEGER     shift, and go to state 14
-    DOUBLE      shift, and go to state 15
-    NOTHING     shift, and go to state 32
-    EMPTY       shift, and go to state 17
-    '('         shift, and go to state 18
-    '-'         shift, and go to state 19
-
-    $default  reduce using rule 56 (empty)
-
-    expression  go to state 52
-    term        go to state 24
-    power       go to state 25
-    unary       go to state 26
-    atom        go to state 27
-    empty       go to state 53
-    functCall   go to state 29
-    arguments   go to state 54
-    arglist     go to state 55
-
-
-state 35
-
-   55 atom: '(' conditionalExpression . ')'
-
-    ')'  shift, and go to state 56
-
-
-state 36
-
-   12 conditionalExpression: orExp .
-   14 orExp: orExp . OR andExp
-
-    OR  shift, and go to state 57
-
-    $default  reduce using rule 12 (conditionalExpression)
-
-
-state 37
-
-   13 orExp: andExp .
-   16 andExp: andExp . AND equality
-
-    AND  shift, and go to state 58
-
-    $default  reduce using rule 13 (orExp)
-
-
-state 38
-
-   15 andExp: equality .
-   18 equality: equality . EQUAL relationalOp
-
-    EQUAL  shift, and go to state 59
-
-    $default  reduce using rule 15 (andExp)
-
-
-state 39
-
-   17 equality: relationalOp .
-
-    $default  reduce using rule 17 (equality)
-
-
-state 40
-
-   19 relationalOp: expression . '<' expression
-   20             | expression . LE expression
-   21             | expression . '>' expression
-   22             | expression . GE expression
-   23             | expression .
-   37 expression: expression . '+' term
-   38           | expression . '-' term
-
-    LE   shift, and go to state 60
-    GE   shift, and go to state 61
-    '<'  shift, and go to state 62
-    '>'  shift, and go to state 63
-    '+'  shift, and go to state 44
-    '-'  shift, and go to state 45
-
-    $default  reduce using rule 23 (relationalOp)
-
-
-state 41
-
-   46 unary: '-' unary .
+   46 unary: NOT unary .
 
     $default  reduce using rule 46 (unary)
 
 
+state 35
+
+    7 statement: RETURN expression . ';'
+   38 expression: expression . '+' term
+   39           | expression . '-' term
+
+    ';'  shift, and go to state 54
+    '+'  shift, and go to state 46
+    '-'  shift, and go to state 47
+
+
+state 36
+
+   63 functCall: IDENTIFIER '(' . arguments ')'
+
+    NOT         shift, and go to state 11
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 33
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '-'         shift, and go to state 20
+
+    $default  reduce using rule 57 (empty)
+
+    expression  go to state 55
+    term        go to state 25
+    power       go to state 26
+    unary       go to state 27
+    atom        go to state 28
+    empty       go to state 56
+    functCall   go to state 30
+    arguments   go to state 57
+    arglist     go to state 58
+
+
+state 37
+
+   56 atom: '(' conditionalExpression . ')'
+
+    ')'  shift, and go to state 59
+
+
+state 38
+
+   13 conditionalExpression: orExp .
+   15 orExp: orExp . OR andExp
+
+    OR  shift, and go to state 60
+
+    $default  reduce using rule 13 (conditionalExpression)
+
+
+state 39
+
+   14 orExp: andExp .
+   17 andExp: andExp . AND equality
+
+    AND  shift, and go to state 61
+
+    $default  reduce using rule 14 (orExp)
+
+
+state 40
+
+   16 andExp: equality .
+   19 equality: equality . EQUAL relationalOp
+
+    EQUAL  shift, and go to state 62
+
+    $default  reduce using rule 16 (andExp)
+
+
+state 41
+
+   18 equality: relationalOp .
+
+    $default  reduce using rule 18 (equality)
+
+
 state 42
+
+   20 relationalOp: expression . '<' expression
+   21             | expression . LE expression
+   22             | expression . '>' expression
+   23             | expression . GE expression
+   24             | expression .
+   38 expression: expression . '+' term
+   39           | expression . '-' term
+
+    LE   shift, and go to state 63
+    GE   shift, and go to state 64
+    '<'  shift, and go to state 65
+    '>'  shift, and go to state 66
+    '+'  shift, and go to state 46
+    '-'  shift, and go to state 47
+
+    $default  reduce using rule 24 (relationalOp)
+
+
+state 43
+
+   47 unary: '-' unary .
+
+    $default  reduce using rule 47 (unary)
+
+
+state 44
 
     4 statement: variableDefinition ';' .
 
     $default  reduce using rule 4 (statement)
 
 
-state 43
-
-    7 statement: expression ';' .
-
-    $default  reduce using rule 7 (statement)
-
-
-state 44
-
-   37 expression: expression '+' . term
-
-    NOT         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-    STRING      shift, and go to state 13
-    INTEGER     shift, and go to state 14
-    DOUBLE      shift, and go to state 15
-    NOTHING     shift, and go to state 32
-    EMPTY       shift, and go to state 17
-    '('         shift, and go to state 18
-    '-'         shift, and go to state 19
-
-    term       go to state 64
-    power      go to state 25
-    unary      go to state 26
-    atom       go to state 27
-    functCall  go to state 29
-
-
 state 45
 
-   38 expression: expression '-' . term
+    8 statement: expression ';' .
 
-    NOT         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-    STRING      shift, and go to state 13
-    INTEGER     shift, and go to state 14
-    DOUBLE      shift, and go to state 15
-    NOTHING     shift, and go to state 32
-    EMPTY       shift, and go to state 17
-    '('         shift, and go to state 18
-    '-'         shift, and go to state 19
-
-    term       go to state 65
-    power      go to state 25
-    unary      go to state 26
-    atom       go to state 27
-    functCall  go to state 29
+    $default  reduce using rule 8 (statement)
 
 
 state 46
 
-   40 term: term '*' . power
+   38 expression: expression '+' . term
 
     NOT         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-    STRING      shift, and go to state 13
-    INTEGER     shift, and go to state 14
-    DOUBLE      shift, and go to state 15
-    NOTHING     shift, and go to state 32
-    EMPTY       shift, and go to state 17
-    '('         shift, and go to state 18
-    '-'         shift, and go to state 19
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 33
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '-'         shift, and go to state 20
 
-    power      go to state 66
-    unary      go to state 26
-    atom       go to state 27
-    functCall  go to state 29
+    term       go to state 67
+    power      go to state 26
+    unary      go to state 27
+    atom       go to state 28
+    functCall  go to state 30
 
 
 state 47
 
-   41 term: term '/' . power
+   39 expression: expression '-' . term
 
     NOT         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-    STRING      shift, and go to state 13
-    INTEGER     shift, and go to state 14
-    DOUBLE      shift, and go to state 15
-    NOTHING     shift, and go to state 32
-    EMPTY       shift, and go to state 17
-    '('         shift, and go to state 18
-    '-'         shift, and go to state 19
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 33
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '-'         shift, and go to state 20
 
-    power      go to state 67
-    unary      go to state 26
-    atom       go to state 27
-    functCall  go to state 29
+    term       go to state 68
+    power      go to state 26
+    unary      go to state 27
+    atom       go to state 28
+    functCall  go to state 30
 
 
 state 48
 
-   43 power: power '^' . unary
+   41 term: term '*' . power
 
     NOT         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-    STRING      shift, and go to state 13
-    INTEGER     shift, and go to state 14
-    DOUBLE      shift, and go to state 15
-    NOTHING     shift, and go to state 32
-    EMPTY       shift, and go to state 17
-    '('         shift, and go to state 18
-    '-'         shift, and go to state 19
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 33
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '-'         shift, and go to state 20
 
-    unary      go to state 68
-    atom       go to state 27
-    functCall  go to state 29
+    power      go to state 69
+    unary      go to state 27
+    atom       go to state 28
+    functCall  go to state 30
 
 
 state 49
 
-   33 variableDefinition: type $@1 . variableList
+   42 term: term '/' . power
 
-    IDENTIFIER  shift, and go to state 69
+    NOT         shift, and go to state 11
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 33
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '-'         shift, and go to state 20
 
-    variableList          go to state 70
-    variableDeclarations  go to state 71
+    power      go to state 70
+    unary      go to state 27
+    atom       go to state 28
+    functCall  go to state 30
 
 
 state 50
 
-   24 functionDefinition: FUNCTION IDENTIFIER '(' . formalParameters ')' ':' returnType functionBody
+   44 power: power '^' . unary
+
+    NOT         shift, and go to state 11
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 33
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '-'         shift, and go to state 20
+
+    unary      go to state 71
+    atom       go to state 28
+    functCall  go to state 30
+
+
+state 51
+
+   34 variableDefinition: type $@1 . variableList
+
+    IDENTIFIER  shift, and go to state 72
+
+    variableList          go to state 73
+    variableDeclarations  go to state 74
+
+
+state 52
+
+   25 functionDefinition: FUNCTION IDENTIFIER '(' . formalParameters ')' ':' returnType functionBody
 
     INTEGER_T   shift, and go to state 6
     DOUBLE_T    shift, and go to state 7
     STRING_T    shift, and go to state 8
     FUNCTION_T  shift, and go to state 9
-    NOTHING     shift, and go to state 72
+    NOTHING     shift, and go to state 75
 
-    $default  reduce using rule 56 (empty)
+    $default  reduce using rule 57 (empty)
 
-    formalParameters     go to state 73
-    formalParameterList  go to state 74
-    formalParameterDef   go to state 75
-    empty                go to state 76
-    type                 go to state 77
-
-
-state 51
-
-    6 statement: IF '(' conditionalExpression . ')' block elseBlock
-
-    ')'  shift, and go to state 78
-
-
-state 52
-
-   37 expression: expression . '+' term
-   38           | expression . '-' term
-   65 arglist: expression .
-
-    '+'  shift, and go to state 44
-    '-'  shift, and go to state 45
-
-    $default  reduce using rule 65 (arglist)
+    formalParameters     go to state 76
+    formalParameterList  go to state 77
+    formalParameterDef   go to state 78
+    empty                go to state 79
+    type                 go to state 80
 
 
 state 53
 
-   63 arguments: empty .
+    6 statement: IF '(' conditionalExpression . ')' block elseBlock
 
-    $default  reduce using rule 63 (arguments)
+    ')'  shift, and go to state 81
 
 
 state 54
 
-   62 functCall: IDENTIFIER '(' arguments . ')'
+    7 statement: RETURN expression ';' .
 
-    ')'  shift, and go to state 79
+    $default  reduce using rule 7 (statement)
 
 
 state 55
 
-   64 arguments: arglist .
-   66 arglist: arglist . ',' expression
+   38 expression: expression . '+' term
+   39           | expression . '-' term
+   66 arglist: expression .
 
-    ','  shift, and go to state 80
+    '+'  shift, and go to state 46
+    '-'  shift, and go to state 47
 
-    $default  reduce using rule 64 (arguments)
+    $default  reduce using rule 66 (arglist)
 
 
 state 56
 
-   55 atom: '(' conditionalExpression ')' .
+   64 arguments: empty .
 
-    $default  reduce using rule 55 (atom)
+    $default  reduce using rule 64 (arguments)
 
 
 state 57
 
-   14 orExp: orExp OR . andExp
+   63 functCall: IDENTIFIER '(' arguments . ')'
 
-    NOT         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-    STRING      shift, and go to state 13
-    INTEGER     shift, and go to state 14
-    DOUBLE      shift, and go to state 15
-    NOTHING     shift, and go to state 32
-    EMPTY       shift, and go to state 17
-    '('         shift, and go to state 18
-    '-'         shift, and go to state 19
-
-    andExp        go to state 81
-    equality      go to state 38
-    relationalOp  go to state 39
-    expression    go to state 40
-    term          go to state 24
-    power         go to state 25
-    unary         go to state 26
-    atom          go to state 27
-    functCall     go to state 29
+    ')'  shift, and go to state 82
 
 
 state 58
 
-   16 andExp: andExp AND . equality
+   65 arguments: arglist .
+   67 arglist: arglist . ',' expression
 
-    NOT         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-    STRING      shift, and go to state 13
-    INTEGER     shift, and go to state 14
-    DOUBLE      shift, and go to state 15
-    NOTHING     shift, and go to state 32
-    EMPTY       shift, and go to state 17
-    '('         shift, and go to state 18
-    '-'         shift, and go to state 19
+    ','  shift, and go to state 83
 
-    equality      go to state 82
-    relationalOp  go to state 39
-    expression    go to state 40
-    term          go to state 24
-    power         go to state 25
-    unary         go to state 26
-    atom          go to state 27
-    functCall     go to state 29
+    $default  reduce using rule 65 (arguments)
 
 
 state 59
 
-   18 equality: equality EQUAL . relationalOp
+   56 atom: '(' conditionalExpression ')' .
 
-    NOT         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-    STRING      shift, and go to state 13
-    INTEGER     shift, and go to state 14
-    DOUBLE      shift, and go to state 15
-    NOTHING     shift, and go to state 32
-    EMPTY       shift, and go to state 17
-    '('         shift, and go to state 18
-    '-'         shift, and go to state 19
-
-    relationalOp  go to state 83
-    expression    go to state 40
-    term          go to state 24
-    power         go to state 25
-    unary         go to state 26
-    atom          go to state 27
-    functCall     go to state 29
+    $default  reduce using rule 56 (atom)
 
 
 state 60
 
-   20 relationalOp: expression LE . expression
+   15 orExp: orExp OR . andExp
 
     NOT         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-    STRING      shift, and go to state 13
-    INTEGER     shift, and go to state 14
-    DOUBLE      shift, and go to state 15
-    NOTHING     shift, and go to state 32
-    EMPTY       shift, and go to state 17
-    '('         shift, and go to state 18
-    '-'         shift, and go to state 19
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 33
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '-'         shift, and go to state 20
 
-    expression  go to state 84
-    term        go to state 24
-    power       go to state 25
-    unary       go to state 26
-    atom        go to state 27
-    functCall   go to state 29
+    andExp        go to state 84
+    equality      go to state 40
+    relationalOp  go to state 41
+    expression    go to state 42
+    term          go to state 25
+    power         go to state 26
+    unary         go to state 27
+    atom          go to state 28
+    functCall     go to state 30
 
 
 state 61
 
-   22 relationalOp: expression GE . expression
+   17 andExp: andExp AND . equality
 
     NOT         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-    STRING      shift, and go to state 13
-    INTEGER     shift, and go to state 14
-    DOUBLE      shift, and go to state 15
-    NOTHING     shift, and go to state 32
-    EMPTY       shift, and go to state 17
-    '('         shift, and go to state 18
-    '-'         shift, and go to state 19
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 33
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '-'         shift, and go to state 20
 
-    expression  go to state 85
-    term        go to state 24
-    power       go to state 25
-    unary       go to state 26
-    atom        go to state 27
-    functCall   go to state 29
+    equality      go to state 85
+    relationalOp  go to state 41
+    expression    go to state 42
+    term          go to state 25
+    power         go to state 26
+    unary         go to state 27
+    atom          go to state 28
+    functCall     go to state 30
 
 
 state 62
 
-   19 relationalOp: expression '<' . expression
+   19 equality: equality EQUAL . relationalOp
 
     NOT         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-    STRING      shift, and go to state 13
-    INTEGER     shift, and go to state 14
-    DOUBLE      shift, and go to state 15
-    NOTHING     shift, and go to state 32
-    EMPTY       shift, and go to state 17
-    '('         shift, and go to state 18
-    '-'         shift, and go to state 19
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 33
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '-'         shift, and go to state 20
 
-    expression  go to state 86
-    term        go to state 24
-    power       go to state 25
-    unary       go to state 26
-    atom        go to state 27
-    functCall   go to state 29
+    relationalOp  go to state 86
+    expression    go to state 42
+    term          go to state 25
+    power         go to state 26
+    unary         go to state 27
+    atom          go to state 28
+    functCall     go to state 30
 
 
 state 63
 
-   21 relationalOp: expression '>' . expression
+   21 relationalOp: expression LE . expression
 
     NOT         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-    STRING      shift, and go to state 13
-    INTEGER     shift, and go to state 14
-    DOUBLE      shift, and go to state 15
-    NOTHING     shift, and go to state 32
-    EMPTY       shift, and go to state 17
-    '('         shift, and go to state 18
-    '-'         shift, and go to state 19
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 33
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '-'         shift, and go to state 20
 
     expression  go to state 87
-    term        go to state 24
-    power       go to state 25
-    unary       go to state 26
-    atom        go to state 27
-    functCall   go to state 29
+    term        go to state 25
+    power       go to state 26
+    unary       go to state 27
+    atom        go to state 28
+    functCall   go to state 30
 
 
 state 64
 
-   37 expression: expression '+' term .
-   40 term: term . '*' power
-   41     | term . '/' power
+   23 relationalOp: expression GE . expression
 
-    '*'  shift, and go to state 46
-    '/'  shift, and go to state 47
+    NOT         shift, and go to state 11
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 33
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '-'         shift, and go to state 20
 
-    $default  reduce using rule 37 (expression)
+    expression  go to state 88
+    term        go to state 25
+    power       go to state 26
+    unary       go to state 27
+    atom        go to state 28
+    functCall   go to state 30
 
 
 state 65
 
-   38 expression: expression '-' term .
-   40 term: term . '*' power
-   41     | term . '/' power
+   20 relationalOp: expression '<' . expression
 
-    '*'  shift, and go to state 46
-    '/'  shift, and go to state 47
+    NOT         shift, and go to state 11
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 33
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '-'         shift, and go to state 20
 
-    $default  reduce using rule 38 (expression)
+    expression  go to state 89
+    term        go to state 25
+    power       go to state 26
+    unary       go to state 27
+    atom        go to state 28
+    functCall   go to state 30
 
 
 state 66
 
-   40 term: term '*' power .
-   43 power: power . '^' unary
+   22 relationalOp: expression '>' . expression
 
-    '^'  shift, and go to state 48
+    NOT         shift, and go to state 11
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 33
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '-'         shift, and go to state 20
 
-    $default  reduce using rule 40 (term)
+    expression  go to state 90
+    term        go to state 25
+    power       go to state 26
+    unary       go to state 27
+    atom        go to state 28
+    functCall   go to state 30
 
 
 state 67
 
-   41 term: term '/' power .
-   43 power: power . '^' unary
+   38 expression: expression '+' term .
+   41 term: term . '*' power
+   42     | term . '/' power
 
-    '^'  shift, and go to state 48
+    '*'  shift, and go to state 48
+    '/'  shift, and go to state 49
 
-    $default  reduce using rule 41 (term)
+    $default  reduce using rule 38 (expression)
 
 
 state 68
 
-   43 power: power '^' unary .
+   39 expression: expression '-' term .
+   41 term: term . '*' power
+   42     | term . '/' power
 
-    $default  reduce using rule 43 (power)
+    '*'  shift, and go to state 48
+    '/'  shift, and go to state 49
+
+    $default  reduce using rule 39 (expression)
 
 
 state 69
 
-   36 variableDeclarations: IDENTIFIER . '=' expression
+   41 term: term '*' power .
+   44 power: power . '^' unary
 
-    '='  shift, and go to state 88
+    '^'  shift, and go to state 50
+
+    $default  reduce using rule 41 (term)
 
 
 state 70
 
-   33 variableDefinition: type $@1 variableList .
-   35 variableList: variableList . ',' variableDeclarations
+   42 term: term '/' power .
+   44 power: power . '^' unary
 
-    ','  shift, and go to state 89
+    '^'  shift, and go to state 50
 
-    $default  reduce using rule 33 (variableDefinition)
+    $default  reduce using rule 42 (term)
 
 
 state 71
 
-   34 variableList: variableDeclarations .
+   44 power: power '^' unary .
 
-    $default  reduce using rule 34 (variableList)
+    $default  reduce using rule 44 (power)
 
 
 state 72
 
-   61 type: NOTHING .
+   37 variableDeclarations: IDENTIFIER . '=' expression
 
-    $default  reduce using rule 61 (type)
+    '='  shift, and go to state 91
 
 
 state 73
 
-   24 functionDefinition: FUNCTION IDENTIFIER '(' formalParameters . ')' ':' returnType functionBody
+   34 variableDefinition: type $@1 variableList .
+   36 variableList: variableList . ',' variableDeclarations
 
-    ')'  shift, and go to state 90
+    ','  shift, and go to state 92
+
+    $default  reduce using rule 34 (variableDefinition)
 
 
 state 74
 
-   28 formalParameters: formalParameterList .
-   30 formalParameterList: formalParameterList . ',' formalParameterDef
+   35 variableList: variableDeclarations .
 
-    ','  shift, and go to state 91
-
-    $default  reduce using rule 28 (formalParameters)
+    $default  reduce using rule 35 (variableList)
 
 
 state 75
 
-   29 formalParameterList: formalParameterDef .
+   62 type: NOTHING .
 
-    $default  reduce using rule 29 (formalParameterList)
+    $default  reduce using rule 62 (type)
 
 
 state 76
 
-   27 formalParameters: empty .
+   25 functionDefinition: FUNCTION IDENTIFIER '(' formalParameters . ')' ':' returnType functionBody
 
-    $default  reduce using rule 27 (formalParameters)
+    ')'  shift, and go to state 93
 
 
 state 77
 
-   31 formalParameterDef: type . IDENTIFIER
+   29 formalParameters: formalParameterList .
+   31 formalParameterList: formalParameterList . ',' formalParameterDef
 
-    IDENTIFIER  shift, and go to state 92
+    ','  shift, and go to state 94
+
+    $default  reduce using rule 29 (formalParameters)
 
 
 state 78
+
+   30 formalParameterList: formalParameterDef .
+
+    $default  reduce using rule 30 (formalParameterList)
+
+
+state 79
+
+   28 formalParameters: empty .
+
+    $default  reduce using rule 28 (formalParameters)
+
+
+state 80
+
+   32 formalParameterDef: type . IDENTIFIER
+
+    IDENTIFIER  shift, and go to state 95
+
+
+state 81
 
     6 statement: IF '(' conditionalExpression ')' . block elseBlock
 
@@ -1142,308 +1185,276 @@ state 78
     FUNCTION_T  shift, and go to state 9
     IF          shift, and go to state 10
     NOT         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-    STRING      shift, and go to state 13
-    INTEGER     shift, and go to state 14
-    DOUBLE      shift, and go to state 15
-    NOTHING     shift, and go to state 16
-    EMPTY       shift, and go to state 17
-    '('         shift, and go to state 18
-    '{'         shift, and go to state 93
-    '-'         shift, and go to state 19
+    RETURN      shift, and go to state 12
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 17
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '{'         shift, and go to state 96
+    '-'         shift, and go to state 20
 
-    statement           go to state 94
-    block               go to state 95
-    functionDefinition  go to state 21
-    variableDefinition  go to state 22
-    expression          go to state 23
-    term                go to state 24
-    power               go to state 25
-    unary               go to state 26
-    atom                go to state 27
-    type                go to state 28
-    functCall           go to state 29
-
-
-state 79
-
-   62 functCall: IDENTIFIER '(' arguments ')' .
-
-    $default  reduce using rule 62 (functCall)
-
-
-state 80
-
-   66 arglist: arglist ',' . expression
-
-    NOT         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-    STRING      shift, and go to state 13
-    INTEGER     shift, and go to state 14
-    DOUBLE      shift, and go to state 15
-    NOTHING     shift, and go to state 32
-    EMPTY       shift, and go to state 17
-    '('         shift, and go to state 18
-    '-'         shift, and go to state 19
-
-    expression  go to state 96
-    term        go to state 24
-    power       go to state 25
-    unary       go to state 26
-    atom        go to state 27
-    functCall   go to state 29
-
-
-state 81
-
-   14 orExp: orExp OR andExp .
-   16 andExp: andExp . AND equality
-
-    AND  shift, and go to state 58
-
-    $default  reduce using rule 14 (orExp)
+    statement           go to state 97
+    block               go to state 98
+    functionDefinition  go to state 22
+    variableDefinition  go to state 23
+    expression          go to state 24
+    term                go to state 25
+    power               go to state 26
+    unary               go to state 27
+    atom                go to state 28
+    type                go to state 29
+    functCall           go to state 30
 
 
 state 82
 
-   16 andExp: andExp AND equality .
-   18 equality: equality . EQUAL relationalOp
+   63 functCall: IDENTIFIER '(' arguments ')' .
 
-    EQUAL  shift, and go to state 59
-
-    $default  reduce using rule 16 (andExp)
+    $default  reduce using rule 63 (functCall)
 
 
 state 83
 
-   18 equality: equality EQUAL relationalOp .
+   67 arglist: arglist ',' . expression
 
-    $default  reduce using rule 18 (equality)
+    NOT         shift, and go to state 11
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 33
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '-'         shift, and go to state 20
+
+    expression  go to state 99
+    term        go to state 25
+    power       go to state 26
+    unary       go to state 27
+    atom        go to state 28
+    functCall   go to state 30
 
 
 state 84
 
-   20 relationalOp: expression LE expression .
-   37 expression: expression . '+' term
-   38           | expression . '-' term
+   15 orExp: orExp OR andExp .
+   17 andExp: andExp . AND equality
 
-    '+'  shift, and go to state 44
-    '-'  shift, and go to state 45
+    AND  shift, and go to state 61
 
-    $default  reduce using rule 20 (relationalOp)
+    $default  reduce using rule 15 (orExp)
 
 
 state 85
 
-   22 relationalOp: expression GE expression .
-   37 expression: expression . '+' term
-   38           | expression . '-' term
+   17 andExp: andExp AND equality .
+   19 equality: equality . EQUAL relationalOp
 
-    '+'  shift, and go to state 44
-    '-'  shift, and go to state 45
+    EQUAL  shift, and go to state 62
 
-    $default  reduce using rule 22 (relationalOp)
+    $default  reduce using rule 17 (andExp)
 
 
 state 86
 
-   19 relationalOp: expression '<' expression .
-   37 expression: expression . '+' term
-   38           | expression . '-' term
+   19 equality: equality EQUAL relationalOp .
 
-    '+'  shift, and go to state 44
-    '-'  shift, and go to state 45
-
-    $default  reduce using rule 19 (relationalOp)
+    $default  reduce using rule 19 (equality)
 
 
 state 87
 
-   21 relationalOp: expression '>' expression .
-   37 expression: expression . '+' term
-   38           | expression . '-' term
+   21 relationalOp: expression LE expression .
+   38 expression: expression . '+' term
+   39           | expression . '-' term
 
-    '+'  shift, and go to state 44
-    '-'  shift, and go to state 45
+    '+'  shift, and go to state 46
+    '-'  shift, and go to state 47
 
     $default  reduce using rule 21 (relationalOp)
 
 
 state 88
 
-   36 variableDeclarations: IDENTIFIER '=' . expression
+   23 relationalOp: expression GE expression .
+   38 expression: expression . '+' term
+   39           | expression . '-' term
 
-    NOT         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-    STRING      shift, and go to state 13
-    INTEGER     shift, and go to state 14
-    DOUBLE      shift, and go to state 15
-    NOTHING     shift, and go to state 32
-    EMPTY       shift, and go to state 17
-    '('         shift, and go to state 18
-    '-'         shift, and go to state 19
+    '+'  shift, and go to state 46
+    '-'  shift, and go to state 47
 
-    expression  go to state 97
-    term        go to state 24
-    power       go to state 25
-    unary       go to state 26
-    atom        go to state 27
-    functCall   go to state 29
+    $default  reduce using rule 23 (relationalOp)
 
 
 state 89
 
-   35 variableList: variableList ',' . variableDeclarations
+   20 relationalOp: expression '<' expression .
+   38 expression: expression . '+' term
+   39           | expression . '-' term
 
-    IDENTIFIER  shift, and go to state 69
+    '+'  shift, and go to state 46
+    '-'  shift, and go to state 47
 
-    variableDeclarations  go to state 98
+    $default  reduce using rule 20 (relationalOp)
 
 
 state 90
 
-   24 functionDefinition: FUNCTION IDENTIFIER '(' formalParameters ')' . ':' returnType functionBody
+   22 relationalOp: expression '>' expression .
+   38 expression: expression . '+' term
+   39           | expression . '-' term
 
-    ':'  shift, and go to state 99
+    '+'  shift, and go to state 46
+    '-'  shift, and go to state 47
+
+    $default  reduce using rule 22 (relationalOp)
 
 
 state 91
 
-   30 formalParameterList: formalParameterList ',' . formalParameterDef
+   37 variableDeclarations: IDENTIFIER '=' . expression
 
-    INTEGER_T   shift, and go to state 6
-    DOUBLE_T    shift, and go to state 7
-    STRING_T    shift, and go to state 8
-    FUNCTION_T  shift, and go to state 9
-    NOTHING     shift, and go to state 72
+    NOT         shift, and go to state 11
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 33
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '-'         shift, and go to state 20
 
-    formalParameterDef  go to state 100
-    type                go to state 77
+    expression  go to state 100
+    term        go to state 25
+    power       go to state 26
+    unary       go to state 27
+    atom        go to state 28
+    functCall   go to state 30
 
 
 state 92
 
-   31 formalParameterDef: type IDENTIFIER .
+   36 variableList: variableList ',' . variableDeclarations
 
-    $default  reduce using rule 31 (formalParameterDef)
+    IDENTIFIER  shift, and go to state 72
+
+    variableDeclarations  go to state 101
 
 
 state 93
 
-   11 block: '{' . statementList '}'
+   25 functionDefinition: FUNCTION IDENTIFIER '(' formalParameters ')' . ':' returnType functionBody
 
-    $default  reduce using rule 56 (empty)
-
-    statementList  go to state 101
-    empty          go to state 3
+    ':'  shift, and go to state 102
 
 
 state 94
 
-   10 block: statement .
+   31 formalParameterList: formalParameterList ',' . formalParameterDef
 
-    $default  reduce using rule 10 (block)
+    INTEGER_T   shift, and go to state 6
+    DOUBLE_T    shift, and go to state 7
+    STRING_T    shift, and go to state 8
+    FUNCTION_T  shift, and go to state 9
+    NOTHING     shift, and go to state 75
+
+    formalParameterDef  go to state 103
+    type                go to state 80
 
 
 state 95
 
-    6 statement: IF '(' conditionalExpression ')' block . elseBlock
+   32 formalParameterDef: type IDENTIFIER .
 
-    ELSE  shift, and go to state 102
-    ELIF  shift, and go to state 103
-
-    elseBlock  go to state 104
+    $default  reduce using rule 32 (formalParameterDef)
 
 
 state 96
 
-   37 expression: expression . '+' term
-   38           | expression . '-' term
-   66 arglist: arglist ',' expression .
+   12 block: '{' . statementList '}'
 
-    '+'  shift, and go to state 44
-    '-'  shift, and go to state 45
+    $default  reduce using rule 57 (empty)
 
-    $default  reduce using rule 66 (arglist)
+    statementList  go to state 104
+    empty          go to state 3
 
 
 state 97
 
-   36 variableDeclarations: IDENTIFIER '=' expression .
-   37 expression: expression . '+' term
-   38           | expression . '-' term
+   11 block: statement .
 
-    '+'  shift, and go to state 44
-    '-'  shift, and go to state 45
-
-    $default  reduce using rule 36 (variableDeclarations)
+    $default  reduce using rule 11 (block)
 
 
 state 98
 
-   35 variableList: variableList ',' variableDeclarations .
+    6 statement: IF '(' conditionalExpression ')' block . elseBlock
 
-    $default  reduce using rule 35 (variableList)
+    ELSE  shift, and go to state 105
+    ELIF  shift, and go to state 106
+
+    elseBlock  go to state 107
 
 
 state 99
 
-   24 functionDefinition: FUNCTION IDENTIFIER '(' formalParameters ')' ':' . returnType functionBody
+   38 expression: expression . '+' term
+   39           | expression . '-' term
+   67 arglist: arglist ',' expression .
 
-    INTEGER_T   shift, and go to state 6
-    DOUBLE_T    shift, and go to state 7
-    STRING_T    shift, and go to state 8
-    FUNCTION_T  shift, and go to state 9
-    NOTHING     shift, and go to state 72
+    '+'  shift, and go to state 46
+    '-'  shift, and go to state 47
 
-    returnType  go to state 105
-    type        go to state 106
+    $default  reduce using rule 67 (arglist)
 
 
 state 100
 
-   30 formalParameterList: formalParameterList ',' formalParameterDef .
+   37 variableDeclarations: IDENTIFIER '=' expression .
+   38 expression: expression . '+' term
+   39           | expression . '-' term
 
-    $default  reduce using rule 30 (formalParameterList)
+    '+'  shift, and go to state 46
+    '-'  shift, and go to state 47
+
+    $default  reduce using rule 37 (variableDeclarations)
 
 
 state 101
 
-    3 statementList: statementList . statement
-   11 block: '{' statementList . '}'
+   36 variableList: variableList ',' variableDeclarations .
 
-    FUNCTION    shift, and go to state 5
-    INTEGER_T   shift, and go to state 6
-    DOUBLE_T    shift, and go to state 7
-    STRING_T    shift, and go to state 8
-    FUNCTION_T  shift, and go to state 9
-    IF          shift, and go to state 10
-    NOT         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-    STRING      shift, and go to state 13
-    INTEGER     shift, and go to state 14
-    DOUBLE      shift, and go to state 15
-    NOTHING     shift, and go to state 16
-    EMPTY       shift, and go to state 17
-    '('         shift, and go to state 18
-    '}'         shift, and go to state 107
-    '-'         shift, and go to state 19
-
-    statement           go to state 20
-    functionDefinition  go to state 21
-    variableDefinition  go to state 22
-    expression          go to state 23
-    term                go to state 24
-    power               go to state 25
-    unary               go to state 26
-    atom                go to state 27
-    type                go to state 28
-    functCall           go to state 29
+    $default  reduce using rule 36 (variableList)
 
 
 state 102
 
-    8 elseBlock: ELSE . block
+   25 functionDefinition: FUNCTION IDENTIFIER '(' formalParameters ')' ':' . returnType functionBody
+
+    INTEGER_T   shift, and go to state 6
+    DOUBLE_T    shift, and go to state 7
+    STRING_T    shift, and go to state 8
+    FUNCTION_T  shift, and go to state 9
+    NOTHING     shift, and go to state 75
+
+    returnType  go to state 108
+    type        go to state 109
+
+
+state 103
+
+   31 formalParameterList: formalParameterList ',' formalParameterDef .
+
+    $default  reduce using rule 31 (formalParameterList)
+
+
+state 104
+
+    3 statementList: statementList . statement
+   12 block: '{' statementList . '}'
 
     FUNCTION    shift, and go to state 5
     INTEGER_T   shift, and go to state 6
@@ -1452,161 +1463,163 @@ state 102
     FUNCTION_T  shift, and go to state 9
     IF          shift, and go to state 10
     NOT         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-    STRING      shift, and go to state 13
-    INTEGER     shift, and go to state 14
-    DOUBLE      shift, and go to state 15
-    NOTHING     shift, and go to state 16
-    EMPTY       shift, and go to state 17
-    '('         shift, and go to state 18
-    '{'         shift, and go to state 93
-    '-'         shift, and go to state 19
+    RETURN      shift, and go to state 12
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 17
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '}'         shift, and go to state 110
+    '-'         shift, and go to state 20
 
-    statement           go to state 94
-    block               go to state 108
-    functionDefinition  go to state 21
-    variableDefinition  go to state 22
-    expression          go to state 23
-    term                go to state 24
-    power               go to state 25
-    unary               go to state 26
-    atom                go to state 27
-    type                go to state 28
-    functCall           go to state 29
-
-
-state 103
-
-    9 elseBlock: ELIF . '(' conditionalExpression ')' block elseBlock
-
-    '('  shift, and go to state 109
+    statement           go to state 21
+    functionDefinition  go to state 22
+    variableDefinition  go to state 23
+    expression          go to state 24
+    term                go to state 25
+    power               go to state 26
+    unary               go to state 27
+    atom                go to state 28
+    type                go to state 29
+    functCall           go to state 30
 
 
-state 104
+state 105
+
+    9 elseBlock: ELSE . block
+
+    FUNCTION    shift, and go to state 5
+    INTEGER_T   shift, and go to state 6
+    DOUBLE_T    shift, and go to state 7
+    STRING_T    shift, and go to state 8
+    FUNCTION_T  shift, and go to state 9
+    IF          shift, and go to state 10
+    NOT         shift, and go to state 11
+    RETURN      shift, and go to state 12
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 17
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '{'         shift, and go to state 96
+    '-'         shift, and go to state 20
+
+    statement           go to state 97
+    block               go to state 111
+    functionDefinition  go to state 22
+    variableDefinition  go to state 23
+    expression          go to state 24
+    term                go to state 25
+    power               go to state 26
+    unary               go to state 27
+    atom                go to state 28
+    type                go to state 29
+    functCall           go to state 30
+
+
+state 106
+
+   10 elseBlock: ELIF . '(' conditionalExpression ')' block elseBlock
+
+    '('  shift, and go to state 112
+
+
+state 107
 
     6 statement: IF '(' conditionalExpression ')' block elseBlock .
 
     $default  reduce using rule 6 (statement)
 
 
-state 105
-
-   24 functionDefinition: FUNCTION IDENTIFIER '(' formalParameters ')' ':' returnType . functionBody
-
-    '{'  shift, and go to state 110
-
-    functionBody  go to state 111
-
-
-state 106
-
-   25 returnType: type .
-
-    $default  reduce using rule 25 (returnType)
-
-
-state 107
-
-   11 block: '{' statementList '}' .
-
-    $default  reduce using rule 11 (block)
-
-
 state 108
 
-    8 elseBlock: ELSE block .
+   25 functionDefinition: FUNCTION IDENTIFIER '(' formalParameters ')' ':' returnType . functionBody
 
-    $default  reduce using rule 8 (elseBlock)
+    '{'  shift, and go to state 113
+
+    functionBody  go to state 114
 
 
 state 109
 
-    9 elseBlock: ELIF '(' . conditionalExpression ')' block elseBlock
+   26 returnType: type .
 
-    NOT         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-    STRING      shift, and go to state 13
-    INTEGER     shift, and go to state 14
-    DOUBLE      shift, and go to state 15
-    NOTHING     shift, and go to state 32
-    EMPTY       shift, and go to state 17
-    '('         shift, and go to state 18
-    '-'         shift, and go to state 19
-
-    conditionalExpression  go to state 112
-    orExp                  go to state 36
-    andExp                 go to state 37
-    equality               go to state 38
-    relationalOp           go to state 39
-    expression             go to state 40
-    term                   go to state 24
-    power                  go to state 25
-    unary                  go to state 26
-    atom                   go to state 27
-    functCall              go to state 29
+    $default  reduce using rule 26 (returnType)
 
 
 state 110
 
-   26 functionBody: '{' . statementList '}'
+   12 block: '{' statementList '}' .
 
-    $default  reduce using rule 56 (empty)
-
-    statementList  go to state 113
-    empty          go to state 3
+    $default  reduce using rule 12 (block)
 
 
 state 111
 
-   24 functionDefinition: FUNCTION IDENTIFIER '(' formalParameters ')' ':' returnType functionBody .
+    9 elseBlock: ELSE block .
 
-    $default  reduce using rule 24 (functionDefinition)
+    $default  reduce using rule 9 (elseBlock)
 
 
 state 112
 
-    9 elseBlock: ELIF '(' conditionalExpression . ')' block elseBlock
+   10 elseBlock: ELIF '(' . conditionalExpression ')' block elseBlock
 
-    ')'  shift, and go to state 114
+    NOT         shift, and go to state 11
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 33
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '-'         shift, and go to state 20
+
+    conditionalExpression  go to state 115
+    orExp                  go to state 38
+    andExp                 go to state 39
+    equality               go to state 40
+    relationalOp           go to state 41
+    expression             go to state 42
+    term                   go to state 25
+    power                  go to state 26
+    unary                  go to state 27
+    atom                   go to state 28
+    functCall              go to state 30
 
 
 state 113
 
-    3 statementList: statementList . statement
-   26 functionBody: '{' statementList . '}'
+   27 functionBody: '{' . statementList '}'
 
-    FUNCTION    shift, and go to state 5
-    INTEGER_T   shift, and go to state 6
-    DOUBLE_T    shift, and go to state 7
-    STRING_T    shift, and go to state 8
-    FUNCTION_T  shift, and go to state 9
-    IF          shift, and go to state 10
-    NOT         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-    STRING      shift, and go to state 13
-    INTEGER     shift, and go to state 14
-    DOUBLE      shift, and go to state 15
-    NOTHING     shift, and go to state 16
-    EMPTY       shift, and go to state 17
-    '('         shift, and go to state 18
-    '}'         shift, and go to state 115
-    '-'         shift, and go to state 19
+    $default  reduce using rule 57 (empty)
 
-    statement           go to state 20
-    functionDefinition  go to state 21
-    variableDefinition  go to state 22
-    expression          go to state 23
-    term                go to state 24
-    power               go to state 25
-    unary               go to state 26
-    atom                go to state 27
-    type                go to state 28
-    functCall           go to state 29
+    statementList  go to state 116
+    empty          go to state 3
 
 
 state 114
 
-    9 elseBlock: ELIF '(' conditionalExpression ')' . block elseBlock
+   25 functionDefinition: FUNCTION IDENTIFIER '(' formalParameters ')' ':' returnType functionBody .
+
+    $default  reduce using rule 25 (functionDefinition)
+
+
+state 115
+
+   10 elseBlock: ELIF '(' conditionalExpression . ')' block elseBlock
+
+    ')'  shift, and go to state 117
+
+
+state 116
+
+    3 statementList: statementList . statement
+   27 functionBody: '{' statementList . '}'
 
     FUNCTION    shift, and go to state 5
     INTEGER_T   shift, and go to state 6
@@ -1615,48 +1628,83 @@ state 114
     FUNCTION_T  shift, and go to state 9
     IF          shift, and go to state 10
     NOT         shift, and go to state 11
-    IDENTIFIER  shift, and go to state 12
-    STRING      shift, and go to state 13
-    INTEGER     shift, and go to state 14
-    DOUBLE      shift, and go to state 15
-    NOTHING     shift, and go to state 16
-    EMPTY       shift, and go to state 17
-    '('         shift, and go to state 18
-    '{'         shift, and go to state 93
-    '-'         shift, and go to state 19
+    RETURN      shift, and go to state 12
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 17
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '}'         shift, and go to state 118
+    '-'         shift, and go to state 20
 
-    statement           go to state 94
-    block               go to state 116
-    functionDefinition  go to state 21
-    variableDefinition  go to state 22
-    expression          go to state 23
-    term                go to state 24
-    power               go to state 25
-    unary               go to state 26
-    atom                go to state 27
-    type                go to state 28
-    functCall           go to state 29
-
-
-state 115
-
-   26 functionBody: '{' statementList '}' .
-
-    $default  reduce using rule 26 (functionBody)
-
-
-state 116
-
-    9 elseBlock: ELIF '(' conditionalExpression ')' block . elseBlock
-
-    ELSE  shift, and go to state 102
-    ELIF  shift, and go to state 103
-
-    elseBlock  go to state 117
+    statement           go to state 21
+    functionDefinition  go to state 22
+    variableDefinition  go to state 23
+    expression          go to state 24
+    term                go to state 25
+    power               go to state 26
+    unary               go to state 27
+    atom                go to state 28
+    type                go to state 29
+    functCall           go to state 30
 
 
 state 117
 
-    9 elseBlock: ELIF '(' conditionalExpression ')' block elseBlock .
+   10 elseBlock: ELIF '(' conditionalExpression ')' . block elseBlock
 
-    $default  reduce using rule 9 (elseBlock)
+    FUNCTION    shift, and go to state 5
+    INTEGER_T   shift, and go to state 6
+    DOUBLE_T    shift, and go to state 7
+    STRING_T    shift, and go to state 8
+    FUNCTION_T  shift, and go to state 9
+    IF          shift, and go to state 10
+    NOT         shift, and go to state 11
+    RETURN      shift, and go to state 12
+    IDENTIFIER  shift, and go to state 13
+    STRING      shift, and go to state 14
+    INTEGER     shift, and go to state 15
+    DOUBLE      shift, and go to state 16
+    NOTHING     shift, and go to state 17
+    EMPTY       shift, and go to state 18
+    '('         shift, and go to state 19
+    '{'         shift, and go to state 96
+    '-'         shift, and go to state 20
+
+    statement           go to state 97
+    block               go to state 119
+    functionDefinition  go to state 22
+    variableDefinition  go to state 23
+    expression          go to state 24
+    term                go to state 25
+    power               go to state 26
+    unary               go to state 27
+    atom                go to state 28
+    type                go to state 29
+    functCall           go to state 30
+
+
+state 118
+
+   27 functionBody: '{' statementList '}' .
+
+    $default  reduce using rule 27 (functionBody)
+
+
+state 119
+
+   10 elseBlock: ELIF '(' conditionalExpression ')' block . elseBlock
+
+    ELSE  shift, and go to state 105
+    ELIF  shift, and go to state 106
+
+    elseBlock  go to state 120
+
+
+state 120
+
+   10 elseBlock: ELIF '(' conditionalExpression ')' block elseBlock .
+
+    $default  reduce using rule 10 (elseBlock)

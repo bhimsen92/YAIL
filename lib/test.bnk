@@ -1,11 +1,17 @@
-if( 2 == 1 )
-    print("sagar");
-elif( 2 == 2 )
-    if( 5 == 5 )
-        print( "It is working" );
+function fact( Int n ):Int
+{
+    if( n == 0 )
+        return 1;
     else
-        print( "I am doomed.." );
-elif( 2 > 2 )
-    print( "I am king.." );
-else
-    print( "I am dumb ass!!!" );
+        return n * fact( n - 1 );
+}
+
+function firstNSum( Int n ):Int
+{
+    if( n == 0 )
+        return 0;
+    else
+        return n + firstNSum( n - 1 );
+}
+
+print( firstNSum(10) );

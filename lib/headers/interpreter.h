@@ -17,22 +17,30 @@ using namespace bnk_astNodes;
 
 #ifndef __INTERP
 #define __INTERP
+
+#define ISINSIDE_FUNCTION ( insideFunctionCounter > 0 )
+#define INSIDE_FUNCTION   ( insideFunctionCounter++ )
+#define OUTSIDE_FUNCTION  ( insideFunctionCounter-- )
+
 class Interpreter{
     private:
             map<string, BuiltInFunction> builtins;
+            int insideFunctionCounter;
     public:
         Interpreter(){
             this->loadBuiltIns();
+            insideFunctionCounter = 0;
         }
         bool isCallable( Object* obj );
         bnk_types::Object* evaluate( Node* astNode, Context* execContext, int dataTypeInfo );
         Object* execOperation( Operator* opNode, Context* execContext, BinaryOperation *op );
         bool isBuiltInFunction( Identifier *functName );
         bool isUserDefinedFunction( Identifier *functName, Context *execContext );
-        Object* evaluateBuiltInFunction( Identifier *functName, list<Node*> *operands, Context *execContext );
-        Object* evaluateUserDefinedFunction( Identifier *functName, list<Node*> *operands, Context *execContext );
+        Object* evaluateBuiltInFunction( Identifier *functName, Operands *operands, Context *execContext );
+        Object* evaluateUserDefinedFunction( Identifier *functName, Operands *operands, Context *execContext );
         void loadBuiltIns(void);
         BuiltInFunction getBuiltInFunction( Identifier *functName );
         void errorMessage( int size, ... );
+        bool isReturnType( Object *obj );
 };
 #endif

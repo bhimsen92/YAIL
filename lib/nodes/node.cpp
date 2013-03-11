@@ -135,11 +135,11 @@ class Expression: public Node{
             }
 };*/
 
-    Operator::Operator( int nType, int nOps, list<Node*> *ops ): Node( nType ){
+    Operator::Operator( int nType, int nOps, Operands *ops ): Node( nType ){
         nops = nOps;
         operands = ops;
     }
-    list<Node*>* Operator::getOperands(void){
+    Operands* Operator::getOperands(void){
         return operands;
     }
     int Operator::getOpsLength(void){

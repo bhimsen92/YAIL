@@ -18,7 +18,7 @@ namespace bnk_types{
 				StatementList *functBody;
 				//map< string, Object*> closureLink;
 		public:
-				UserDefinedFunction( list<Node*> *operands );
+				UserDefinedFunction( Operands *operands );
 				// getter functions.
 				string getFunctionName(void);
 				FormalParameterList* getFormalParameterList(void);

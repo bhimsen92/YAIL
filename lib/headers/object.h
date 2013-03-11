@@ -31,5 +31,17 @@ namespace bnk_types{
 	                  value = NULL;
 	              }	              
 	};
+	// no need to create a file for this.
+	class ReturnValue : public Object{
+	    protected:
+	            Object *value;
+	    public:
+	            ReturnValue( Object *val ) : Object( __return_t, ReturnClass ){
+	                value = val;
+	            }
+	            Object* getObject(void){
+	                return value;
+	            }
+	};
 }
 #endif

@@ -40,7 +40,7 @@ int counter = 0;
     bnk_astNodes::Node *node;
 };
 
-%token FUNCTION INTEGER_T DOUBLE_T STRING_T FUNCTION_T OR AND EQUAL LE GE IF ELSE NOT ELIF
+%token FUNCTION INTEGER_T DOUBLE_T STRING_T FUNCTION_T OR AND EQUAL LE GE IF ELSE NOT ELIF RETURN
 %token <node> IDENTIFIER
 %token <node> STRING
 %token <node> INTEGER
@@ -88,24 +88,31 @@ statement: variableDefinition ';'  {
                                                                 // because it is not yet decided, whether to make if an expression or a 
                                                                 // statement, if it becomes a statement, then else will be 
                                                                 // optional
-                                                                list<Node*> *operands = new list<Node*>();
+                                                                Operands *operands = new Operands();
                                                                 operands->push_back( $3 );
                                                                 operands->push_back( $5 );
                                                                 operands->push_back( $6 );
                                                                 Operator *ifNode = new Operator( __if, 3, operands );
                                                                 $$ = ifNode;
                                                             }
+         | RETURN expression ';'   {
+                                        //cout<<"In return statement!!"<<endl;
+                                        Operands *operands = new Operands();
+                                        operands->push_back( $2 );
+                                        Operator *returnNode = new Operator( __return, 1, operands );
+                                        $$ = returnNode;
+                                   }
          | expression ';'          { $$ = $1; }
          ;
 
 elseBlock: ELSE block  { 
-                            list<Node*> *operands = new list<Node*>();
+                            Operands *operands = new Operands();
                             operands->push_back( $2 );
                             Operator *elseNode = new Operator( __else, 1, operands );
                             $$ = elseNode;
                        }
          | ELIF '(' conditionalExpression ')' block elseBlock {
-                                                                    list<Node*> *operands = new list<Node*>();
+                                                                    Operands *operands = new Operands();
                                                                     operands->push_back( $3 );
                                                                     operands->push_back( $5 );
                                                                     operands->push_back( $6 );
@@ -122,7 +129,7 @@ conditionalExpression: orExp                   { $$ = $1; }
 
 orExp : andExp                                 { $$ = $1; }
       | orExp OR andExp                        {
-                                                  list<Node*> *operands = new list<Node*>();
+                                                  Operands *operands = new Operands();
                                                   operands->push_back( $1 );
                                                   operands->push_back( $3 );
                                                   Operator *orExpNode = new Operator( __or, 2, operands );
@@ -132,7 +139,7 @@ orExp : andExp                                 { $$ = $1; }
 
 andExp: equality                               { $$ = $1; }
       | andExp AND equality                    {
-                                                  list<Node*> *operands = new list<Node*>();
+                                                  Operands *operands = new Operands();
                                                   operands->push_back( $1 );
                                                   operands->push_back( $3 );
                                                   Operator *andNode = new Operator( __and, 2, operands );
@@ -142,7 +149,7 @@ andExp: equality                               { $$ = $1; }
 
 equality: relationalOp                         {  $$ = $1; }
         | equality EQUAL relationalOp          { 
-                                                  list<Node*> *operands = new list<Node*>();
+                                                  Operands *operands = new Operands();
                                                   operands->push_back( $1 );
                                                   operands->push_back( $3 );
                                                   Operator *equality = new Operator( __equality, 2, operands );
@@ -151,28 +158,28 @@ equality: relationalOp                         {  $$ = $1; }
         ;
 
 relationalOp: expression '<' expression        {
-                                                  list<Node*> *operands = new list<Node*>();
+                                                  Operands *operands = new Operands();
                                                   operands->push_back( $1 );
                                                   operands->push_back( $3 );
                                                   Operator *ltRelOpNode = new Operator( __lt, 2, operands );
                                                   $$ = ltRelOpNode;
                                                }
             | expression LE expression         {
-                                                  list<Node*> *operands = new list<Node*>();
+                                                  Operands *operands = new Operands();
                                                   operands->push_back( $1 );
                                                   operands->push_back( $3 );
                                                   Operator *leRelOpNode = new Operator( __le, 2, operands );
                                                   $$ = leRelOpNode;
                                                }
             | expression '>' expression        {
-                                                  list<Node*> *operands = new list<Node*>();
+                                                  Operands *operands = new Operands();
                                                   operands->push_back( $1 );
                                                   operands->push_back( $3 );
                                                   Operator *gtRelOpNode = new Operator( __gt, 2, operands );
                                                   $$ = gtRelOpNode;
                                                }
             | expression GE expression         {
-                                                  list<Node*> *operands = new list<Node*>();
+                                                  Operands *operands = new Operands();
                                                   operands->push_back( $1 );
                                                   operands->push_back( $3 );
                                                   Operator *geRelOpNode = new Operator( __ge, 2, operands );
@@ -183,7 +190,7 @@ relationalOp: expression '<' expression        {
 
 
 functionDefinition: FUNCTION IDENTIFIER '(' formalParameters ')' ':' returnType functionBody {
-                                                                                                list<Node*> *operands = new list<Node*>();
+                                                                                                Operands *operands = new Operands();
                                                                                                 operands->push_back( $2 );
                                                                                                 operands->push_back( $4 );
                                                                                                 operands->push_back( $7 );
@@ -223,7 +230,7 @@ formalParameterDef : type IDENTIFIER    {
                    ;
 
 variableDefinition: type { putType( $1->getType() ); } variableList {
-                                                              list<Node*> *operands = new list<Node*>();
+                                                              Operands *operands = new Operands();
                                                               operands->push_back( $1 );
                                                               operands->push_back( $3 );
                                                               Operator *vDefinitionNode = new Operator( __var_definition, 2, operands );
@@ -250,7 +257,7 @@ variableList: variableDeclarations                 {
             ;
 
 variableDeclarations: IDENTIFIER '=' expression {
-                                                    list<Node*> *operands = new list<Node*>();
+                                                    Operands *operands = new Operands();
                                                     operands->push_back( new Type( getType() ) );
                                                     operands->push_back( $1 );
                                                     operands->push_back( $3 );
@@ -260,14 +267,14 @@ variableDeclarations: IDENTIFIER '=' expression {
                     ;
 
 expression: expression '+' term           {
-                                              list<Node*> *operands = new list<Node*>();
+                                              Operands *operands = new Operands();
                                               operands->push_back( $1 );
                                               operands->push_back( $3 );
                                               Operator *plusNode = new Operator( __addition, 2, operands );
                                               $$ = plusNode;
                                           }
           | expression '-' term           {
-                                              list<Node*> *operands = new list<Node*>();
+                                              Operands *operands = new Operands();
                                               operands->push_back( $1 );
                                               operands->push_back( $3 );
                                               Operator *subtractionNode = new Operator( __subtraction, 2, operands );
@@ -277,14 +284,14 @@ expression: expression '+' term           {
           ;
 
 term: term '*' power                     {
-                                              list<Node*> *operands = new list<Node*>();
+                                              Operands *operands = new Operands();
                                               operands->push_back( $1 );
                                               operands->push_back( $3 );
                                               Operator *multiplicationNode = new Operator( __multiplication, 2, operands );
                                               $$ = multiplicationNode;
                                           }
     | term '/' power                      {
-                                              list<Node*> *operands = new list<Node*>();
+                                              Operands *operands = new Operands();
                                               operands->push_back( $1 );
                                               operands->push_back( $3 );
                                               Operator *divNode = new Operator( __div, 2, operands );
@@ -294,7 +301,7 @@ term: term '*' power                     {
     ;
 
 power : power '^' unary                     {
-                                              list<Node*> *operands = new list<Node*>();
+                                              Operands *operands = new Operands();
                                               operands->push_back( $1 );
                                               operands->push_back( $3 );
                                               Operator *powerNode = new Operator( __power, 2, operands );
@@ -304,13 +311,13 @@ power : power '^' unary                     {
       ;
 
 unary: NOT unary                          {
-                                              list<Node*> *operands = new list<Node*>();
+                                              Operands *operands = new Operands();
                                               operands->push_back( $2 );
                                               Operator *notNode = new Operator( __not, 1, operands );
                                               $$ = notNode;
                                           }
      | '-' unary                          {
-                                              list<Node*> *operands = new list<Node*>();
+                                              Operands *operands = new Operands();
                                               operands->push_back( $2 );
                                               Operator *uMinusNode = new Operator( __uminus, 1, operands );
                                               $$ = uMinusNode;
@@ -338,14 +345,14 @@ type : INTEGER_T  {  $$ = new Type( __integer_t ); }
      ;
 
 functCall : IDENTIFIER '(' arguments ')'  {
-                                              list<Node*> *operands = new list<Node*>();
+                                              Operands *operands = new Operands();
                                               operands->push_back( $1 );
                                               if( $3 != NULL ){
                                                   operands->push_back( $3 );
                                               }
                                               Operator *functCall = new Operator( __funct_call, 2, operands );
                                               $$ = functCall;
-                                              //_debugMessage( "saw function call, all is well..." );
+                                              //cout<<"saw function call, all is well..."<<endl;
                                           }
           ;
 
@@ -381,6 +388,7 @@ int main(){
     Interpreter interp;
     int length;
     //cout<< "length of statement list: "<< programAST->getLength()<<endl;
+    //cout<<"Parsing done!!"<<endl;
     length = programAST->getLength();
     for( int i = 0; i < length; i++ ){
       if( !programAST->empty() ){

@@ -1,25 +1,26 @@
 #include<iostream>
 #include<map>
 #include "../headers/udf.h"
+#include "../headers/node.h"
 
 namespace bnk_types{
-    UserDefinedFunction::UserDefinedFunction( list<Node*> *operands ) : Object( __function_t ){
+    UserDefinedFunction::UserDefinedFunction( Operands *operands ) : Object( __function_t ){
         // get the function name.
-        Identifier *name = CAST_TO( Identifier, operands->front() );
+        Identifier *name = CAST_TO( Identifier, operands->get(0) );
 		if( name != NULL ){
-            functName = name->getName();		
-			operands->pop_front();
+            functName = name->getName();
+			//operands->pop_front();
 			// get the formalParameter list.
-			fpList = CAST_TO( FormalParameterList, operands->front() );
+			fpList = CAST_TO( FormalParameterList, operands->get(1) );
 			if( fpList != NULL ){
-			    operands->pop_front();
+			    //operands->pop_front();
 				// get the returnType.
-				Type *dataType = CAST_TO( Type, operands->front() );
+				Type *dataType = CAST_TO( Type, operands->get(2) );
 				if( dataType != NULL ){
                     returnType = dataType->getDataType();
-                    operands->pop_front();
+                    //operands->pop_front();
                     // get the statementList of the function.
-                    functBody = CAST_TO( StatementList, operands->front() );
+                    functBody = CAST_TO( StatementList, operands->get(3) );
                     if( functBody == NULL ){
                         cout<<"Error in udf.."<<endl;
                     }

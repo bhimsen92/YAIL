@@ -61,6 +61,10 @@ string     \"(.*)\"
 "not"      {
                 return NOT;
            }
+           
+"return"   {
+                return RETURN;
+           }
 
 "Nothing"         {
                       Node *nothingNode = new bnk_astNodes::Nothing();
