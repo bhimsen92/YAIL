@@ -1,4 +1,7 @@
 // modifications that needs to be done: add stmtlist in case expressions, it will avoid lots of repeating code.
+// debug error in multiple args function call,
+// add return statement.
+// 
 #include<iostream>
 #include<cstdlib>
 #include<vector>
@@ -121,7 +124,13 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                 }
                             }
                             break;
-        case __var_definition:    
+        case __elif:
+                            bnk_astNodes::Operator *elifNode;
+                            elifNode = CAST_TO( bnk_astNodes::Operator, astNode );
+                            bnk_astNodes::Operator *ifNode = new Operator( __if, elifNode->getOpsLength(), elifNode->getOperands() );
+                            this->evaluate( ifNode );
+                            break;
+        case __var_definition:
                                     int dataType;
                                     Operator *varDefinitionNode;
                                     varDefinitionNode = CAST_TO( Operator, astNode );
@@ -257,7 +266,11 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                     Operator *geNode;
                                     geNode = CAST_TO( bnk_astNodes::Operator, astNode );
                                     return this->execOperation( geNode, execContext, new GreaterThanOrEqualOperator() );
-                                    
+        case __equality:
+                                    Operator *equalityNode;
+                                    equalityNode = CAST_TO( Operator, astNode );
+                                    return this->execOperation( equalityNode, execContext, new EqualityOperator() );
+        
     }
     return NULL;
 }
