@@ -1,8 +1,9 @@
- #include<iostream>
+#include<iostream>
 #include<cstdlib>
 #include<vector>
 #include<string>
 #include<cstring>
+#include<cstdarg>
 #include<map>
 #include "headers/interpreter.h"
 #include "headers/string.h"
@@ -26,7 +27,7 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                     return rval;
                                 }
                                 else{
-                                    errorMessage("Undefined variable.");
+                                    errorMessage( 2, "Undefined variable.", ident->getName() );
                                     exit(1);
                                 }
                             }
@@ -45,6 +46,20 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                 return new bnk_types::Integer( integer->getValue() );
                             }
                             break;
+        case __nothing:
+                            bnk_astNodes::Nothing *nothing;
+                            nothing = CAST_TO( bnk_astNodes::Nothing, astNode );
+                            if( nothing != NULL ){
+                                return new bnk_types::Nothing( nothing->getValue() );
+                            }
+                            break;
+        case __double:
+                            bnk_astNodes::Double *realVal;
+                            realVal = CAST_TO( bnk_astNodes::Double, astNode );
+                            if( realVal != NULL ){
+                                return new bnk_types::Double( realVal->getValue() );
+                            }
+                            break;
         case __var_definition:                                    
                                     int dataType;
                                     Operator *varDefinitionNode;
@@ -55,7 +70,7 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                       // get the datatype of the operands.
                                       Type *dataTypeNode = CAST_TO( Type, operands->front() );
                                       if( dataTypeNode != NULL ){
-                                        dataType = dataTypeNode->getType();
+                                        dataType = dataTypeNode->getDataType();
                                       }
                                       // get the variableDeclaration list.
                                       VariableList *vlist = CAST_TO( VariableList, operands->back() );
@@ -81,9 +96,23 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                   Identifier *id = CAST_TO( Identifier, operands->front() );
                                   if( id != NULL ){
                                     operands->pop_front();
-                                    // get the expression node.                                         
-                                    Object *value = this->evaluate( operands->front(), execContext, dataType );
-                                    execContext->put( string( id->getName() ), value );
+                                    if( !execContext->isBound( id ) ){
+                                        // get the expression node.
+                                        Object *value = this->evaluate( operands->front(), execContext, dataType );
+                                        // check whether the type of the expression matches
+                                        // with the defined type.
+                                        if( dataType == value->getDataType() ){
+                                            execContext->put( string( id->getName() ), value );
+                                        }
+                                        else{
+                                            errorMessage( 1, "Type of the expression does not match with defined type." );
+                                            exit(1);
+                                        }
+                                    }
+                                    else{
+                                        errorMessage( 2, "multiple declarations of variable: ", id->getName() );
+                                        exit(1);
+                                    }
                                   }
                                 }
                                 break;
@@ -94,9 +123,12 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                   // get the operands
                                   list<Node*> *operands = functDefNode->getOperands();
                                   Identifier  *functName = CAST_TO( Identifier, operands->front() );
-                                  if( functName != NULL ){
+                                  if( functName != NULL && !execContext->isBound( functName ) ){
                                     UserDefinedFunction *funct = new UserDefinedFunction( operands );
                                     execContext->put( functName->getName(), funct );
+                                  }
+                                  else{
+                                      errorMessage( 2, "Multiple Declarations name: ", functName->getName() );
                                   }
                                 }
                                 break;
@@ -115,7 +147,7 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                       this->evaluateUserDefinedFunction( functName, operands, execContext );
                                     }
                                     else{
-                                      cout<<"Undefined function: "<<functName->getName()<<endl;
+                                      errorMessage( 2, "Undefined function: ", functName->getName() );
                                       exit(1);
                                     }
                                   }
@@ -180,11 +212,11 @@ Object* Interpreter::execOperation( Operator* opNode, Context* execContext, Bina
     // set the operands to the operation object.
     op->setFirstOperand( firstOp );
     op->setSecondOperand( secondOp );
-    if( op->isCompatible() ){
+    if( op->isTypeCompatible() ){
         return op->executeOperation();
     }
     else{
-        errorMessage( "Incompatible Operands" );
+        errorMessage( 1, "Incompatible Operands" );
         exit(1);
     }
 }
@@ -248,7 +280,7 @@ Object* Interpreter::evaluateUserDefinedFunction( Identifier *functName, list<No
                     newContext->put( string( fParameter->getParameterName() ), argVal );
                 }
                 else{
-                    errorMessage( "Type mismatch in function call." );
+                    errorMessage( 1, "Type mismatch in function call." );
                     exit(1);
                 }
                 arguments->pop_front();
@@ -261,7 +293,7 @@ Object* Interpreter::evaluateUserDefinedFunction( Identifier *functName, list<No
             }
         }
         else{
-            errorMessage( "argument length mismatch" );
+            errorMessage( 1, "argument length mismatch" );
             exit(1);
         }
     }
@@ -277,8 +309,16 @@ BuiltInFunction Interpreter::getBuiltInFunction( Identifier *functName ){
     return builtins[ name ];
 }
 
-void Interpreter::errorMessage( const char* message ){
-    cout<<"Error: "<<message<<endl;
+void Interpreter::errorMessage( int size, ... ){
+    int i;
+    char *message;
+    va_list args;
+    va_start( args, size );
+    for( i = 0; i < size; i++ ){
+        message = va_arg( args, char* );
+        cout<<message;
+    }
+    cout<<endl;
 }
 
 bool Interpreter::isCallable( Object *value ){

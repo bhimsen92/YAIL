@@ -2,7 +2,7 @@
 #include<iostream>
 #include<cstdlib>
 #include<cstring>
-#include "headers/node.h"
+#include "./headers/node.h"
 #include "y.tab.h"
 using namespace std;
 using namespace bnk_astNodes;
@@ -12,6 +12,7 @@ newline    \n
 digit      [0-9]
 character  [a-zA-Z_]
 digits     {digit}+
+realVal    {digit}*\.{digits}
 word       {character}+
 ident      {character}({character}|{digit})*
 whiteSpace [\n\t ]*
@@ -58,15 +59,10 @@ string     \"(.*)\"
            }
 
 "Nothing"         {
-                      Node *nothingNode = new Nothing();
+                      Node *nothingNode = new bnk_astNodes::Nothing();
                       yylval.node = nothingNode;
                       return NOTHING;
                   }
-"EMPTY"    {
-                Node *emptyNode = new Empty();
-                yylval.node = emptyNode;
-                return EMPTY;
-           }
 
 "<="       {
                 return LE;
@@ -81,7 +77,13 @@ string     \"(.*)\"
                 yylval.node = ident;
                 return IDENTIFIER;
            }
-
+           
+{realVal}  {
+                Node *realVal = new Double( yytext );
+                yylval.node = realVal;
+                return DOUBLE;
+           }
+           
 {digits}   {
                 Node *integer = new Integer( yytext );
                 yylval.node = integer;

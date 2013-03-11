@@ -2,6 +2,7 @@
 #include<cstdlib>
 #include<cstring>
 #include "value.h"
+#include "tokens.h"
 #ifndef __OBJECT_TYPE
 #define __OBJECT_TYPE
 using namespace std;
@@ -21,6 +22,14 @@ namespace bnk_types{
                 Value* getValue(void);
                 void   setValue(Value *val);
                 virtual void dummy(void){}
+	};
+	
+	// no need to create a file for this.
+	class Nothing : public Object{
+	    public:
+	              Nothing( void* val ): Object( __nothing_t, NothingClass ){
+	                  value = NULL;
+	              }	              
 	};
 }
 #endif

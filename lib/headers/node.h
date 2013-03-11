@@ -38,7 +38,7 @@ class String: public Node{
 };
 
 class Integer: public Node{
-    private:
+    protected:
         int value;
 
     public:
@@ -48,8 +48,18 @@ class Integer: public Node{
         void setValue( int val );
 };
 
+class Double: public Node{
+    protected:
+        double value;
+    public:
+        Double( char *str );
+        void toDouble( char *str );
+        double getValue(void);
+        void setValue( double val );
+};
+
 class Type: public Node{
-    private:
+    protected:
             int type;
     public:
             Type( int _type );
@@ -78,12 +88,8 @@ class Operator: public Node{
 
 class Nothing: public Node{
     public:
-              Nothing();
-};
-
-class Empty: public Node{
-    public:
-              Empty();
+              Nothing(void);
+              void* getValue(void);
 };
 
 class List : public Node{

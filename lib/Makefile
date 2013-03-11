@@ -6,6 +6,7 @@ all: bnK-lang
 
 bnK-lang: builtins.o node.o object.o number.o string.o udf.o interpreter.o context.o binaryop.o
 	$(CC) -o $@ builtins.o node.o object.o number.o string.o udf.o binaryop.o interpreter.o context.o lex.yy.c y.tab.c -lfl -ly
+	rm *.o
 
 builtins.o: 
 	$(CC) $(CFLAGS) ./builtins/builtins.cpp -o $@

@@ -1,6 +1,7 @@
 #include<iostream>
 #include<cstring>
 #include<list>
+#include<cmath>
 #include "../headers/bnKapi.h"
 #include "../headers/node.h"
 using namespace std;
@@ -59,14 +60,52 @@ namespace bnk_astNodes{
             value += ( (*pEnd - '0') * multiplier );
             multiplier *= 10;
         }
-     }
-     int Integer::getValue(void){
+    }
+    int Integer::getValue(void){
         return value;
-     }
-     void Integer::setValue( int val ){
+    }
+    void Integer::setValue( int val ){
         value = val;
-     }
-
+    }
+    
+    Double::Double( char *str ): Node( __double ){
+        toDouble( str );
+    }
+    
+    void Double::toDouble( char *str ){
+        int dotPos = 0;
+        double dotLeft = 0.0, dotRight = 0.0, multiplier = 0.0;
+        int i, length;
+        // go through the string, remember the dot position.
+        // then calculate value on the right and left of the dot,
+        // sum it, assign it to value.
+        for( i = 0; str[i] != '\0'; i++ ){
+            if( str[i] == '.' ){
+                dotPos = i;
+            }
+        }
+        length = i;
+        multiplier = 1 / pow( 10, length - dotPos - 1 );
+        for( i = length - 1; i > dotPos; i-- ){
+            dotRight += ( ( str[i] - '0' ) * multiplier );
+            multiplier *= 10;
+        }
+        multiplier = 1.0;
+        for( i = dotPos - 1; i >= 0; i-- ){
+            dotLeft += ( ( str[i] - '0' ) * multiplier );
+            multiplier *= 10;
+        }
+        value = dotLeft + dotRight;
+    }
+    
+    double Double::getValue(void){
+        return value;
+    }
+    
+    void Double::setValue( double val ){
+        value = val;
+    }
+    
     Type::Type( int _type ): Node( __type ){
         type = _type;
     }
@@ -107,12 +146,11 @@ class Expression: public Node{
         return nops;
     }
 
-    Nothing::Nothing():Node( __nothing ){
-
+    Nothing::Nothing() : Node( __nothing ){
     }
-
-    Empty::Empty():Node( __empty ){
-                
+    
+    void* Nothing::getValue(void){
+        return NULL;
     }
 
     List::List( int nodeType ): Node( nodeType ){

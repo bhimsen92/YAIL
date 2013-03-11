@@ -12,8 +12,8 @@ using namespace bnk;
 namespace bnk_types{
     class Boolean: public Object{
         public:
-                Boolean( int val ): Object( __boolean, BooleanClass ){
-                    value = new Value( val );    
+                Boolean( bool val ): Object( __boolean_t, BooleanClass ){
+                    value = new Value( val );
                 }
     };
 }

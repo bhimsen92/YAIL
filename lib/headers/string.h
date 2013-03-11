@@ -15,11 +15,9 @@ class Char : public Object{
 
 class String : public Char{
     protected:
-              char *str;
               int   length;
     public:
             String( char* strData );
-            char* getValue(void);
             int getLength(void);
 };
 }

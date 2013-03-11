@@ -12,7 +12,8 @@ namespace bnk{
                     union BNKValue{
                       int    i32;
                       double real64;
-                      string *str;
+                      char*  str;
+                      bool   truthValue;
                     };
                     BNKValue value;
         public:
@@ -22,8 +23,11 @@ namespace bnk{
                 Value( double val ){
                     value.real64 = val;
                 }
-                Value( string *val ){
+                Value( char *val ){
                     value.str = val;
+                }
+                Value( bool val ){
+                    value.truthValue = val;
                 }
                 int getIntVal(void){
                     return value.i32;
@@ -31,8 +35,11 @@ namespace bnk{
                 double getDoubleVal(void){
                     return value.real64;
                 }
-                string* getStringVal(void){
+                char* getStringVal(void){
                     return value.str;
+                }
+                bool getBooleanValue(void){
+                    return value.truthValue;
                 }
     };
 }

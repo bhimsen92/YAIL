@@ -9,16 +9,21 @@ using namespace std;
 using namespace bnk;
 
 namespace bnk_types{
-class Number : public Object{
-    protected:
-    public:
-            Number( int t );
-};
+    class Number : public Object{
+        public:
+                Number( int t );
+    };
 
-class Integer : public Number{    
-    public:
-            Integer( int num );
-            Integer();
-};
+    class Integer : public Number{    
+        public:
+                Integer( int num );
+                Integer();
+    };
+
+    class Double : public Number{
+        public:
+                Double( double num );
+                Double(void);
+    };
 }
 #endif

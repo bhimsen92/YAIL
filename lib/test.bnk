@@ -1,16 +1,16 @@
-Int a = 1 + 24 - 100;
-
-function doSomething( Int b ):Int
-{
-    print( "In function.." );
-    print(b + 2 * 6);
+if( a > b ){
+    print( "Hello" );
+}
+else if( c > d ){
+    print("Good");
 }
 
-function helloWorld():Int
-{
-    print( "Hello world!!" );
+if( a > b ){
+    
 }
-
-Function c = doSomething;
-
-c(100);
+elif( c > d ){
+    
+}
+else{
+    
+}

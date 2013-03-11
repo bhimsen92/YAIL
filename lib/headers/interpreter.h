@@ -33,6 +33,6 @@ class Interpreter{
         Object* evaluateUserDefinedFunction( Identifier *functName, list<Node*> *operands, Context *execContext );
         void loadBuiltIns(void);
         BuiltInFunction getBuiltInFunction( Identifier *functName );
-        void errorMessage( const char* message );
+        void errorMessage( int size, ... );
 };
 #endif

@@ -7,6 +7,7 @@ enum {
     __identifier,
     __funct_call,
     __integer,
+    __double,
     __string,
     __funct_def,
     __params,
@@ -15,11 +16,8 @@ enum {
     __spawn,
     __sync,
     __assignment,
-    __integer_t,
-    __double_t,
-    __string_t, __boolean,
-    __function_t,
-    __list_t,
+    __integer_t, __double_t, __string_t, __boolean_t, __function_t, __list_t,
+    __nothing_t, empty_t,
     __type,
     __expression,
     __var_definition,
@@ -32,7 +30,9 @@ enum {
 enum{
     NumberClass,
     CharClass,
-    BooleanClass
+    BooleanClass,
+    ListClass,
+    NothingClass
 };
 
 #endif

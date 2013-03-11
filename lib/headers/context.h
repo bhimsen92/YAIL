@@ -4,6 +4,7 @@
 #include<map>
 #include<stack>
 #include "object.h"
+#include "node.h"
 
 #ifndef __CONTEXT
 #define __CONTEXT
@@ -23,5 +24,6 @@ class Context{
 //            void setSpawnStack( stack< Thread* > sStack );
             void put( string ident, Object* value );
             Object* get( string ident );
+            bool isBound( bnk_astNodes::Identifier *id );
 };
 #endif

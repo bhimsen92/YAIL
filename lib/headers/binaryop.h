@@ -21,7 +21,7 @@ class BinaryOperation{
             virtual Object* exec( int, int ) = 0;
             virtual Object* exec( int, double ) = 0;
             virtual Object* exec( double, double ) = 0;
-            bool isCompatible(void);
+            virtual bool isTypeCompatible(void);
             
             Object* getFirstOperand(void){
                 return firstOp;
@@ -45,6 +45,7 @@ class AdditionOperation: public BinaryOperation{
     public:
             AdditionOperation(){
             }
+            bool isTypeCompatible(void);
             Object* exec( int, int );
             Object* exec( int, double ){ return NULL; }
             Object* exec( double, double ){ return NULL; }

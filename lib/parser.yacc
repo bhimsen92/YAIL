@@ -85,6 +85,7 @@ statement: variableDefinition ';'  {
                                       $$ = $1;
                                    }         
          | IF '(' conditionalExpression ')' block                 {
+                                                                      cout<<"In if statement.."<<endl;
                                                                       list<Node*> *operands = new list<Node*>();
                                                                       operands->push_back( $3 );
                                                                       operands->push_back( $5 );
@@ -92,6 +93,7 @@ statement: variableDefinition ';'  {
                                                                       $$ = ifNode;
                                                                   }
          | IF '(' conditionalExpression ')' block ELSE block      {
+                                                                      cout<<"if else statement.."<<endl;
                                                                       list<Node*> *operands = new list<Node*>();
                                                                       operands->push_back( $3 );
                                                                       operands->push_back( $5 );
@@ -320,9 +322,10 @@ empty :
       ;
 
 type : INTEGER_T  {  $$ = new Type( __integer_t ); }
-     | DOUBLE_T   {  $$ = new Type( __double_t );  }    
+     | DOUBLE_T   {  $$ = new Type( __double_t );  }
      | STRING_T   {  $$ = new Type( __string_t );  }
-     | FUNCTION_T { $$ = new Type( __function_t ); }
+     | FUNCTION_T {  $$ = new Type( __function_t ); }
+     | NOTHING    {  $$ = new Type( __nothing_t ); }
      ;
 
 functCall : IDENTIFIER '(' arguments ')'  {
@@ -370,20 +373,16 @@ int main(){
     int length;
     //cout<< "length of statement list: "<< programAST->getLength()<<endl;
     length = programAST->getLength();
-    for( int i = 0; i < length; i++ ){
+    /*for( int i = 0; i < length; i++ ){
       if( !programAST->empty() ){
         interp.evaluate( programAST->pop_front(), ctx, -1 );
       }
-    }
+    }*/
     /*bnk_types::Object *val = ctx->get( string("b") );
     bnk_types::Integer *i = CAST_TO( bnk_types::Integer, val );
     if( i != NULL )
       cout<<"value b: "<<i->getValue()<<endl;*/
     return 0;
-}
-
-void _debugMessage( const char* str ){
-    cout<<str<<endl;
 }
 
 void putType( DataType _type ){

@@ -9,12 +9,12 @@ namespace bnk_types{
     }
 
     String::String( char* strData ) : Char( __string_t ){
+        char *str;
         length = strlen( strData );
         str = new char[ length + 1 ];
         strcpy( str, strData );
-    }
-    char* String::getValue(void){
-        return str;
+        // put it inside a value.
+        value = new Value( str );
     }
     int String::getLength(void){
         return length;

@@ -17,7 +17,7 @@ namespace bnk_builtins{
 								bnk_types::String *str;
 								str = CAST_TO( bnk_types::String, obj );
 								if( str != NULL ){
-									cout<<str->getValue()<<endl;
+									cout<<str->getValue()->getStringVal()<<endl;
 								}
 								break;
 				case __integer_t:
@@ -27,6 +27,13 @@ namespace bnk_builtins{
 									cout<<integer->getValue()->getIntVal()<<endl;
 								}
 								break;
+				case __double_t:
+				                bnk_types::Double *realVal;
+				                realVal = CAST_TO( bnk_types::Double, obj );
+				                if( realVal != NULL ){
+				                    cout<<realVal->getValue()->getDoubleVal()<<endl;
+				                }
+				                break;
 			}
 		}
 	}

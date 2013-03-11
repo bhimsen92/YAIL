@@ -12,4 +12,10 @@ namespace bnk_types{
     Integer::Integer() : Number( __integer_t ){
         value = new Value( 0 );
     }
+    Double::Double( double num ) : Number( __double_t ){
+        value = new Value( num );
+    }
+    Double::Double( void ) : Number( __double_t ){
+        value = new Value( 0.0 );
+    }
 }

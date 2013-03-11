@@ -49,7 +49,7 @@ Object* BinaryOperation::executeOperation(void){
     return rval;
 }
 
-bool BinaryOperation::isCompatible(void){
+bool BinaryOperation::isTypeCompatible(void){
     return ( ( firstOp->getTypeClass() == NumberClass ) && ( secondOp->getTypeClass() == NumberClass ) );
 }
 
@@ -57,6 +57,24 @@ Object* AdditionOperation::exec( int a, int b ){
     return new Integer( a + b );
 }
 
+bool AdditionOperation::isTypeCompatible(void){
+    // Addition operation is defined for NumberClass, CharClass and ListClass.
+    // if the operands(both) belong to one of this classes then interpreter can
+    // proceed with the operation.
+    bool rval = false;
+    int  cls1 = firstOp->getTypeClass(),
+         cls2 = secondOp->getTypeClass();
+    if( cls1 == NumberClass && cls2 == NumberClass ){
+        rval = true;
+    }
+    else if( cls1 == CharClass && cls2 == CharClass ){
+        rval = true;
+    }
+    else if( cls1 == ListClass && cls2 == ListClass ){
+        rval = true;
+    }
+    return rval;
+}
 
 Object* SubtractionOperation::exec( int a, int b ){
     return new Integer( a - b );
