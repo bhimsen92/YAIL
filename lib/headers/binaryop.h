@@ -131,4 +131,15 @@ class GreaterThanOrEqualOperator: public BinaryOperation{
             Object* exec( int, double ){ return NULL; }
             Object* exec( double, double ){ return NULL; }
 };
+
+class EqualityOperator : public BinaryOperation{
+    public:
+            EqualityOperator(){
+                
+            }
+            Object* exec( int, int );
+            Object* exec( int, double ){ return NULL; }
+            Object* exec( double, double ){ return NULL; }
+};
+
 #endif

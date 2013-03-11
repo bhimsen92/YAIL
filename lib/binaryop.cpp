@@ -111,3 +111,7 @@ Object* GreaterThanOperator::exec( int a, int b ){
 Object* GreaterThanOrEqualOperator::exec( int a, int b ){
     return new Boolean( a >= b );   
 }
+
+Object* EqualityOperator::exec( int a, int b ){
+    return new Boolean( a == b );
+}

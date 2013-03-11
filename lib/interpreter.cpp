@@ -127,8 +127,9 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
         case __elif:
                             bnk_astNodes::Operator *elifNode;
                             elifNode = CAST_TO( bnk_astNodes::Operator, astNode );
-                            bnk_astNodes::Operator *ifNode = new Operator( __if, elifNode->getOpsLength(), elifNode->getOperands() );
-                            this->evaluate( ifNode );
+                            bnk_astNodes::Operator *_ifNode;
+                            _ifNode = new Operator( __if, elifNode->getOpsLength(), elifNode->getOperands() );
+                            this->evaluate( _ifNode, execContext, -1 );
                             break;
         case __var_definition:
                                     int dataType;

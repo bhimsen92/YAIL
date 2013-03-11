@@ -1,5 +1,11 @@
-if( 2 <= 1 )
+if( 2 == 1 )
     print("sagar");
+elif( 2 == 2 )
+    if( 5 == 5 )
+        print( "It is working" );
+    else
+        print( "I am doomed.." );
+elif( 2 > 2 )
+    print( "I am king.." );
 else
-    Int a = 12 + 12;
-print(a);
+    print( "I am dumb ass!!!" );
