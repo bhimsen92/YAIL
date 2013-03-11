@@ -45,6 +45,10 @@ string     \"(.*)\"
 "else"     {
                 return ELSE;
            }
+           
+"elif"     {
+                return ELIF;
+           }
 
 "and"      {
                 return AND;
@@ -70,6 +74,10 @@ string     \"(.*)\"
 
 ">="       {
                 return GE;
+           }
+           
+"=="       {
+                return EQUAL;
            }
            
 {ident}    {

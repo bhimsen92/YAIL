@@ -1,3 +1,4 @@
+// modifications that needs to be done: add stmtlist in case expressions, it will avoid lots of repeating code.
 #include<iostream>
 #include<cstdlib>
 #include<vector>
@@ -60,7 +61,67 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                 return new bnk_types::Double( realVal->getValue() );
                             }
                             break;
-        case __var_definition:                                    
+        case __if:
+                            // evaluate the conditionalExpression node,
+                            // get the truthValue, if it is true, evaluate the statements that come inside if block
+                            // else evaluate either else or elif node.
+                            bnk_astNodes::Operator *ifNode;
+                            ifNode = CAST_TO( bnk_astNodes::Operator, astNode );
+                            if( ifNode != NULL ){
+                                // get the operands
+                                list<Node*> *operands = ifNode->getOperands();
+                                // get the cond node.
+                                Object *booleanValue = this->evaluate( operands->front(), execContext, -1 );
+                                bool truthValue = booleanValue->getValue()->getBooleanValue();
+                                // pop the cond node.                                
+                                operands->pop_front();
+                                if( truthValue ){                                    
+                                    // get the block node.
+                                    Node *blockNode = operands->front();
+                                    if( blockNode->getType() == __stmtlist ){
+                                        StatementList *stmtList = CAST_TO( bnk_astNodes::StatementList, blockNode );
+                                        // evaluate the statment list.
+                                        int length = stmtList->getLength(), i;
+                                        for( i = 0; i < length; i++ ){
+                                            this->evaluate( stmtList->get(i), execContext, -1 );
+                                        }
+                                    }
+                                    else{
+                                        // evaluate single statement.
+                                        this->evaluate( blockNode, execContext, -1 );
+                                    }
+                                }
+                                else{
+                                    // pop the blockNode.
+                                    operands->pop_front();
+                                    // evaluate the elseNode block.
+                                    this->evaluate( operands->front(), execContext, -1 );
+                                    operands->pop_front();
+                                }
+                            }
+                            break;
+        case __else:
+                            bnk_astNodes::Operator *elseNode;
+                            elseNode = CAST_TO( bnk_astNodes::Operator, astNode );
+                            if( elseNode != NULL ){
+                                // get the operands.
+                                list<Node*> *operands = elseNode->getOperands();
+                                Node *blockNode = operands->front();
+                                if( blockNode->getType() == __stmtlist ){
+                                    StatementList *stmtList = CAST_TO( StatementList, blockNode );
+                                    // evaluate the statement list.
+                                    int length = stmtList->getLength(), i;
+                                    for( i = 0; i < length; i++ ){
+                                        this->evaluate( stmtList->get(i), execContext, -1 );
+                                    }
+                                }
+                                else{
+                                    // evaluate single statement.
+                                    this->evaluate( blockNode, execContext, -1 );
+                                }
+                            }
+                            break;
+        case __var_definition:    
                                     int dataType;
                                     Operator *varDefinitionNode;
                                     varDefinitionNode = CAST_TO( Operator, astNode );

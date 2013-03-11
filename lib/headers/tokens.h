@@ -24,7 +24,7 @@ enum {
     __or, __and, __not, __equality, __lt, __le, __ge, __gt,
     __addition, __subtraction, __multiplication, __div, __power, __uminus,
     __nothing, __empty,
-    __if, __ifelse
+    __if, __else, __elif
 };
 
 enum{

@@ -40,7 +40,7 @@ int counter = 0;
     bnk_astNodes::Node *node;
 };
 
-%token FUNCTION INTEGER_T DOUBLE_T STRING_T FUNCTION_T OR AND EQUAL LE GE IF ELSE NOT
+%token FUNCTION INTEGER_T DOUBLE_T STRING_T FUNCTION_T OR AND EQUAL LE GE IF ELSE NOT ELIF
 %token <node> IDENTIFIER
 %token <node> STRING
 %token <node> INTEGER
@@ -50,7 +50,7 @@ int counter = 0;
 
 %type <node> program statement statementList variableList variableDeclarations variableDefinition expression atom type
 %type <node> functionDefinition returnType formalParameters formalParameterList formalParameterDef functionBody arglist arguments functCall
-%type <node> block conditionalExpression orExp andExp equality relationalOp term power unary
+%type <node> block conditionalExpression orExp andExp equality relationalOp term power unary elseBlock
 
 %%
 program: statementList {
@@ -84,26 +84,35 @@ statement: variableDefinition ';'  {
          | functionDefinition      {
                                       $$ = $1;
                                    }         
-         | IF '(' conditionalExpression ')' block                 {
-                                                                      cout<<"In if statement.."<<endl;
-                                                                      list<Node*> *operands = new list<Node*>();
-                                                                      operands->push_back( $3 );
-                                                                      operands->push_back( $5 );
-                                                                      Operator *ifNode = new Operator( __if, 2, operands );
-                                                                      $$ = ifNode;
-                                                                  }
-         | IF '(' conditionalExpression ')' block ELSE block      {
-                                                                      cout<<"if else statement.."<<endl;
-                                                                      list<Node*> *operands = new list<Node*>();
-                                                                      operands->push_back( $3 );
-                                                                      operands->push_back( $5 );
-                                                                      operands->push_back( $7 );
-                                                                      Operator *ifElseNode = new Operator( __ifelse, 3, operands );
-                                                                      $$ = ifElseNode;
-                                                                  }
+         | IF '(' conditionalExpression ')' block elseBlock {   // right now else block is compulsory,
+                                                                // because it is not yet decided, whether to make if an expression or a 
+                                                                // statement, if it becomes a statement, then else will be 
+                                                                // optional
+                                                                list<Node*> *operands = new list<Node*>();
+                                                                operands->push_back( $3 );
+                                                                operands->push_back( $5 );
+                                                                operands->push_back( $6 );
+                                                                Operator *ifNode = new Operator( __if, 3, operands );
+                                                                $$ = ifNode;
+                                                            }
          | expression ';'          { $$ = $1; }
          ;
 
+elseBlock: ELSE block  { 
+                            list<Node*> *operands = new list<Node*>();
+                            operands->push_back( $2 );
+                            Operator *elseNode = new Operator( __else, 1, operands );
+                            $$ = elseNode;
+                       }
+         | ELIF '(' conditionalExpression ')' block elseBlock {
+                                                                    list<Node*> *operands = new list<Node*>();
+                                                                    operands->push_back( $3 );
+                                                                    operands->push_back( $5 );
+                                                                    operands->push_back( $6 );
+                                                                    Operator *elifNode = new Operator( __elif, 3, operands );
+                                                                    $$ = elifNode;
+                                                              }
+         ;
 block : statement                              {  $$ = $1; }
       | '{' statementList '}'                  {  $$ = $2; }
       ;
@@ -373,11 +382,11 @@ int main(){
     int length;
     //cout<< "length of statement list: "<< programAST->getLength()<<endl;
     length = programAST->getLength();
-    /*for( int i = 0; i < length; i++ ){
+    for( int i = 0; i < length; i++ ){
       if( !programAST->empty() ){
         interp.evaluate( programAST->pop_front(), ctx, -1 );
       }
-    }*/
+    }
     /*bnk_types::Object *val = ctx->get( string("b") );
     bnk_types::Integer *i = CAST_TO( bnk_types::Integer, val );
     if( i != NULL )

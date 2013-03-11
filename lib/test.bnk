@@ -1,16 +1,5 @@
-if( a > b ){
-    print( "Hello" );
-}
-else if( c > d ){
-    print("Good");
-}
-
-if( a > b ){
-    
-}
-elif( c > d ){
-    
-}
-else{
-    
-}
+if( 2 <= 1 )
+    print("sagar");
+else
+    Int a = 12 + 12;
+print(a);

@@ -50,12 +50,13 @@
      IF = 268,
      ELSE = 269,
      NOT = 270,
-     IDENTIFIER = 271,
-     STRING = 272,
-     INTEGER = 273,
-     DOUBLE = 274,
-     NOTHING = 275,
-     EMPTY = 276
+     ELIF = 271,
+     IDENTIFIER = 272,
+     STRING = 273,
+     INTEGER = 274,
+     DOUBLE = 275,
+     NOTHING = 276,
+     EMPTY = 277
    };
 #endif
 /* Tokens.  */
@@ -72,12 +73,13 @@
 #define IF 268
 #define ELSE 269
 #define NOT 270
-#define IDENTIFIER 271
-#define STRING 272
-#define INTEGER 273
-#define DOUBLE 274
-#define NOTHING 275
-#define EMPTY 276
+#define ELIF 271
+#define IDENTIFIER 272
+#define STRING 273
+#define INTEGER 274
+#define DOUBLE 275
+#define NOTHING 276
+#define EMPTY 277
 
 
 
@@ -94,7 +96,7 @@ typedef union YYSTYPE
 
 
 /* Line 2068 of yacc.c  */
-#line 98 "y.tab.h"
+#line 100 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
