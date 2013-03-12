@@ -1,5 +1,6 @@
 #include<iostream>
 #include<map>
+#include<cstring>
 #include "../headers/udf.h"
 #include "../headers/node.h"
 
@@ -8,7 +9,9 @@ namespace bnk_types{
         // get the function name.
         Identifier *name = CAST_TO( Identifier, operands->get(0) );
 		if( name != NULL ){
-            functName = name->getName();
+		    char *tmpName = name->getName();		    
+            functName = new char[ strlen(tmpName) + 1 ];
+            strcpy( functName, tmpName );
 			//operands->pop_front();
 			// get the formalParameter list.
 			fpList = CAST_TO( FormalParameterList, operands->get(1) );
@@ -29,7 +32,7 @@ namespace bnk_types{
         }
     }
     // getter functions.
-    string UserDefinedFunction::getFunctionName(void){
+    char* UserDefinedFunction::getFunctionName(void){
         return functName;
     }
 

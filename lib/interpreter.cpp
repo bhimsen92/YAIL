@@ -225,7 +225,7 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                   Identifier  *functName = CAST_TO( Identifier, operands->get(0) );
                                   if( functName != NULL && !execContext->isBound( functName ) ){
                                     UserDefinedFunction *funct = new UserDefinedFunction( operands );
-                                    execContext->put( functName->getName(), funct );
+                                    execContext->put( string(functName->getName()), funct );
                                   }
                                   else{
                                       errorMessage( 2, "Multiple Declarations name: ", functName->getName() );
@@ -360,16 +360,21 @@ Object* Interpreter::evaluateBuiltInFunction( Identifier *functName, Operands *o
     }
     BuiltInFunction function = getBuiltInFunction( functName );
     function(args);
+    return NULL;
 }
 
 Object* Interpreter::evaluateUserDefinedFunction( Identifier *functName, Operands *arguments, Context *execContext ){
+    //cout<<"Name: "<<functName->getName()<<endl;
     Object *f = execContext->get( functName->getName() );
     UserDefinedFunction *function = CAST_TO( UserDefinedFunction, f );
-    Context *newContext = new Context();    
+    Context *newContext = new Context();
     // put the current function object in the new context.
     // so that function name will be available in the new context [ for recursive functions ]
     // and this is done as scope rules are yet to be determined.
     newContext->put( string( functName->getName() ), f );
+    NOTSAME( functName->getName(), function->getFunctionName() ){
+        newContext->put( string( function->getFunctionName() ), f );
+    }
     if( function != NULL ){
         // get formal parameter list.
         FormalParameterList *fpList = function->getFormalParameterList();
@@ -416,7 +421,9 @@ Object* Interpreter::evaluateUserDefinedFunction( Identifier *functName, Operand
 }
 
 bool Interpreter::isReturnType( Object* obj ){
-    return obj->getDataType() == __return_t;    
+    if( obj != NULL )
+        return obj->getDataType() == __return_t;
+    return false;
 }
 
 void Interpreter::loadBuiltIns(void){

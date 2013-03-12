@@ -12,7 +12,7 @@ using namespace bnk_astNodes;
 namespace bnk_types{
 	class UserDefinedFunction : public Object{
 		private:
-				string functName;
+				char* functName;
 				FormalParameterList *fpList;
 				int returnType;
 				StatementList *functBody;
@@ -20,7 +20,7 @@ namespace bnk_types{
 		public:
 				UserDefinedFunction( Operands *operands );
 				// getter functions.
-				string getFunctionName(void);
+				char* getFunctionName(void);
 				FormalParameterList* getFormalParameterList(void);
 				int getReturnType(void);
 				StatementList* getStatementList(void);
