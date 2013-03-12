@@ -25,4 +25,4 @@ function hof( Function fun ):Function
 }
 
 Function c = hof( fact );
-print(c(31));
+print(c(5));
