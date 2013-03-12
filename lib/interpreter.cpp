@@ -1,7 +1,4 @@
 // modifications that needs to be done: add stmtlist in case expressions, it will avoid lots of repeating code.
-// debug error in multiple args function call,
-// add return statement.
-// 
 #include<iostream>
 #include<cstdlib>
 #include<vector>
@@ -353,9 +350,11 @@ Object* Interpreter::evaluateBuiltInFunction( Identifier *functName, Operands *o
     list<Object*> *args = new list<Object*>();
     // pop the functName.
     //operands->pop_front();
-    int length = operands->size();
-    for( int i = 1; i < length; i++ ){
-        args->push_back( this->evaluate( operands->get(i), execContext, -1 ) );
+    // get the argument list.
+    ArgumentList *arglist = CAST_TO( ArgumentList, operands->get(1) );
+    int length = arglist->getLength();
+    for( int i = 0; i < length; i++ ){
+        args->push_back( this->evaluate( arglist->get(i), execContext, -1 ) );
         //operands->pop_front();
     }
     BuiltInFunction function = getBuiltInFunction( functName );
@@ -364,7 +363,6 @@ Object* Interpreter::evaluateBuiltInFunction( Identifier *functName, Operands *o
 }
 
 Object* Interpreter::evaluateUserDefinedFunction( Identifier *functName, Operands *arguments, Context *execContext ){
-    //cout<<"Name: "<<functName->getName()<<endl;
     Object *f = execContext->get( functName->getName() );
     UserDefinedFunction *function = CAST_TO( UserDefinedFunction, f );
     Context *newContext = new Context();
@@ -372,20 +370,22 @@ Object* Interpreter::evaluateUserDefinedFunction( Identifier *functName, Operand
     // so that function name will be available in the new context [ for recursive functions ]
     // and this is done as scope rules are yet to be determined.
     newContext->put( string( functName->getName() ), f );
+    // for higher order functions.
     NOTSAME( functName->getName(), function->getFunctionName() ){
         newContext->put( string( function->getFunctionName() ), f );
     }
     if( function != NULL ){
         // get formal parameter list.
         FormalParameterList *fpList = function->getFormalParameterList();
+        ArgumentList *arglist = CAST_TO( ArgumentList, arguments->get(1) );
         // check whether fpList and argument list length is equal or not.
-        if( fpList->getLength() == ( arguments->size() - 1 ) ){
+        if( fpList->getLength() == ( arglist->getLength() ) ){
             // go through each formal parameters, check their type,
             // if everything is OK, then put it inside the new context.
             int i, length = fpList->getLength();
             for( i = 0; i < length; i++ ){
                 FormalParameter *fParameter = CAST_TO( FormalParameter, fpList->get(i) );
-                Object *argVal = this->evaluate( arguments->get(i + 1), execContext, -1 );
+                Object *argVal = this->evaluate( arglist->get(i), execContext, -1 );
                 // check fParameter and argVal type match or not.
                 // if not throw error.
                 if( fParameter->getDataType() == argVal->getDataType() ){

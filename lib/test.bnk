@@ -1,28 +1,6 @@
-function fact( Int n ):Int
+function multi( Int a, Int b ):Int
 {
-    if( n == 0 )
-        return 1;
-    else
-        return n * fact( n - 1 );
+    return a * b;
 }
 
-function firstNSum( Int n ):Int
-{
-    if( n == 0 )
-        return 0;
-    else
-        return n + firstNSum( n - 1 );
-}
-
-function helloWorld():Nothing
-{
-    print("Hello world!!");
-}
-
-function hof( Function fun ):Function
-{
-    return fun;
-}
-
-Function c = hof( fact );
-print(c(5));
+print(multi( 4, 5 ) );

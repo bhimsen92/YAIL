@@ -218,7 +218,7 @@ formalParameterList : formalParameterDef                        {
                                                                     FormalParameterList *fpList = CAST_TO( FormalParameterList, $1 );
                                                                     if( fpList != NULL ){
                                                                       fpList->push_back( $3 );
-                                                                    }                                            
+                                                                    }
                                                                     $$ = fpList;
                                                                  }
                     ;
@@ -349,6 +349,7 @@ functCall : IDENTIFIER '(' arguments ')'  {
                                               operands->push_back( $1 );
                                               if( $3 != NULL ){
                                                   operands->push_back( $3 );
+                                                  //cout<<"Seen them."<<endl;
                                               }
                                               Operator *functCall = new Operator( __funct_call, 2, operands );
                                               $$ = functCall;
@@ -366,14 +367,16 @@ arguments : empty                  {
 arglist : expression                 {
                                         ArgumentList *arglist = new ArgumentList();
                                         arglist->push_back( $1 );
-                                        $$ = $1;
+                                        $$ = arglist;
+                                        //cout<<"Hello...args"<<endl;
                                         //_debugMessage( "In arguments..." );
                                      }
 
-        | arglist ',' expression     {                                          
+        | arglist ',' expression     {
                                         ArgumentList *arglist = CAST_TO( ArgumentList, $1 );
                                         arglist->push_back( $3 );
-                                        $$ = arglist;  
+                                        $$ = arglist;
+                                        //cout<<"Args seen: "<<arglist->getLength()<<endl;
                                      }
         ;
 %%

@@ -525,7 +525,7 @@ static const yytype_uint16 yyrline[] =
      209,   212,   217,   226,   232,   232,   242,   249,   259,   269,
      276,   283,   286,   293,   300,   303,   310,   313,   319,   325,
      328,   329,   330,   331,   332,   333,   334,   335,   337,   340,
-     341,   342,   343,   344,   347,   359,   363,   366,   373
+     341,   342,   343,   344,   347,   360,   364,   367,   375
 };
 #endif
 
@@ -1869,7 +1869,7 @@ yyreduce:
                                                                     FormalParameterList *fpList = CAST_TO( FormalParameterList, (yyvsp[(1) - (3)].node) );
                                                                     if( fpList != NULL ){
                                                                       fpList->push_back( (yyvsp[(3) - (3)].node) );
-                                                                    }                                            
+                                                                    }
                                                                     (yyval.node) = fpList;
                                                                  }
     break;
@@ -2162,6 +2162,7 @@ yyreduce:
                                               operands->push_back( (yyvsp[(1) - (4)].node) );
                                               if( (yyvsp[(3) - (4)].node) != NULL ){
                                                   operands->push_back( (yyvsp[(3) - (4)].node) );
+                                                  //cout<<"Seen them."<<endl;
                                               }
                                               Operator *functCall = new Operator( __funct_call, 2, operands );
                                               (yyval.node) = functCall;
@@ -2172,7 +2173,7 @@ yyreduce:
   case 65:
 
 /* Line 1806 of yacc.c  */
-#line 359 "parser.yacc"
+#line 360 "parser.yacc"
     {
                                       (yyval.node) = NULL;
                                    }
@@ -2181,18 +2182,19 @@ yyreduce:
   case 66:
 
 /* Line 1806 of yacc.c  */
-#line 363 "parser.yacc"
+#line 364 "parser.yacc"
     {  (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 67:
 
 /* Line 1806 of yacc.c  */
-#line 366 "parser.yacc"
+#line 367 "parser.yacc"
     {
                                         ArgumentList *arglist = new ArgumentList();
                                         arglist->push_back( (yyvsp[(1) - (1)].node) );
-                                        (yyval.node) = (yyvsp[(1) - (1)].node);
+                                        (yyval.node) = arglist;
+                                        //cout<<"Hello...args"<<endl;
                                         //_debugMessage( "In arguments..." );
                                      }
     break;
@@ -2200,18 +2202,19 @@ yyreduce:
   case 68:
 
 /* Line 1806 of yacc.c  */
-#line 373 "parser.yacc"
-    {                                          
+#line 375 "parser.yacc"
+    {
                                         ArgumentList *arglist = CAST_TO( ArgumentList, (yyvsp[(1) - (3)].node) );
                                         arglist->push_back( (yyvsp[(3) - (3)].node) );
-                                        (yyval.node) = arglist;  
+                                        (yyval.node) = arglist;
+                                        //cout<<"Args seen: "<<arglist->getLength()<<endl;
                                      }
     break;
 
 
 
 /* Line 1806 of yacc.c  */
-#line 2215 "y.tab.c"
+#line 2218 "y.tab.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2442,7 +2445,7 @@ yyreturn:
 
 
 /* Line 2067 of yacc.c  */
-#line 379 "parser.yacc"
+#line 382 "parser.yacc"
 
 
 void yyerror( const char* error ){
