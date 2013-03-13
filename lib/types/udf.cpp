@@ -63,7 +63,8 @@ namespace bnk_types{
         
     void UserDefinedFunction::createClosure( Context *oContext ){
         // create a new context.
-        closureLink = new Context();
+        if( !this->closureExist() )
+            closureLink = new Context();
         map< string, Object* > *enclosingEnv = oContext->getSymbolTable();
         map< string, Object* >::iterator it = enclosingEnv->begin();
         for( ; it != enclosingEnv->end(); ++it ){

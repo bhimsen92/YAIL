@@ -20,6 +20,11 @@ class Context{
                 enclosingEnv = NULL;
                 symbolTable = new map< string, Object* >();
             }
+            ~Context(void){                
+                if( enclosingEnv != NULL )
+                    delete enclosingEnv;
+                delete symbolTable;
+            }
             map< string, Object* >* getSymbolTable();    
 //            stack< Thread* > getSpawnStack();
             void setSymbolTable( map< string, Object* > *symTab );
@@ -27,6 +32,12 @@ class Context{
             void put( string ident, Object* value );
             void setEnclosingContext( Context *altContext ){
                 enclosingEnv = altContext;
+            }
+            bool hasEnclosingContextSet(void){
+                return enclosingEnv != NULL;
+            }
+            Context* getEnclosingContext(void){
+                return enclosingEnv;
             }
             Object* get( string ident );
             bool isBound( bnk_astNodes::Identifier *id );

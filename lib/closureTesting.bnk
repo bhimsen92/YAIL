@@ -4,7 +4,7 @@ function outer( Int a ): Function
     function inner( Int b ): Function
     {
         function boom( Int c ): Int{
-            return b + c;
+            return a + b + c;
         }
         return boom;
         
@@ -41,9 +41,7 @@ function say( String str ): Nothing{
     print(str);
 }
 
-# Function t = testing(2);
-# print(t(3));
-
-Function praise = t1( say );
-praise("Bhimsen is a good boy...!!");
-
+Function s = outer(1);
+Function d = outer(10);
+print(s(2));
+print(d(5));

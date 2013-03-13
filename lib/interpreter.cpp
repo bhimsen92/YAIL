@@ -228,7 +228,13 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                         // if so, a closure needs to be formed.
                                         // copy the current context into the function as closureLink.
                                         funct->createClosure( execContext );
-                                    }                                    
+                                        if( execContext->hasEnclosingContextSet() ){
+                                            // if the existing context has already has closure link.
+                                            // then add this to the current function closure.
+                                            // name here is misleading, i am too lazy to change it :D
+                                            funct->createClosure( execContext->getEnclosingContext() );
+                                        }
+                                    }
                                   }
                                   else{
                                       errorMessage( 2, "Multiple Declarations name: ", functName->getName() );
@@ -369,7 +375,7 @@ Object* Interpreter::evaluateBuiltInFunction( Identifier *functName, Operands *o
 }
 
 Object* Interpreter::evaluateUserDefinedFunction( Identifier *functName, Operands *arguments, Context *execContext ){
-    Object *f = execContext->get( functName->getName() );
+    Object *f = execContext->get( functName->getName() ), *rval = NULL;
     UserDefinedFunction *function = CAST_TO( UserDefinedFunction, f );
     Context *newContext = new Context();
     // put the current function object in the new context.
@@ -418,7 +424,8 @@ Object* Interpreter::evaluateUserDefinedFunction( Identifier *functName, Operand
                     ReturnValue *robj = CAST_TO( ReturnValue, tmpObj );
                     if( robj != NULL ){
                         //errorMessage( 1, "In function call, return object seen..." );
-                        return robj->getObject();
+                        rval = robj->getObject();
+                        break;
                     }
                 }
             }
@@ -428,7 +435,9 @@ Object* Interpreter::evaluateUserDefinedFunction( Identifier *functName, Operand
             exit(1);
         }
     }
-    return NULL;
+    // delete the context.
+    delete newContext;
+    return rval;
 }
 
 bool Interpreter::isReturnType( Object* obj ){
