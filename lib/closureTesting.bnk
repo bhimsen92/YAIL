@@ -1,14 +1,49 @@
-function outer( Int a ): Int
+# multiple level closure not yet supported.
+function outer( Int a ): Function
 {
-    Int b = a;
-    function inner( Int a ): Int
+    function inner( Int b ): Function
     {
-        return b + a;
+        function boom( Int c ): Int{
+            return b + c;
+        }
+        return boom;
+        
+    }
+    return inner(5);
+}
+
+function testing( Int a ): Function
+{
+    Int b = 12;
+    if( a == 1 ){
+        function inner( Int c ): Int{
+            return c + b;
+        }
+    }
+    else{
+        function inner( Int c): Int{
+            return c * b;
+        }
     }
     return inner;
 }
 
-Function c = outer(5);
-Function d = outer(10);
-print(c(95));
-print(d(90));
+function t1( Function fun ): Function
+{
+    function inner( String val ):Nothing
+    {
+        fun(val);
+    }
+    return inner;
+}
+
+function say( String str ): Nothing{
+    print(str);
+}
+
+# Function t = testing(2);
+# print(t(3));
+
+Function praise = t1( say );
+praise("Bhimsen is a good boy...!!");
+
