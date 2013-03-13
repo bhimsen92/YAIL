@@ -15,6 +15,9 @@ namespace bnk_types{
                 Boolean( bool val ): Object( __boolean_t, BooleanClass ){
                     value = new Value( val );
                 }
+                Object* getCopy(void){
+                    return new Boolean( value->getBooleanValue() );
+                }
     };
 }
 #endif

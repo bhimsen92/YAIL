@@ -3,9 +3,11 @@
 #include<cstring>
 #include "../headers/udf.h"
 #include "../headers/node.h"
+#include "../headers/context.h"
 
 namespace bnk_types{
     UserDefinedFunction::UserDefinedFunction( Operands *operands ) : Object( __function_t ){
+        closureLink = NULL;
         // get the function name.
         Identifier *name = CAST_TO( Identifier, operands->get(0) );
 		if( name != NULL ){
@@ -31,7 +33,18 @@ namespace bnk_types{
             }
         }
     }
+    UserDefinedFunction::UserDefinedFunction( char* fName, FormalParameterList *fpl, int rt, StatementList *stList, Context* enclosingLink ): Object( __function_t ){
+        fpList = fpl;
+        returnType = rt;
+        functBody = stList;
+        closureLink = enclosingLink;
+        functName = new char[ strlen( fName ) + 1 ];
+        strcpy( functName, fName );        
+    }
     // getter functions.
+    Object* UserDefinedFunction::getCopy(){
+        return new UserDefinedFunction( functName, fpList, returnType, functBody, closureLink );
+    }
     char* UserDefinedFunction::getFunctionName(void){
         return functName;
     }
@@ -47,5 +60,25 @@ namespace bnk_types{
     StatementList* UserDefinedFunction::getStatementList(void){
         return functBody;
     }
-
+        
+    void UserDefinedFunction::createClosure( Context *oContext ){
+        // create a new context.
+        closureLink = new Context();
+        map< string, Object* > *enclosingEnv = oContext->getSymbolTable();
+        map< string, Object* >::iterator it = enclosingEnv->begin();
+        for( ; it != enclosingEnv->end(); ++it ){
+            string key = it->first;
+            Object *value = it->second;
+            if( value != NULL )
+                closureLink->put( key, value->getCopy() );
+        }
+    }
+    
+    bool UserDefinedFunction::closureExist(){
+        return closureLink != NULL;
+    }
+    
+    Context* UserDefinedFunction::getClosureContext(){
+        return closureLink;
+    }
 }

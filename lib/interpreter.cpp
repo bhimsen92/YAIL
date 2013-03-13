@@ -1,4 +1,5 @@
 // modifications that needs to be done: add stmtlist in case expressions, it will avoid lots of repeating code.
+// 2264 lines.
 #include<iostream>
 #include<cstdlib>
 #include<vector>
@@ -223,6 +224,11 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                   if( functName != NULL && !execContext->isBound( functName ) ){
                                     UserDefinedFunction *funct = new UserDefinedFunction( operands );
                                     execContext->put( string(functName->getName()), funct );
+                                    if( ISINSIDE_FUNCTION ){
+                                        // if so, a closure needs to be formed.
+                                        // copy the current context into the function as closureLink.
+                                        funct->createClosure( execContext );
+                                    }                                    
                                   }
                                   else{
                                       errorMessage( 2, "Multiple Declarations name: ", functName->getName() );
@@ -373,6 +379,11 @@ Object* Interpreter::evaluateUserDefinedFunction( Identifier *functName, Operand
     // for higher order functions.
     NOTSAME( functName->getName(), function->getFunctionName() ){
         newContext->put( string( function->getFunctionName() ), f );
+    }
+    // check whether closure exist on this function.
+    if( function->closureExist() ){
+        // if so, attache the closure context to the current context.
+        newContext->setEnclosingContext( function->getClosureContext() );
     }
     if( function != NULL ){
         // get formal parameter list.

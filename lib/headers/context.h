@@ -2,7 +2,7 @@
 #include<cstdlib>
 #include<string>
 #include<map>
-#include<stack>
+#include<list>
 #include "object.h"
 #include "node.h"
 
@@ -12,17 +12,22 @@ using namespace std;
 using namespace bnk_types;
 class Context{
     private:
-            map<string, Object*> symbolTable;
+            map<string, Object*> *symbolTable;
+            Context *enclosingEnv;
 //            stack<Thread*> spawnStack;
     public:
-            /** 
-            * getter functions 
-            */
-            map< string, Object* > getSymbolTable();            
+            Context(void){
+                enclosingEnv = NULL;
+                symbolTable = new map< string, Object* >();
+            }
+            map< string, Object* >* getSymbolTable();    
 //            stack< Thread* > getSpawnStack();
-            void setSymbolTable( map< string, Object* > symTab );
+            void setSymbolTable( map< string, Object* > *symTab );
 //            void setSpawnStack( stack< Thread* > sStack );
             void put( string ident, Object* value );
+            void setEnclosingContext( Context *altContext ){
+                enclosingEnv = altContext;
+            }
             Object* get( string ident );
             bool isBound( bnk_astNodes::Identifier *id );
 };

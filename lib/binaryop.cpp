@@ -57,6 +57,10 @@ Object* AdditionOperation::exec( int a, int b ){
     return new Integer( a + b );
 }
 
+Object* AdditionOperation::exec( double a, double b ){
+    return new Double( a + b );
+}
+
 bool AdditionOperation::isTypeCompatible(void){
     // Addition operation is defined for NumberClass, CharClass and ListClass.
     // if the operands(both) belong to one of this classes then interpreter can
@@ -80,12 +84,24 @@ Object* SubtractionOperation::exec( int a, int b ){
     return new Integer( a - b );
 }
 
+Object* SubtractionOperation::exec( double a, double b ){
+    return new Double( a - b );
+}
+
 Object* MultiplicationOperation::exec( int a, int b ){
     return new Integer( a * b );
 }
 
+Object* MultiplicationOperation::exec( double a, double b ){
+    return new Double( a * b );    
+}
+
 Object* DivOperation::exec( int a, int b ){
     return new Integer( a / b );
+}
+
+Object* DivOperation::exec( double a, double b ){
+    return new Double( a / b );    
 }
 
 Object* OrOperation::exec( int a, int b ){

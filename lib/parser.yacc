@@ -358,7 +358,7 @@ functCall : IDENTIFIER '(' arguments ')'  {
           ;
 
 arguments : empty                  {
-                                      $$ = NULL;
+                                      $$ = new ArgumentList();
                                    }
                                    
           | arglist                {  $$ = $1; }

@@ -48,7 +48,7 @@ class AdditionOperation: public BinaryOperation{
             bool isTypeCompatible(void);
             Object* exec( int, int );
             Object* exec( int, double ){ return NULL; }
-            Object* exec( double, double ){ return NULL; }
+            Object* exec( double, double );
 };
 
 class SubtractionOperation: public BinaryOperation{
@@ -57,7 +57,7 @@ class SubtractionOperation: public BinaryOperation{
             }
             Object* exec( int, int );
             Object* exec( int, double ){ return NULL; }
-            Object* exec( double, double ){ return NULL; }            
+            Object* exec( double, double );
 };
 
 class MultiplicationOperation: public BinaryOperation{
@@ -66,7 +66,7 @@ class MultiplicationOperation: public BinaryOperation{
             }
             Object* exec( int, int );
             Object* exec( int, double ){ return NULL; }
-            Object* exec( double, double ){ return NULL; }
+            Object* exec( double, double );
 };
 
 class DivOperation: public BinaryOperation{
@@ -75,7 +75,7 @@ class DivOperation: public BinaryOperation{
             }
             Object* exec( int, int );
             Object* exec( int, double ){ return NULL; }
-            Object* exec( double, double ){ return NULL; }
+            Object* exec( double, double );
 };
 
 class OrOperation: public BinaryOperation{

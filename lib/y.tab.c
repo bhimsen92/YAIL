@@ -2175,7 +2175,7 @@ yyreduce:
 /* Line 1806 of yacc.c  */
 #line 360 "parser.yacc"
     {
-                                      (yyval.node) = NULL;
+                                      (yyval.node) = new ArgumentList();
                                    }
     break;
 

@@ -11,6 +11,7 @@ namespace bnk_types{
 class Char : public Object{
     public:
             Char( int t);
+            Object* getCopy(void){ return NULL; }
 };
 
 class String : public Char{
@@ -19,6 +20,9 @@ class String : public Char{
     public:
             String( char* strData );
             int getLength(void);
+            Object* getCopy(void){
+                return new String( value->getStringVal() );
+            }
 };
 }
 #endif

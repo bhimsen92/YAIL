@@ -1,0 +1,14 @@
+function outer( Int a ): Int
+{
+    Int b = a;
+    function inner( Int a ): Int
+    {
+        return b + a;
+    }
+    return inner;
+}
+
+Function c = outer(5);
+Function d = outer(10);
+print(c(95));
+print(d(90));

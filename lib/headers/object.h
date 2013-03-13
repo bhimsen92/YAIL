@@ -21,7 +21,8 @@ namespace bnk_types{
                 int getTypeClass(void);
                 Value* getValue(void);
                 void   setValue(Value *val);
-                virtual void dummy(void){}
+                //virtual void dummy(void){}
+                virtual Object* getCopy(void)=0;
 	};
 	
 	// no need to create a file for this.
@@ -29,7 +30,10 @@ namespace bnk_types{
 	    public:
 	              Nothing( void* val ): Object( __nothing_t, NothingClass ){
 	                  value = NULL;
-	              }	              
+	              }
+	              Object* getCopy(void){
+	                  return new Nothing(NULL);
+	              }
 	};
 	// no need to create a file for this.
 	class ReturnValue : public Object{
@@ -41,6 +45,9 @@ namespace bnk_types{
 	            }
 	            Object* getObject(void){
 	                return value;
+	            }
+	            Object* getCopy(void){
+	                return new ReturnValue( value );
 	            }
 	};
 }
