@@ -3,6 +3,7 @@
 #include<cstring>
 #include "value.h"
 #include "tokens.h"
+
 #ifndef __OBJECT_TYPE
 #define __OBJECT_TYPE
 using namespace std;

@@ -55,6 +55,22 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                 return new bnk_types::Nothing( nothing->getValue() );
                             }
                             break;
+/*                            
+        case __array_list:
+                            bnk_astNodes::ValueList *vlist;
+                            Object *array;
+                            vlist = CAST_TO( bnk_astNodes::ValueList, astNode );
+                            array = new Array();
+                            if( vlist != NULL ){
+                                int length = vlist->getLength(), i;
+                                Object *val;
+                                for( i = 0; i < length; i++ ){
+                                    val = this->evaluate( vlist->get(i), execContext, -1 );
+                                    array->push_back( val );
+                                }
+                            }
+                            return array;                            
+*/                            
         case __double:
                             bnk_astNodes::Double *realVal;
                             realVal = CAST_TO( bnk_astNodes::Double, astNode );

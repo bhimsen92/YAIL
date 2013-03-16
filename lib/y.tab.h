@@ -52,12 +52,13 @@
      NOT = 270,
      ELIF = 271,
      RETURN = 272,
-     IDENTIFIER = 273,
-     STRING = 274,
-     INTEGER = 275,
-     DOUBLE = 276,
-     NOTHING = 277,
-     EMPTY = 278
+     ARRAY_T = 273,
+     IDENTIFIER = 274,
+     STRING = 275,
+     INTEGER = 276,
+     DOUBLE = 277,
+     NOTHING = 278,
+     EMPTY = 279
    };
 #endif
 /* Tokens.  */
@@ -76,12 +77,13 @@
 #define NOT 270
 #define ELIF 271
 #define RETURN 272
-#define IDENTIFIER 273
-#define STRING 274
-#define INTEGER 275
-#define DOUBLE 276
-#define NOTHING 277
-#define EMPTY 278
+#define ARRAY_T 273
+#define IDENTIFIER 274
+#define STRING 275
+#define INTEGER 276
+#define DOUBLE 277
+#define NOTHING 278
+#define EMPTY 279
 
 
 
@@ -91,14 +93,14 @@ typedef union YYSTYPE
 {
 
 /* Line 2068 of yacc.c  */
-#line 39 "parser.yacc"
+#line 35 "parser.yacc"
 
     bnk_astNodes::Node *node;
 
 
 
 /* Line 2068 of yacc.c  */
-#line 102 "y.tab.h"
+#line 104 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

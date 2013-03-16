@@ -27,11 +27,7 @@ void removeType(void);
 StatementList *programAST;
 stack<StatementList*> statementStack;
 stack<DataType> typeStack;
-
-//ParameterList *plist = NULL;
-//FunctionCall  *fcall = NULL;
 StatementList *stmtList = NULL;
-//ArgumentList  *argList = NULL;
 int counter = 0;
 
 %}
@@ -40,7 +36,7 @@ int counter = 0;
     bnk_astNodes::Node *node;
 };
 
-%token FUNCTION INTEGER_T DOUBLE_T STRING_T FUNCTION_T OR AND EQUAL LE GE IF ELSE NOT ELIF RETURN
+%token FUNCTION INTEGER_T DOUBLE_T STRING_T FUNCTION_T OR AND EQUAL LE GE IF ELSE NOT ELIF RETURN ARRAY_T
 %token <node> IDENTIFIER
 %token <node> STRING
 %token <node> INTEGER
@@ -50,14 +46,13 @@ int counter = 0;
 
 %type <node> program statement statementList variableList variableDeclarations variableDefinition expression atom type
 %type <node> functionDefinition returnType formalParameters formalParameterList formalParameterDef functionBody arglist arguments functCall
-%type <node> block conditionalExpression orExp andExp equality relationalOp term power unary elseBlock
+%type <node> block conditionalExpression orExp andExp equality relationalOp term power unary elseBlock list indexOp valueList
 
 %%
 program: statementList {
                           programAST = CAST_TO( StatementList, $1 );
                           if( programAST != NULL ){
                             $$ = $1;
-                            //_debugMessage( "ParsingDone....:)" );
                           }
                        }
        ;
@@ -76,7 +71,6 @@ statementList: empty                   {
              ;
 
 statement: variableDefinition ';'  {
-                                      //_debugMessage( "In statement..." );
                                       $$ = $1;
                                       removeType();
                                    }
@@ -96,7 +90,6 @@ statement: variableDefinition ';'  {
                                                                 $$ = ifNode;
                                                             }
          | RETURN expression ';'   {
-                                        //cout<<"In return statement!!"<<endl;
                                         Operands *operands = new Operands();
                                         operands->push_back( $2 );
                                         Operator *returnNode = new Operator( __return, 1, operands );
@@ -243,11 +236,9 @@ variableList: variableDeclarations                 {
                                                         VariableList *vlist = new VariableList( -1 );
                                                         vlist->push_back( $1 );
                                                         $$ = vlist;
-                                                        //_debugMessage( "here..." );
                                                    }
 
             | variableList ',' variableDeclarations {
-                                                         //_debugMessage( "good" );
                                                          VariableList *vlist = CAST_TO( VariableList, $1 );
                                                          if( vlist != NULL ){
                                                             vlist->push_back( $3 );
@@ -332,6 +323,8 @@ atom  : IDENTIFIER    { $$ = $1; }
       | NOTHING       { $$ = $1; }
       | EMPTY         { $$ = $1; }
       | functCall     { $$ = $1; }
+      | list          { $$ = $1; }
+      | indexOp       { $$ = $1; }
       | '(' conditionalExpression ')'  { $$ = $2; }
 
 empty :
@@ -342,6 +335,7 @@ type : INTEGER_T  {  $$ = new Type( __integer_t ); }
      | STRING_T   {  $$ = new Type( __string_t );  }
      | FUNCTION_T {  $$ = new Type( __function_t ); }
      | NOTHING    {  $$ = new Type( __nothing_t ); }
+     | ARRAY_T    {  $$ = new Type( __array_t ); }
      ;
 
 functCall : IDENTIFIER '(' arguments ')'  {
@@ -349,11 +343,9 @@ functCall : IDENTIFIER '(' arguments ')'  {
                                               operands->push_back( $1 );
                                               if( $3 != NULL ){
                                                   operands->push_back( $3 );
-                                                  //cout<<"Seen them."<<endl;
                                               }
                                               Operator *functCall = new Operator( __funct_call, 2, operands );
                                               $$ = functCall;
-                                              //cout<<"saw function call, all is well..."<<endl;
                                           }
           ;
 
@@ -379,6 +371,31 @@ arglist : expression                 {
                                         //cout<<"Args seen: "<<arglist->getLength()<<endl;
                                      }
         ;
+
+list : '[' valueList ']'   { $$ = $2; }
+     ;
+
+valueList : expression               { ValueList *vlist = new ValueList();
+                                       vlist->push_back( $1 );
+                                       $$ = vlist;
+                                     }
+                                     
+          | valueList ',' expression {
+                                        ValueList *vlist = CAST_TO( ValueList, $1 );
+                                        if( vlist != NULL ){
+                                            vlist->push_back( $3 );
+                                        }
+                                        $$ = vlist;
+                                     }
+          ;
+indexOp : IDENTIFIER '[' INTEGER ']' {
+                                        Operands *operands = new Operands();
+                                        operands->push_back( $1 );
+                                        operands->push_back( $3 );
+                                        Operator *arrayReadOp = new Operator( __indexOp, 2, operands );
+                                        $$ = arrayReadOp;
+                                     }
+        ;
 %%
 
 void yyerror( const char* error ){
@@ -390,18 +407,12 @@ int main(){
     Context *ctx = new Context();
     Interpreter interp;
     int length;
-    //cout<< "length of statement list: "<< programAST->getLength()<<endl;
-    //cout<<"Parsing done!!"<<endl;
     length = programAST->getLength();
     for( int i = 0; i < length; i++ ){
       if( !programAST->empty() ){
         interp.evaluate( programAST->pop_front(), ctx, -1 );
       }
     }
-    /*bnk_types::Object *val = ctx->get( string("b") );
-    bnk_types::Integer *i = CAST_TO( bnk_types::Integer, val );
-    if( i != NULL )
-      cout<<"value b: "<<i->getValue()<<endl;*/
     return 0;
 }
 

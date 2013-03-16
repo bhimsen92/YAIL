@@ -192,6 +192,10 @@ class Expression: public Node{
 
     FormalParameterList::FormalParameterList() : List( __params ){
     }
+    
+    ValueList::ValueList() : List( __array_list ){
+        
+    }
 
     FormalParameter::FormalParameter( int _type, char* pName ): Node( __params ){
         dataType = _type;

@@ -140,6 +140,11 @@ class FormalParameterList : public List{
              FormalParameterList();
 };
 
+class ValueList : public List{
+    public:
+            ValueList();
+};
+
 class FormalParameter: public Node{
     private:
             int   dataType;
