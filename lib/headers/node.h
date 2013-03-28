@@ -16,6 +16,7 @@ class Node{
     public:
             Node( int nType );
             int getType(void);
+            char* toString(void);
             virtual void dummy(void){}
 };
 
@@ -46,9 +47,14 @@ class Operands{
 class Identifier: public Node{
     protected:
                char* name;
+               // offset is used to calculate the address of
+               // identifier from the frame pointer.
+               int   offset;
     public:
-           Identifier( char* n );
+           Identifier( char* n, int position );
            char* getName(void);
+           int   getOffset(void);
+           char* toString(){ return name; }
 };
 
 class String: public Node{
@@ -60,6 +66,7 @@ class String: public Node{
              char* getString(void);
              int getLength(void);
              char* removeQuotes( char* str, int length );
+             char* toString(){ return string; }
 };
 
 class Integer: public Node{
@@ -67,10 +74,18 @@ class Integer: public Node{
         int value;
 
     public:
-        Integer( char* str );
+        Integer(char* str);
+        Integer(int v){
+            value = v;
+        }
         void toInteger( char* str );
         int getValue(void);
         void setValue( int val );
+        char* toString(){
+            char *rval = new char[32];
+            sprintf(rval, "%d", value);
+            return rval;
+        }
 };
 
 class Double: public Node{
@@ -81,15 +96,25 @@ class Double: public Node{
         void toDouble( char *str );
         double getValue(void);
         void setValue( double val );
+        char* toString(){
+            char *rval = new char[32];
+            sprintf(rval, "%f", value);
+            return rval;
+        }
 };
 
 class Type: public Node{
     protected:
+            // type holds the datatype info.
             int type;
+            // width of the type for storage purpose.
+            int width;
     public:
-            Type( int _type );
+            Type(int _t, int w);
             int getDataType(void);
+            int getDataWidth(void);
             void setDataType(int _type);
+            void setDataWidth(int w);
 };
 
 class Expression: public Node{
@@ -164,6 +189,37 @@ class ArgumentList : public List{
 class StatementList : public List{
     public:
              StatementList(void);
+};
+
+class Temp : public Node{
+    private:
+            char t[32];    
+            int  offset;
+    public:
+            Temp( int tmpIndex, int position ) : Node(-1){
+                sprintf( t, "t%d", tmpIndex );
+                offset = position;
+            }
+            char* toString(){
+                return t;
+            }
+};
+
+class Register : public Node{
+    private:
+            int regType;
+            //char regName[8];
+    public:
+            Register(int t) : Node(-1){
+                regType = t;
+            }
+            
+            const char* toString(){
+                if(regType == _eax)
+                    return "%eax";
+                else if(regType == _ecx)
+                    return "%ecx";
+            }
 };
 }
 #endif

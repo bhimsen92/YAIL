@@ -28,4 +28,5 @@ function circleArea( Double radius ): Double
 print( "Area of circle with radius 5 is:" );
 print(circleArea( 5.0 ));
 print("sum of first 10 num: ");
-print(firstNSum(10));
+print(firstNSum(15));
+print(firstNSum(fact(4)));

@@ -5,7 +5,7 @@
 #include "headers/bnKapi.h"
 #include "headers/tokens.h"
 #include "headers/node.h"
-#include "headers/interpreter.h"
+#include "headers/treewalker.h"
 #include "headers/context.h"
 #include "headers/object.h"
 #include "headers/number.h"
@@ -330,12 +330,12 @@ atom  : IDENTIFIER    { $$ = $1; }
 empty :
       ;
 
-type : INTEGER_T  {  $$ = new Type( __integer_t ); }
-     | DOUBLE_T   {  $$ = new Type( __double_t );  }
-     | STRING_T   {  $$ = new Type( __string_t );  }
-     | FUNCTION_T {  $$ = new Type( __function_t ); }
-     | NOTHING    {  $$ = new Type( __nothing_t ); }
-     | ARRAY_T    {  $$ = new Type( __array_t ); }
+type : INTEGER_T  {  $$ = new Type(__integer_t, 4 ); }
+     | DOUBLE_T   {  $$ = new Type(__double_t, 8 );  }
+     | STRING_T   {  $$ = new Type(__string_t, 0 );  }
+     | FUNCTION_T {  $$ = new Type(__function_t, 0); }
+     | NOTHING    {  $$ = new Type(__nothing_t, 0); }
+     | ARRAY_T    {  $$ = new Type(__array_t, 0); }
      ;
 
 functCall : IDENTIFIER '(' arguments ')'  {
@@ -405,12 +405,12 @@ void yyerror( const char* error ){
 int main(){   
     yyparse();
     Context *ctx = new Context();
-    Interpreter interp;
+    TreeWalker treewalker;
     int length;
     length = programAST->getLength();
     for( int i = 0; i < length; i++ ){
       if( !programAST->empty() ){
-        interp.evaluate( programAST->pop_front(), ctx, -1 );
+        treewalker.evaluate( programAST->get(i), ctx, -1 );
       }
     }
     return 0;

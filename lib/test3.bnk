@@ -1,0 +1,18 @@
+Int a = 10;
+Int b = a + 10;
+function fibo( Int num ): Int
+{
+    if( num == 1 ){
+        return 1;
+    }
+    else
+        if( num == 2 )
+            return 1;
+        else{
+            Int a = fibo( num - 2 );
+            Int b = fibo( num - 1 );
+            return a + b;
+        }
+}
+
+print(fibo(fibo(4)));

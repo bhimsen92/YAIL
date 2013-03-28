@@ -1,4 +1,3 @@
-# multiple level closure not yet supported.
 function outer( Int a ): Function
 {
     function inner( Int b ): Function
@@ -45,3 +44,6 @@ Function s = outer(1);
 Function d = outer(10);
 print(s(2));
 print(d(5));
+
+Function praise = t1(say);
+praise( "Hello world!!!" );
