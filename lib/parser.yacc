@@ -249,10 +249,10 @@ variableList: variableDeclarations                 {
 
 variableDeclarations: IDENTIFIER '=' expression {
                                                     Operands *operands = new Operands();
-                                                    operands->push_back( new Type( getType() ) );
-                                                    operands->push_back( $1 );
-                                                    operands->push_back( $3 );
-                                                    Operator *node = new Operator( __assignment, 3, operands );
+                                                    operands->push_back(NULL);
+                                                    operands->push_back($1);
+                                                    operands->push_back($3);
+                                                    Operator *node = new Operator(__assignment, 3, operands);
                                                     $$ = node;
                                                 }
                     ;
@@ -284,7 +284,7 @@ term: term '*' power                     {
     | term '/' power                      {
                                               Operands *operands = new Operands();
                                               operands->push_back( $1 );
-                                              operands->push_back( $3 );
+                                              operands->push_back($3);
                                               Operator *divNode = new Operator( __div, 2, operands );
                                               $$ = divNode;
                                           }
@@ -410,9 +410,10 @@ int main(){
     length = programAST->getLength();
     for( int i = 0; i < length; i++ ){
       if( !programAST->empty() ){
-        treewalker.evaluate( programAST->get(i), ctx, -1 );
+        treewalker.evaluate( programAST->get(i), ctx, NULL );
       }
     }
+    treewalker.generateIRCode();
     return 0;
 }
 

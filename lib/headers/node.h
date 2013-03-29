@@ -2,9 +2,11 @@
 #include<cstring>
 #include<list>
 #include<vector>
+#include<cstdio>
 #include "tokens.h"
 #include "bnKapi.h"
-
+#include "instr.h"
+ 
 #ifndef __NODE_TYPE
 #define __NODE_TYPE
 using namespace std;
@@ -16,7 +18,7 @@ class Node{
     public:
             Node( int nType );
             int getType(void);
-            char* toString(void);
+            virtual char* toString(void){}
             virtual void dummy(void){}
 };
 
@@ -51,9 +53,12 @@ class Identifier: public Node{
                // identifier from the frame pointer.
                int   offset;
     public:
-           Identifier( char* n, int position );
+           Identifier(char* n);
            char* getName(void);
            int   getOffset(void);
+           void  setOffset(int pos){
+               offset = pos;
+           }
            char* toString(){ return name; }
 };
 
@@ -75,7 +80,7 @@ class Integer: public Node{
 
     public:
         Integer(char* str);
-        Integer(int v){
+        Integer(int v) : Node(__integer){
             value = v;
         }
         void toInteger( char* str );
@@ -207,18 +212,18 @@ class Temp : public Node{
 
 class Register : public Node{
     private:
-            int regType;
+            Reg _register;
             //char regName[8];
     public:
-            Register(int t) : Node(-1){
-                regType = t;
+            Register(Reg t) : Node(-1){
+                _register = t;
             }
             
-            const char* toString(){
-                if(regType == _eax)
-                    return "%eax";
-                else if(regType == _ecx)
-                    return "%ecx";
+            char* toString(){
+                if(_register == eax)
+                    return (char*)"%eax";
+                else if(_register == ecx)
+                    return (char*)"%ecx";
             }
 };
 }

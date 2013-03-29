@@ -74,7 +74,7 @@
 #include "headers/bnKapi.h"
 #include "headers/tokens.h"
 #include "headers/node.h"
-#include "headers/interpreter.h"
+#include "headers/treewalker.h"
 #include "headers/context.h"
 #include "headers/object.h"
 #include "headers/number.h"
@@ -1947,10 +1947,10 @@ yyreduce:
 #line 250 "parser.yacc"
     {
                                                     Operands *operands = new Operands();
-                                                    operands->push_back( new Type( getType() ) );
-                                                    operands->push_back( (yyvsp[(1) - (3)].node) );
-                                                    operands->push_back( (yyvsp[(3) - (3)].node) );
-                                                    Operator *node = new Operator( __assignment, 3, operands );
+                                                    operands->push_back(NULL);
+                                                    operands->push_back((yyvsp[(1) - (3)].node));
+                                                    operands->push_back((yyvsp[(3) - (3)].node));
+                                                    Operator *node = new Operator(__assignment, 3, operands);
                                                     (yyval.node) = node;
                                                 }
     break;
@@ -2008,7 +2008,7 @@ yyreduce:
     {
                                               Operands *operands = new Operands();
                                               operands->push_back( (yyvsp[(1) - (3)].node) );
-                                              operands->push_back( (yyvsp[(3) - (3)].node) );
+                                              operands->push_back((yyvsp[(3) - (3)].node));
                                               Operator *divNode = new Operator( __div, 2, operands );
                                               (yyval.node) = divNode;
                                           }
@@ -2146,42 +2146,42 @@ yyreduce:
 
 /* Line 1806 of yacc.c  */
 #line 333 "parser.yacc"
-    {  (yyval.node) = new Type( __integer_t ); }
+    {  (yyval.node) = new Type(__integer_t, 4 ); }
     break;
 
   case 62:
 
 /* Line 1806 of yacc.c  */
 #line 334 "parser.yacc"
-    {  (yyval.node) = new Type( __double_t );  }
+    {  (yyval.node) = new Type(__double_t, 8 );  }
     break;
 
   case 63:
 
 /* Line 1806 of yacc.c  */
 #line 335 "parser.yacc"
-    {  (yyval.node) = new Type( __string_t );  }
+    {  (yyval.node) = new Type(__string_t, 0 );  }
     break;
 
   case 64:
 
 /* Line 1806 of yacc.c  */
 #line 336 "parser.yacc"
-    {  (yyval.node) = new Type( __function_t ); }
+    {  (yyval.node) = new Type(__function_t, 0); }
     break;
 
   case 65:
 
 /* Line 1806 of yacc.c  */
 #line 337 "parser.yacc"
-    {  (yyval.node) = new Type( __nothing_t ); }
+    {  (yyval.node) = new Type(__nothing_t, 0); }
     break;
 
   case 66:
 
 /* Line 1806 of yacc.c  */
 #line 338 "parser.yacc"
-    {  (yyval.node) = new Type( __array_t ); }
+    {  (yyval.node) = new Type(__array_t, 0); }
     break;
 
   case 67:
@@ -2527,14 +2527,15 @@ void yyerror( const char* error ){
 int main(){   
     yyparse();
     Context *ctx = new Context();
-    Interpreter interp;
+    TreeWalker treewalker;
     int length;
     length = programAST->getLength();
     for( int i = 0; i < length; i++ ){
       if( !programAST->empty() ){
-        interp.evaluate( programAST->pop_front(), ctx, -1 );
+        treewalker.evaluate( programAST->get(i), ctx, NULL );
       }
     }
+    treewalker.generateIRCode();
     return 0;
 }
 

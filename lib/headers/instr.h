@@ -9,3 +9,10 @@ enum Instr{
   mov,
   add  
 };
+
+enum Reg{
+    ebx,
+    ecx,
+    eax
+};
+#endif

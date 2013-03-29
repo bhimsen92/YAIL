@@ -14,6 +14,7 @@
 
 using namespace std;
 using namespace bnk_astNodes;
+using namespace ir;
 //using namespace bnk_builtins;
 
 #ifndef __TREEWALKER
@@ -24,21 +25,21 @@ class TreeWalker{
             //map<string, BuiltInFunction> builtins;
             int insideFunctionCounter;
             int offset;
-            vector<IRCode> irCodeList;
+            vector<IRCode*> irCodeList;
     public:
-        Interpreter(){
+        TreeWalker(){
             //this->loadBuiltIns();
             insideFunctionCounter = 0;
-            irCodeList = new vector<IRCode>();
+            //irCodeList = new vector<IRCode*>();
             offset = 0;
         }
         //bool isCallable( Object* obj );
-        bnk_types::Object* evaluate( Node* astNode, Context* execContext, int dataTypeInfo );
-        Object* execOperation( Operator* opNode, Context* execContext, BinaryOperation *op );
+        bnk_astNodes::Node* evaluate( Node* astNode, Context* execContext, Type *dtype );
+        Node* execOperation( Operator* opNode, Context* execContext, BinaryOperation *op );
         bool isBuiltInFunction( Identifier *functName );
         bool isUserDefinedFunction( Identifier *functName, Context *execContext );
-        Object* evaluateBuiltInFunction( Identifier *functName, Operands *operands, Context *execContext );
-        Object* evaluateUserDefinedFunction( Identifier *functName, Operands *operands, Context *execContext );
+        Node* evaluateBuiltInFunction( Identifier *functName, Operands *operands, Context *execContext );
+        Node* evaluateUserDefinedFunction( Identifier *functName, Operands *operands, Context *execContext );
         //void loadBuiltIns(void);
         //BuiltInFunction getBuiltInFunction( Identifier *functName );
         void errorMessage( int size, ... );
@@ -49,8 +50,17 @@ class TreeWalker{
         void updateOffset(int size){
             offset += size;
         }
+        
         int getCurrentOffset(){
             return offset;
+        }
+        
+        void generateIRCode(){
+            int i;
+            cout<<"Generating code.."<<endl;
+            for(i = 0; i < irCodeList.size(); i++){
+                cout<<irCodeList[i]->emit();
+            }
         }
 };
 #endif

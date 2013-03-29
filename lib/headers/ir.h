@@ -1,4 +1,5 @@
 #include<iostream>
+#include<cstdio>
 #include<cstdlib>
 #include "node.h"
 #include "instr.h"
@@ -76,3 +77,4 @@ namespace ir{
                 }
     };
 }
+#endif

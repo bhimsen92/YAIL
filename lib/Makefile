@@ -4,8 +4,8 @@ LDFLAGS=-lfl -ly
 
 all: bnK-lang
 
-bnK-lang: builtins.o node.o object.o number.o string.o udf.o interpreter.o context.o binaryop.o
-	$(CC) -o $@ builtins.o node.o object.o number.o string.o udf.o binaryop.o interpreter.o context.o lex.yy.c y.tab.c -lfl -ly
+bnK-lang: builtins.o node.o object.o number.o string.o udf.o codegen.o context.o binaryop.o parser.o lexer.o
+	$(CC) -o $@ builtins.o node.o object.o number.o string.o udf.o binaryop.o codegen.o context.o lexer.o parser.o -lfl -ly
 	rm *.o
 
 builtins.o: 
@@ -29,17 +29,22 @@ udf.o:
 binaryop.o:
 	$(CC) $(CFLAGS) ./binaryop.cpp -o $@
 
-interpreter.o: 
-	$(CC) $(CFLAGS) ./interpreter.cpp -o $@
+#interpreter.o: 
+#	$(CC) $(CFLAGS) ./interpreter.cpp -o $@
 
 context.o: 
 	$(CC) $(CFLAGS) ./context.cpp -o $@
 
 lexer.o: 
+	lex lexer.l
 	$(CC) $(CFLAGS) ./lex.yy.c -o $@
 
 parser.o: 
+	yacc -dv parser.yacc
 	$(CC) $(CFLAGS) ./y.tab.c -o $@
+
+codegen.o:
+	$(CC) $(CFLAGS) ./treewalker.cpp -o $@
 
 clear:
 	rm *.o

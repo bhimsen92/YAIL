@@ -6,7 +6,7 @@
 #include "../headers/node.h"
 using namespace std;
 namespace bnk_astNodes{
-    Node::Node( int nType ){
+    Node::Node(int nType){
         nodeType = nType;
     }
             
@@ -14,10 +14,10 @@ namespace bnk_astNodes{
         return nodeType;
     }
 
-    Identifier::Identifier( char* n, int position ): Node( __identifier ){
-        name = new char[ strlen(n) + 1 ];
+    Identifier::Identifier(char* n): Node( __identifier ){
+        name = new char[strlen(n) + 1];
         strcpy( name, n );
-        offset = position;
+        //offset = position;
     }
            
     char* Identifier::getName(){
@@ -28,7 +28,7 @@ namespace bnk_astNodes{
         return offset;
     }
 
-    String::String( char* str ) : Node( __string ){
+    String::String(char* str) : Node( __string ){
         length = strlen(str);
         string = removeQuotes( str, length );                
     }
