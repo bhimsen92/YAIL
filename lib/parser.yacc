@@ -5,14 +5,12 @@
 #include "headers/bnKapi.h"
 #include "headers/tokens.h"
 #include "headers/node.h"
-#include "headers/treewalker.h"
+#include "./codegen/headers/treewalker.h"
 #include "headers/context.h"
-#include "headers/object.h"
-#include "headers/number.h"
-
 #include<list>
+
 using namespace std;
-using namespace bnk_astNodes;
+using namespace yacl::ast;
 
 typedef int DataType;
 
@@ -33,7 +31,7 @@ int counter = 0;
 %}
 
 %union{
-    bnk_astNodes::Node *node;
+    yacl::ast::Node *node;
 };
 
 %token FUNCTION INTEGER_T DOUBLE_T STRING_T FUNCTION_T OR AND EQUAL LE GE IF ELSE NOT ELIF RETURN ARRAY_T

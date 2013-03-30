@@ -13,6 +13,7 @@ enum Instr{
 enum Reg{
     ebx,
     ecx,
-    eax
+    eax,
+    edi
 };
 #endif

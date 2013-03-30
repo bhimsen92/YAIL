@@ -1,5 +1,3 @@
-// modifications that needs to be done: add stmtlist in case expressions, it will avoid lots of repeating code.
-// 2264 lines.
 #include<iostream>
 #include<cstdlib>
 #include<vector>
@@ -7,13 +5,15 @@
 #include<cstring>
 #include<cstdarg>
 #include<map>
-#include "headers/instr.h"
-#include "headers/ir.h"
-#include "headers/treewalker.h"
-#include "headers/node.h"
+#include "./headers/instr.h"
+#include "./headers/ir.h"
+#include "./headers/treewalker.h"
+#include "../headers/node.h"
+#include "../headers/context.h"
 
 using namespace std;
-using namespace bnk_astNodes;
+using namespace yacl::ast;
+using namespace yacl::codegen::ir;
 
 Node* TreeWalker::evaluate( Node* astNode, Context* execContext, Type *dtype ){
     int nodeType = astNode->getType();
@@ -27,8 +27,8 @@ Node* TreeWalker::evaluate( Node* astNode, Context* execContext, Type *dtype ){
                             break;
         case __integer:
                         {
-                            bnk_astNodes::Integer *integer;
-                            integer = CAST_TO(bnk_astNodes::Integer, astNode);
+                            Integer *integer;
+                            integer = CAST_TO(Integer, astNode);
                             // create new Register.[uses current unused register]
                             Node *reg = new Register();
                             this->add(new Move(mov, integer, NULL, reg));
@@ -64,7 +64,7 @@ Node* TreeWalker::evaluate( Node* astNode, Context* execContext, Type *dtype ){
                                             // needs to allocated.
                                             int allocationSize = dataWidth * vlist->getLength();
                                             // generate allocate instruction.
-                                            this->add(new Allocate(allocate, new bnk_astNodes::Integer(allocationSize), NULL, NULL));
+                                            this->add(new Allocate(allocate, new Integer(allocationSize), NULL, NULL));
                                             // go through each variable list and generate instructions for that.
                                             for(int i = 0; i < vlist->getLength(); i++){
                                                 this->evaluate(vlist->get(i), execContext, dataType);
@@ -168,7 +168,7 @@ Node* TreeWalker::evaluateBuiltInFunction( Identifier *functName, Operands *oper
 Node* TreeWalker::evaluateUserDefinedFunction( Identifier *functName, Operands *arguments, Context *execContext ){
 }
 
-bool TreeWalker::isReturnType( Object* obj ){
+bool TreeWalker::isReturnType(Node* node){
 }
 
 //void TreeWalker::loadBuiltIns(void){

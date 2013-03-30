@@ -5,7 +5,8 @@
 #include "../headers/bnKapi.h"
 #include "../headers/node.h"
 using namespace std;
-namespace bnk_astNodes{
+namespace yacl{
+    namespace ast{
     Node::Node(int nType){
         nodeType = nType;
     }
@@ -228,4 +229,5 @@ namespace bnk_astNodes{
     StatementList::StatementList(): List( __stmtlist ){
     }
     
-} // end of bnk_astNodes namespace
+} // end of ast namespace
+} // end of yacl namespace.

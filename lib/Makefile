@@ -4,30 +4,30 @@ LDFLAGS=-lfl -ly
 
 all: bnK-lang
 
-bnK-lang: builtins.o node.o object.o number.o string.o udf.o codegen.o context.o binaryop.o parser.o lexer.o
-	$(CC) -o $@ builtins.o node.o object.o number.o string.o udf.o binaryop.o codegen.o context.o lexer.o parser.o -lfl -ly
+bnK-lang: node.o codegen.o context.o binaryop.o parser.o lexer.o
+	$(CC) -o $@ node.o binaryop.o codegen.o context.o lexer.o parser.o -lfl -ly
 	rm *.o
 
-builtins.o: 
-	$(CC) $(CFLAGS) ./builtins/builtins.cpp -o $@
+#builtins.o: 
+#	$(CC) $(CFLAGS) ./builtins/builtins.cpp -o $@
 
 node.o: 
 	$(CC) $(CFLAGS) ./nodes/node.cpp -o $@
 
-object.o:
-	$(CC) $(CFLAGS) ./types/object.cpp -o $@
+#object.o:
+#	$(CC) $(CFLAGS) ./types/object.cpp -o $@
 
-number.o: 
-	$(CC) $(CFLAGS) ./types/number.cpp -o $@
+#number.o: 
+#	$(CC) $(CFLAGS) ./types/number.cpp -o $@
 
-string.o: 
-	$(CC) $(CFLAGS) ./types/string.cpp -o $@
+#string.o: 
+#	$(CC) $(CFLAGS) ./types/string.cpp -o $@
 
-udf.o: 
-	$(CC) $(CFLAGS) ./types/udf.cpp -o $@
+#udf.o: 
+#	$(CC) $(CFLAGS) ./types/udf.cpp -o $@
 
 binaryop.o:
-	$(CC) $(CFLAGS) ./binaryop.cpp -o $@
+	$(CC) $(CFLAGS) ./codegen/binaryop.cpp -o $@
 
 #interpreter.o: 
 #	$(CC) $(CFLAGS) ./interpreter.cpp -o $@
@@ -44,7 +44,7 @@ parser.o:
 	$(CC) $(CFLAGS) ./y.tab.c -o $@
 
 codegen.o:
-	$(CC) $(CFLAGS) ./treewalker.cpp -o $@
+	$(CC) $(CFLAGS) ./codegen/treewalker.cpp -o $@
 
 clear:
 	rm *.o

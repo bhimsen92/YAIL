@@ -9,11 +9,11 @@
 #ifndef __CONTEXT
 #define __CONTEXT
 using namespace std;
-using namespace bnk_types;
+using namespace yacl::ast;
 class Context{
     private:
             map<string, Object*> *symbolTable;
-            map<string, bnk_astNodes::Node*> *symtab;
+            map<string, Node*> *symtab;
             Context *enclosingEnv;
             // for keeping track of variable posistions with respect to stack.
             // useful while codegen.
@@ -23,7 +23,7 @@ class Context{
             Context(void){
                 enclosingEnv = NULL;
                 symbolTable = new map< string, Object* >();
-                symtab = new map<string, bnk_astNodes::Node*>();
+                symtab = new map<string, Node*>();
             }
             ~Context(void){                
                 if( enclosingEnv != NULL )
@@ -35,11 +35,11 @@ class Context{
             void setSymbolTable( map< string, Object* > *symTab );
 //            void setSpawnStack( stack< Thread* > sStack );
             void put( string ident, Object* value );
-            void put(string ident, bnk_astNodes::Node *value){
+            void put(string ident, Node *value){
                 (*symtab)[ident] = value;
             }
             
-            bnk_astNodes::Node* get(string ident, int dummy){
+            Node* get(string ident, int dummy){
                 return (*symtab)[ident];
             }
             
@@ -53,8 +53,8 @@ class Context{
                 return enclosingEnv;
             }
             Object* get( string ident );
-            bool isBound( bnk_astNodes::Identifier *id );
-            bool isBound( bnk_astNodes::Identifier *id, int dummy){
+            bool isBound( Identifier *id );
+            bool isBound(Identifier *id, int dummy){
                 string varName = id->getName();
                 if( (*symtab)[varName] != NULL ){
                     return true;

@@ -5,6 +5,7 @@
 #include "headers/context.h"
 #include "headers/node.h"
 
+using namespace yacl::ast;
 using namespace std;
 map< string, Object* >* Context::getSymbolTable(){
     return symbolTable;
@@ -28,7 +29,7 @@ Object* Context::get( string ident ){
     return rval;
 }
 
-bool Context::isBound( bnk_astNodes::Identifier *id ){
+bool Context::isBound( Identifier *id ){
     string varName = id->getName();
     if( (*symbolTable)[ varName ] != NULL ){
         return true;

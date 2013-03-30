@@ -93,9 +93,9 @@ typedef union YYSTYPE
 {
 
 /* Line 2068 of yacc.c  */
-#line 35 "parser.yacc"
+#line 33 "parser.yacc"
 
-    bnk_astNodes::Node *node;
+    yacl::ast::Node *node;
 
 
 
