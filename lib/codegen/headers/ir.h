@@ -78,6 +78,66 @@ namespace yacl{
                         return buffer;
                     }
         };
+        
+        class Compare : public IRCode{
+            public:
+                    Compare(Instr instrType, Node *a1, Node *a2, Node *r) : IRCode(instrType, a1, a2, NULL)
+                    {
+                        
+                    }
+                    
+                    char* emit(){
+                        char *buffer = new char[256];
+                        sprintf(buffer, "(cmp %s, %s)\n", arg1->toString(), arg2->toString());
+                        return buffer;
+                    }
+            
+        };
+        
+        // Jump Instruction. [je, jne, jg, jge, jl, jle]
+        class JumpIfEqual : public IRCode{
+            public:
+                    JumpIfEqual(Instr instrType, Node *a1, Node *a2, Node* r) : IRCode(instrType, a1, NULL, NULL)
+                    {
+                        
+                    }
+                    
+                    char* emit(){
+                        char *buffer = new char[256];
+                        sprintf(buffer, "je %s\n", arg1->toString());
+                        return buffer;
+                    }
+        };
+        
+        // unconditional jump instruction.
+        class Jump : public IRCode{
+            public:
+                    Jump(Instr instrType, Node *a1, Node *a2, Node *r) : IRCode(instrType, a1, NULL, NULL)
+                    {
+                        
+                    }
+                    
+                    char* emit(){
+                        char *buffer = new char[256];
+                        sprintf(buffer, "jmp %s\n", arg1->toString());
+                        return buffer;
+                    }
+        };
+        
+        class EmitLabel : public IRCode{
+            public:
+                    EmitLabel(Instr instrType, Node *a1, Node *a2, Node *r) : IRCode(instrType, a1, NULL, NULL)
+                    {
+                        
+                    }
+                    
+                    char* emit(){
+                        char *buffer = new char[256];
+                        sprintf(buffer, "%s:\n", arg1->toString());
+                        return buffer;
+                    }
+            
+        };
     }// end of ir namespace.
   }// end of codegen namespace.   
 }// end of yacl namespace.

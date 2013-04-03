@@ -109,6 +109,7 @@ elseBlock: ELSE block  {
                                                                     operands->push_back( $3 );
                                                                     operands->push_back( $5 );
                                                                     operands->push_back( $6 );
+                                                                    cout<<"In elif parser..."<<endl;
                                                                     Operator *elifNode = new Operator( __elif, 3, operands );
                                                                     $$ = elifNode;
                                                               }
@@ -408,6 +409,7 @@ int main(){
     TreeWalker treewalker;
     int length;
     length = programAST->getLength();
+    cout<<"Parsing done.."<<endl;
     for( int i = 0; i < length; i++ ){
       if( !programAST->empty() ){
         treewalker.evaluate( programAST->get(i), ctx, NULL );

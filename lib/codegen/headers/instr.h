@@ -8,7 +8,18 @@ namespace yacl{
         enum Instr{
             allocate,
             mov,
-            add  
+            add,
+            sub,
+            mul,
+            div,
+            je,
+            jg,
+            jge,
+            jl,
+            jle,
+            jmp,
+            cmp,
+            emitlabel
         };
 
         enum Reg{

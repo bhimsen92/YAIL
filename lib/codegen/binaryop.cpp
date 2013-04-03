@@ -22,19 +22,9 @@ Node* BinaryOperation::executeOperation(void){
             // generate instruction for moving firstOp and secondOp
             // to register, then for addition and moving result into temp
             // location.
-            ctx->updateStorage(firstOp->getDataType()->getDataWidth());
-            Temp *tmp = new Temp(__tmp);
-            tmp->setDataType(new Type(__integer, 4));
-            tmp->setTypeClass(NumberClass);
-            // add this temp to tmp list.
-            ctx->addTemp(tmp);
-            // generate add instruction.
-            ctx->addInstruction(new Add(add, firstOp, secondOp, secondOp));
-            // generate move instruction.
-            ctx->addInstruction(new Move(mov, secondOp, NULL, tmp));
-            // clear all the registers.
+            Node *rval = this->exec(1,1);
             Register::clearAll();
-            return tmp;
+            return rval;
         }
         else{
             return NULL;
@@ -49,7 +39,19 @@ bool BinaryOperation::isTypeCompatible(void){
     return true;
 }
 
-Node* AdditionOperation::exec( int a, int b ){
+Node* AdditionOperation::exec( int a, int b ){    
+    ctx->updateStorage(firstOp->getDataType()->getDataWidth());
+    Temp *tmp = new Temp(__tmp);
+    tmp->setDataType(new Type(__integer, 4));
+    tmp->setTypeClass(NumberClass);
+    // add this temp to tmp list.
+    ctx->addTemp(tmp);
+    // generate add instruction.
+    ctx->addInstruction(new Add(add, firstOp, secondOp, secondOp));
+    // generate move instruction.
+    ctx->addInstruction(new Move(mov, secondOp, NULL, tmp));
+    // clear all the registers.
+    return tmp;
 }
 
 Node* AdditionOperation::exec( double a, double b ){
@@ -97,6 +99,13 @@ Node* GreaterThanOperator::exec( int a, int b ){
 
 Node* GreaterThanOrEqualOperator::exec( int a, int b ){
 }
-
+*/
 Node* EqualityOperator::exec( int a, int b ){
-}*/
+    // generate cmp instruction.
+    ctx->addInstruction(new Compare(cmp, firstOp, secondOp, NULL));
+    // create a new label.
+    Label *label = new Label();
+    // generate jump instruction.
+    ctx->addInstruction(new JumpIfEqual(je, label, NULL, NULL));
+    return label;
+}

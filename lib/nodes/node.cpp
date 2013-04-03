@@ -7,6 +7,7 @@
 using namespace std;
 namespace yacl{
     namespace ast{
+    int Label::counter = 0;
     Node::Node(int nType){
         nodeType = nType;
     }

@@ -1,2 +1,15 @@
-Int a = 1 + 2,
-    b = a + 12 + 3434;
+if(1==1){
+    Int a = 12;
+}
+elif(2==2){
+    Int d = 12;
+    if(d == 12){
+        Int e = 23;
+    }
+    else{
+        Int f = 124;
+    }
+}
+else{
+    Int c = 13;
+}

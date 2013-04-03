@@ -138,16 +138,16 @@ class GreaterThanOrEqualOperator: public BinaryOperation{
             Node* exec( int, double ){ return NULL; }
             Node* exec( double, double ){ return NULL; }
 };
-
+*/
 class EqualityOperator : public BinaryOperation{
     public:
-            EqualityOperator(){
+            EqualityOperator(Context *ctx) : BinaryOperation(ctx){
                 
             }
             Node* exec( int, int );
             Node* exec( int, double ){ return NULL; }
             Node* exec( double, double ){ return NULL; }
-};*/
+};
 } // end of binaryop namespace
 } // end of codegen namespace
 }// end of yacl namespace

@@ -295,6 +295,23 @@ class Type;
                     }
                 }
     };
+    
+    class Label : public Node{
+        private:
+                char *label;
+                static int counter;
+        public:
+                Label() : Node(-1){
+                    label = new char[256];
+                    sprintf(label, "L%d", counter);
+                    counter++;
+                }
+                
+                char* toString(){
+                    return label;
+                }
+    };
+    
   } // end of ast namespace.
 } // end of yacl namespace.
 #endif

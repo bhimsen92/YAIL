@@ -26,7 +26,11 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                 Identifier *id = CAST_TO(Identifier, astNode);
                                 Node *rval = ctx->get(id->getName(), 0);
                                 if(rval != NULL){
-                                    return rval;
+                                    Node *reg = new Register(__reg);
+                                    reg->setDataType(rval->getDataType());
+                                    reg->setTypeClass(rval->getTypeClass());
+                                    ctx->addInstruction(new Move(mov, rval, NULL, reg));
+                                    return reg;
                                 }
                                 else{
                                     errorMessage(1, "Undefined variable: ", id->getName());
@@ -55,10 +59,65 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
         case __return:
                             break;
         case __if:
+                            {
+                                Operator *ifNode = CAST_TO(Operator, astNode);
+                                if( ifNode != NULL){
+                                    // get the operands.
+                                    Operands *ops = ifNode->getOperands();
+                                    // evaluate the cond node.
+                                    // return value would be label to true branch.
+                                    Node *truthLabel = this->evaluate(ops->get(0), ctx, dtype);
+                                    // get the else node[code which needs to be executed on false truthValue]
+                                    Node *nextLabel = this->evaluate(ops->get(2), ctx, dtype);
+                                    // generate an unconditional jump node which will get you out of the control
+                                    // statement "if else, if elif else."
+                                    // emit true branch label name.
+                                    ctx->addInstruction(new EmitLabel(emitlabel, truthLabel, NULL, NULL));
+                                    this->evaluate(ops->get(1), ctx, dtype);
+                                    // generate label for converging the control.
+                                    ctx->addInstruction(new EmitLabel(emitlabel, nextLabel, NULL, NULL));
+                                    return nextLabel;
+                                }
+                                else{
+                                    errorMessage(1, "ifNode fail.");
+                                    exit(1);
+                                }
+                            }
                             break;
         case __else:
+                            {
+                                Operator *elseNode = CAST_TO(Operator, astNode);
+                                if(elseNode != NULL){
+                                    Operands *ops = elseNode->getOperands();
+                                    // evaluate the statement list.
+                                    this->evaluate(ops->get(0), ctx, dtype);
+                                    Label *nextLabel = new Label();
+                                    ctx->addInstruction(new Jump(jmp, nextLabel, NULL, NULL));
+                                    return nextLabel;
+                                }
+                                else{
+                                    errorMessage(1, "elseNode fail.");
+                                    exit(1);
+                                }
+                            }
                             break;
-        case __elif:
+        case __elif:        {
+                                Operator *elifNode = CAST_TO(Operator, astNode);
+                                Operands *ops = elifNode->getOperands();
+                                // evaluate the cond node.
+                                // return value would be label to true branch.
+                                Node *truthLabel = this->evaluate(ops->get(0), ctx, dtype);
+                                // get the else node[code which needs to be executed on false truthValue]
+                                Node *nextLabel = this->evaluate(ops->get(2), ctx, dtype);
+                                // generate an unconditional jump node which will get you out of the control
+                                // statement "if else, if elif else."
+                                // emit true branch label name.
+                                ctx->addInstruction(new EmitLabel(emitlabel, truthLabel, NULL, NULL));
+                                this->evaluate(ops->get(1), ctx, dtype);
+                                // generate label for converging the control.
+                                ctx->addInstruction(new Jump(jmp, nextLabel, NULL, NULL));
+                                return nextLabel;
+                            }
                             break;
         case __var_definition:
                                     Operator *varDefNode;
@@ -149,6 +208,21 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
         case __ge:
                                 break;
         case __equality:
+                                {
+                                    Operator *equalityNode = CAST_TO(Operator, astNode);
+                                    return this->execOperation(equalityNode, ctx, new EqualityOperator(ctx));
+                                }
+                                break;
+        case __stmtlist:
+                                {
+                                    StatementList *stmtList = CAST_TO(StatementList, astNode);
+                                    if(stmtList != NULL){
+                                        int len = stmtList->getLength();
+                                        for(int i = 0; i < len; i++){
+                                            this->evaluate(stmtList->get(i), ctx, dtype);
+                                        }
+                                    }
+                                }
                                 break;
     }
     return NULL;
