@@ -27,7 +27,9 @@ stack<StatementList*> statementStack;
 stack<DataType> typeStack;
 StatementList *stmtList = NULL;
 int counter = 0;
-
+// to get rid of multiple def error.
+bool Register::alreadyUsed[] = {false};
+int Register::len = 4;
 %}
 
 %union{
@@ -411,7 +413,7 @@ int main(){
         treewalker.evaluate( programAST->get(i), ctx, NULL );
       }
     }
-    treewalker.generateIRCode();
+    ctx->generateCode();
     return 0;
 }
 

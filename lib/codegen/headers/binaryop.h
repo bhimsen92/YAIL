@@ -1,23 +1,28 @@
 #include<iostream>
-#include<list>
+#include<vector>
 #include<cstdlib>
 #include "../../headers/bnKapi.h"
 #include "../../headers/node.h"
+#include "../../headers/context.h"
 
 #ifndef __BINARYOP
 #define __BINARYOP
+#include "ir.h"
 using namespace std;
 using namespace yacl::ast;
+using namespace yacl::codegen::ir;
 namespace yacl{
     namespace codegen{
         namespace binaryop{
             class BinaryOperation{
                 protected:
                       Node *firstOp, *secondOp;
+                      Context *ctx;
                 public:
-                    BinaryOperation(){
+                    BinaryOperation(Context *context){
                         firstOp = NULL;
                         secondOp = NULL;
+                        ctx = context;
                     }
                     Node* executeOperation(void);
                     virtual Node* exec( int, int ) = 0;
@@ -45,14 +50,14 @@ namespace yacl{
 
             class AdditionOperation: public BinaryOperation{
                 public:
-                    AdditionOperation(){
+                    AdditionOperation(Context *ctx) : BinaryOperation(ctx){
                     }
                     bool isTypeCompatible(void);
                     Node* exec( int, int );
                     Node* exec( int, double ){ return NULL; }
                     Node* exec( double, double );
             };
-
+/*
             class SubtractionOperation: public BinaryOperation{
                 public:
                 SubtractionOperation(){                
@@ -142,7 +147,7 @@ class EqualityOperator : public BinaryOperation{
             Node* exec( int, int );
             Node* exec( int, double ){ return NULL; }
             Node* exec( double, double ){ return NULL; }
-};
+};*/
 } // end of binaryop namespace
 } // end of codegen namespace
 }// end of yacl namespace

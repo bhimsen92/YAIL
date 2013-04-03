@@ -6,24 +6,46 @@
 #include "tokens.h"
 #include "bnKapi.h"
 #include "../codegen/headers/instr.h"
- 
+
 #ifndef __NODE_TYPE
 #define __NODE_TYPE
 using namespace std;
 using namespace yacl::codegen;
-namespace yacl{
-    
 
+namespace yacl{
     namespace ast{
-    
+// forward declaration.
+class Type;
+        
     class Node{
         protected:
+                   // nodeType is for ast.
                    int nodeType;
+                   // this type of value this node contains[ for symantic checking]
+                   Type *dataType;
+                   // this is for typeClass.
+                   int typeClass;
+                   int tmpFlag;
         public:
                 Node( int nType );
                 int getType(void);
                 virtual char* toString(void){}
                 virtual void dummy(void){}
+                bool isTmp(){
+                    return tmpFlag;
+                }
+                void setDataType(Type *dtype){
+                    dataType = dtype;
+                }
+                void setTypeClass(int cls){
+                    typeClass = cls;
+                }
+                Type* getDataType(){
+                    return dataType;
+                }
+                int getTypeClass(){
+                    return typeClass;
+                }
     };
 
     class Operands{
@@ -198,35 +220,45 @@ namespace yacl{
     class StatementList : public List{
         public:
                  StatementList(void);
-    };  
+    };
 
     class Temp : public Node{
         private:
-                char t[32];    
+                char t[32];
                 int  offset;
         public:
-                Temp( int tmpIndex, int position ) : Node(-1){
-                    sprintf( t, "t%d", tmpIndex );
-                    offset = position;
+                Temp(int dtype) : Node(dtype){
+                    sprintf(t, "temp");
+                    tmpFlag = true;
                 }
+                
+                void setOffset(int pos){
+                    offset = pos;
+                }
+                
+                int getOffset(){
+                    return offset;
+                }
+                
                 char* toString(){
-                    return t;
+                    char *buffer = new char[256];
+                    sprintf(buffer, "%d(temp)", offset);
+                    return buffer;
                 }
-    };  
+    };
 
     class Register : public Node{
         private:
                 Reg _register;
                 int reg[4];
-                bool alreadyUsed[4];
-                int  len;
+                static bool alreadyUsed[4];
+                static int  len;
                 //char regName[8];
         public:
-                Register() : Node(-1){
+                Register(int dtype) : Node(dtype){
                     len = 4;
-                    for(int i = 0; i < len; i++ ){
+                    for(int i = 0; i < len; i++){
                         reg[i] = i;
-                        alreadyUsed[i] = false;
                     }
                     _register = getReg();
                 }
@@ -255,6 +287,12 @@ namespace yacl{
                 
                 void unsetReg(int i){
                     alreadyUsed[i] = false;
+                }
+                
+                void static clearAll(){
+                    for(int i = 0; i < len; i++){
+                        alreadyUsed[i] = false;
+                    }
                 }
     };
   } // end of ast namespace.

@@ -15,14 +15,24 @@ using namespace std;
 using namespace yacl::ast;
 using namespace yacl::codegen::ir;
 
-Node* TreeWalker::evaluate( Node* astNode, Context* execContext, Type *dtype ){
+Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
     int nodeType = astNode->getType();
     switch( nodeType ){
         case __identifier:
                             // just returning identifier node to the caller.
                             // address calculation are offloaded to IRCode class
                             // methods[keeps things simple].
-                            return astNode;
+                            {
+                                Identifier *id = CAST_TO(Identifier, astNode);
+                                Node *rval = ctx->get(id->getName(), 0);
+                                if(rval != NULL){
+                                    return rval;
+                                }
+                                else{
+                                    errorMessage(1, "Undefined variable: ", id->getName());
+                                    exit(1);
+                                }
+                            }
         case __string:
                             break;
         case __integer:
@@ -30,13 +40,16 @@ Node* TreeWalker::evaluate( Node* astNode, Context* execContext, Type *dtype ){
                             Integer *integer;
                             integer = CAST_TO(Integer, astNode);
                             // create new Register.[uses current unused register]
-                            Node *reg = new Register();
-                            this->add(new Move(mov, integer, NULL, reg));
+                            Node *reg = new Register(__reg);
+                            reg->setDataType(new Type(__integer, 4));
+                            reg->setTypeClass(NumberClass);
+                            ctx->addInstruction(new Move(mov, integer, NULL, reg));
+                            //this->add(new Move(mov, integer, NULL, reg));
                             // return register which will be used in further expression codegen.
                             return reg;
                         }
         case __nothing:
-                            break;       
+                            break;
         case __double:
                             break;
         case __return:
@@ -63,11 +76,11 @@ Node* TreeWalker::evaluate( Node* astNode, Context* execContext, Type *dtype ){
                                             // get the length and calculate the amount of storage that 
                                             // needs to allocated.
                                             int allocationSize = dataWidth * vlist->getLength();
-                                            // generate allocate instruction.
-                                            this->add(new Allocate(allocate, new Integer(allocationSize), NULL, NULL));
+                                            // update storage for this context.
+                                            ctx->updateStorage(allocationSize);
                                             // go through each variable list and generate instructions for that.
                                             for(int i = 0; i < vlist->getLength(); i++){
-                                                this->evaluate(vlist->get(i), execContext, dataType);
+                                                this->evaluate(vlist->get(i), ctx, dataType);
                                             }
                                         }
                                     }
@@ -81,22 +94,23 @@ Node* TreeWalker::evaluate( Node* astNode, Context* execContext, Type *dtype ){
                                     Identifier *id = CAST_TO(Identifier, ops->get(1));
                                     // check whether the name is already defined in the current
                                     // context or not.
-                                    if(!execContext->isBound(id,0)){
-                                        // get the datatype width.
-                                        int dataWidth = dtype->getDataWidth();
+                                    if(!ctx->isBound(id,0)){
                                         // get the expression node.
                                         Node *expressionNode = ops->get(2);
                                         // generate op code for expression and
                                         // return the result in an temp node.
-                                        Node *result = this->evaluate(expressionNode, execContext, dtype);
-                                        //set the offset for id and update with datatype width.
-                                        id->setOffset(execContext->getOffset());
-                                        execContext->updateOffset(dataWidth);
+                                        Node *result = this->evaluate(expressionNode, ctx, dtype);
+                                        id->setDataType(result->getDataType());
+                                        id->setTypeClass(result->getTypeClass());
                                         // put the name into the symbol table and its associated object.
-                                        execContext->put(id->getName(), id);
-                                        // generate assigment instruction[=> move instruction]
-                                        this->add(new Move(mov, result, NULL, id));
+                                        ctx->put(id->getName(), id);
+                                        // put the id into contexts variables list.
+                                        ctx->addVar(id);
+                                        // add assignment instruction to contexts instruction list.
+                                        // [assigment instruction=> move instruction]
+                                        ctx->addInstruction(new Move(mov, result, NULL, id));
                                         // assignment instruction returns nothing.
+                                        Register::clearAll();
                                         break;
                                     }
                                     else{
@@ -111,7 +125,7 @@ Node* TreeWalker::evaluate( Node* astNode, Context* execContext, Type *dtype ){
                                 break;
         case __addition:        {
                                     Operator *addition = CAST_TO(Operator, astNode);
-                                    return this->execOperation(addition, execContext, new AdditionOperation());
+                                    return this->execOperation(addition, ctx, new AdditionOperation(ctx));
                                 }
                                 break;
         case __subtraction:
@@ -140,32 +154,36 @@ Node* TreeWalker::evaluate( Node* astNode, Context* execContext, Type *dtype ){
     return NULL;
 }
 
-Node* TreeWalker::execOperation( Operator* opNode, Context* execContext, BinaryOperation* op ){
+Node* TreeWalker::execOperation( Operator* opNode, Context* ctx, BinaryOperation* op ){
     // get the operands from the operator node.
     // evaluate the operands by generating code for them,
     // then, check for type compatibility, if everything seems ok,
     // generate code for executing this operation.
     // temp node generation and generating code for them is offloaded to BinaryOperation subclasses.
     Operands *ops = opNode->getOperands();
-    Node *firstOp = this->evaluate(ops->get(0), execContext, NULL);
-    Node *secondOp = this->evaluate(ops->get(1), execContext, NULL);
+    Node *firstOp = this->evaluate(ops->get(0), ctx, NULL);
+    Node *secondOp = this->evaluate(ops->get(1), ctx, NULL);
     op->setFirstOperand(firstOp);
     op->setSecondOperand(secondOp);
     if(op->isTypeCompatible()){
-        return op->executeOperation();
+        Node *rval = op->executeOperation();
+        return rval;
+    }
+    else{
+        errorMessage(1, "Incompatible operands for this operation");
     }
 }
 
 bool TreeWalker::isBuiltInFunction( Identifier *functName ){
 }
 
-bool TreeWalker::isUserDefinedFunction( Identifier *functName, Context *execContext ){
+bool TreeWalker::isUserDefinedFunction( Identifier *functName, Context *ctx ){
 }
 
-Node* TreeWalker::evaluateBuiltInFunction( Identifier *functName, Operands *operands, Context *execContext ){
+Node* TreeWalker::evaluateBuiltInFunction( Identifier *functName, Operands *operands, Context *ctx ){
 }
 
-Node* TreeWalker::evaluateUserDefinedFunction( Identifier *functName, Operands *arguments, Context *execContext ){
+Node* TreeWalker::evaluateUserDefinedFunction( Identifier *functName, Operands *arguments, Context *ctx ){
 }
 
 bool TreeWalker::isReturnType(Node* node){
