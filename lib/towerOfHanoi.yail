@@ -12,7 +12,7 @@ function move(Int n, Int from, Int to, Int via):Nothing
 		print(n, " from peg: ");
 		print(from, " to peg: ");
 		print(to);
-		newline();		
+		newline();
 		move(n-1, via, to, from);
 	}
 }
