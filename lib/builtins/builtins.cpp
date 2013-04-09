@@ -1,4 +1,5 @@
 #include<iostream>
+#include<string>
 #include "../headers/object.h"
 #include "../headers/string.h"
 #include "../headers/udf.h"
@@ -8,16 +9,22 @@
 using namespace std;
 using namespace bnk_types;
 namespace bnk_builtins{
+
+	Object* __emit(list<Object*> *args){
+		cout<<endl;
+		return NULL;
+	}
+
 	Object* __bprint( list<Object*> *args ){
 		int length = args->size();
-		if( length == 1 ){
+		for( int i = 0; i < length; i++){
 			Object *obj = args->front();
 			switch( obj->getDataType() ){
 				case __string_t:
 								bnk_types::String *str;
 								str = CAST_TO( bnk_types::String, obj );
 								if( str != NULL ){
-									cout<<str->getValue()->getStringVal();
+										cout<<str->getValue()->getStringVal();
 								}
 								break;
 				case __integer_t:
@@ -35,6 +42,7 @@ namespace bnk_builtins{
 				                }
 				                break;
 			}
+			args->pop_front();
 		}
 	}
 }

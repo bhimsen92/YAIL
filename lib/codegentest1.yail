@@ -1,0 +1,15 @@
+function foo(Int a):Nothing
+{
+	Int b = 12 + a;
+}
+
+function say(Int a):Nothing
+{
+	Int b = a + 12 + 34;
+	if( b == 4 ){
+		Int d = 34;
+	}
+	else{
+		Int e = 56;
+	}
+}

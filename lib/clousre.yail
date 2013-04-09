@@ -1,0 +1,15 @@
+function addFun(Int n):Function{
+	Int a = n;
+	function const():Int{
+		return a + 10;
+	}
+	return const;
+}
+
+Function f = addFun(5);
+Function c = addFun(20);
+
+print(f());
+newline();
+print(c());
+newline();
