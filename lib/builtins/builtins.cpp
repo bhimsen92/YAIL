@@ -17,21 +17,21 @@ namespace bnk_builtins{
 								bnk_types::String *str;
 								str = CAST_TO( bnk_types::String, obj );
 								if( str != NULL ){
-									cout<<str->getValue()->getStringVal()<<endl;
+									cout<<str->getValue()->getStringVal();
 								}
 								break;
 				case __integer_t:
 								bnk_types::Integer *integer;
 								integer = CAST_TO( bnk_types::Integer, obj );
 								if( integer != NULL ){
-									cout<<integer->getValue()->getIntVal()<<endl;
+									cout<<integer->getValue()->getIntVal();
 								}
 								break;
 				case __double_t:
 				                bnk_types::Double *realVal;
 				                realVal = CAST_TO( bnk_types::Double, obj );
 				                if( realVal != NULL ){
-				                    cout<<realVal->getValue()->getDoubleVal()<<endl;
+				                    cout<<realVal->getValue()->getDoubleVal();
 				                }
 				                break;
 			}
