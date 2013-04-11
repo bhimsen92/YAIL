@@ -25,9 +25,12 @@ function circleArea( Double radius ): Double
     return PI * radius * radius;
 }
 
-print( "Area of circle with radius 5 is:" );
-print(circleArea( 5.0 ));
+Int x = multi(10, 4) * fact(4) * fact(4) / (multi(10,4) - fact(4));
+print(x);
 newline();
-print("sum of first 10 num: ");
-print(firstNSum(10));
-newline();
+#print( "Area of circle with radius 5 is:" );
+#print(circleArea( 5.0 ));
+#newline();
+#print("sum of first 10 num: ");
+#print(firstNSum(10));
+#newline();
