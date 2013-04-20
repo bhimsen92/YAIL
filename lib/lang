@@ -1,0 +1,7 @@
+#!/bin/bash
+
+./bnK-lang < $1 > output.s
+as -ggdb output.s -o output.o
+ld output.o -o output
+
+

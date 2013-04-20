@@ -1,15 +1,8 @@
-function foo(Int a):Nothing
-{
-	Int b = 12 + a;
+function power(Int n, Int k):Int{
+    if(k == 0)
+        return 1;
+    else
+        return n * power(n, k - 1);
 }
 
-function say(Int a):Nothing
-{
-	Int b = a + 12 + 34;
-	if( b == 4 ){
-		Int d = 34;
-	}
-	else{
-		Int e = 56;
-	}
-}
+power(6, 3);

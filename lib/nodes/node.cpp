@@ -5,8 +5,10 @@
 #include "../headers/bnKapi.h"
 #include "../headers/node.h"
 using namespace std;
-namespace bnk_astNodes{
-    Node::Node( int nType ){
+namespace yacl{
+    namespace ast{
+    int Label::counter = 0;
+    Node::Node(int nType){
         nodeType = nType;
     }
             
@@ -14,16 +16,21 @@ namespace bnk_astNodes{
         return nodeType;
     }
 
-    Identifier::Identifier( char* n ): Node( __identifier ){
-        name = new char[ strlen(n) + 1 ];
+    Identifier::Identifier(char* n): Node( __identifier ){
+        name = new char[strlen(n) + 1];
         strcpy( name, n );
+        //offset = position;
     }
            
-    char* Identifier::getName(void){
+    char* Identifier::getName(){
         return name;
     }
+    
+    int Identifier::getOffset(){
+        return offset;
+    }
 
-    String::String( char* str ) : Node( __string ){
+    String::String(char* str) : Node( __string ){
         length = strlen(str);
         string = removeQuotes( str, length );                
     }
@@ -98,7 +105,7 @@ namespace bnk_astNodes{
         value = dotLeft + dotRight;
     }
     
-    double Double::getValue(void){
+    double Double::getValue(){
         return value;
     }
     
@@ -106,34 +113,26 @@ namespace bnk_astNodes{
         value = val;
     }
     
-    Type::Type( int _type ): Node( __type ){
-        type = _type;
+    Type::Type( int _t, int w ): Node( __type ){
+        type = _t;
+        width = w;
     }
 
-    int Type::getDataType(void){
+    int Type::getDataType(){
         return type;
     }
-
-    void Type::setDataType(int _type){
-        type = _type;
+    
+    int Type::getDataWidth(){
+        return width;
     }
-/*
-class Expression: public Node{
-    private:
-            Node *expNode;
-    public:
-            Expression( Node* n ): Node( __expression ){
-                expNode = n;
-            }
-
-            Node* getNode(void){
-                return expNode;
-            }
-
-            void setNode( Node* n ){
-                expNode = n;
-            }
-};*/
+    
+    void Type::setDataType(int _t){
+        type = _t;
+    }
+    
+    void Type::setDataWidth(int w){
+        width = w;
+    }
 
     Operator::Operator( int nType, int nOps, Operands *ops ): Node( nType ){
         nops = nOps;
@@ -231,4 +230,5 @@ class Expression: public Node{
     StatementList::StatementList(): List( __stmtlist ){
     }
     
-} // end of bnk_astNodes namespace
+} // end of ast namespace
+} // end of yacl namespace.

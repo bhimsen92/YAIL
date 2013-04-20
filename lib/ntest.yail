@@ -1,0 +1,10 @@
+
+
+
+function a():Int{
+return 1;
+}
+
+
+
+a();

@@ -1,0 +1,12 @@
+function test(Int a, Int b, Int c):Int{
+    if(a == b){
+        if(b == c)
+            return 1;
+        else
+            return 0;
+    }
+    else
+        return 0;
+}
+
+test(5,5,3);

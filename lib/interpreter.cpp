@@ -464,7 +464,6 @@ bool Interpreter::isReturnType( Object* obj ){
 
 void Interpreter::loadBuiltIns(void){
     builtins[ "print" ] = bnk_builtins::__bprint;
-    builtins["newline"] = bnk_builtins::__emit;
 }
 
 BuiltInFunction Interpreter::getBuiltInFunction( Identifier *functName ){

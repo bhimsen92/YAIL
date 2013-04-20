@@ -17,10 +17,6 @@ using namespace bnk_astNodes;
 
 #ifndef __INTERP
 #define __INTERP
-
-#define ISINSIDE_FUNCTION ( insideFunctionCounter > 0 )
-#define INSIDE_FUNCTION   ( insideFunctionCounter++ )
-#define OUTSIDE_FUNCTION  ( insideFunctionCounter-- )
 #define NOTSAME( str1, str2 ) if( strcmp( str1, str2 ) )
 
 class Interpreter{

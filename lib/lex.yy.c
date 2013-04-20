@@ -518,7 +518,7 @@ char *yytext;
 #include "./headers/node.h"
 #include "y.tab.h"
 using namespace std;
-using namespace bnk_astNodes;
+using namespace yacl::ast;
 
 #line 524 "lex.yy.c"
 
@@ -880,7 +880,7 @@ case 13:
 YY_RULE_SETUP
 #line 69 "lexer.l"
 {
-                      Node *nothingNode = new bnk_astNodes::Nothing();
+                      Node *nothingNode = new yacl::ast::Nothing();
                       yylval.node = nothingNode;
                       return NOTHING;
                   }

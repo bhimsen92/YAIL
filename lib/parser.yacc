@@ -5,14 +5,15 @@
 #include "headers/bnKapi.h"
 #include "headers/tokens.h"
 #include "headers/node.h"
-#include "headers/interpreter.h"
+#include "./codegen/headers/treewalker.h"
+#include "./codegen/headers/ir.h"
+#include "./codegen/headers/instr.h"
 #include "headers/context.h"
-#include "headers/object.h"
-#include "headers/number.h"
-
 #include<list>
+#include<vector>
+
 using namespace std;
-using namespace bnk_astNodes;
+using namespace yacl::ast;
 
 typedef int DataType;
 
@@ -29,11 +30,16 @@ stack<StatementList*> statementStack;
 stack<DataType> typeStack;
 StatementList *stmtList = NULL;
 int counter = 0;
-
+// to get rid of multiple def error.
+bool Register::alreadyUsed[] = {false};
+int Register::reg[16] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
+int Register::len = 16;
+vector<Register*> Register::registerAllocated;
+bool Register::instanciated[16]={false};
 %}
 
 %union{
-    bnk_astNodes::Node *node;
+    yacl::ast::Node *node;
 };
 
 %token FUNCTION INTEGER_T DOUBLE_T STRING_T FUNCTION_T OR AND EQUAL LE GE IF ELSE NOT ELIF RETURN ARRAY_T
@@ -109,6 +115,7 @@ elseBlock: ELSE block  {
                                                                     operands->push_back( $3 );
                                                                     operands->push_back( $5 );
                                                                     operands->push_back( $6 );
+                                                                    cout<<"In elif parser..."<<endl;
                                                                     Operator *elifNode = new Operator( __elif, 3, operands );
                                                                     $$ = elifNode;
                                                               }
@@ -249,10 +256,10 @@ variableList: variableDeclarations                 {
 
 variableDeclarations: IDENTIFIER '=' expression {
                                                     Operands *operands = new Operands();
-                                                    operands->push_back( new Type( getType() ) );
-                                                    operands->push_back( $1 );
-                                                    operands->push_back( $3 );
-                                                    Operator *node = new Operator( __assignment, 3, operands );
+                                                    operands->push_back(NULL);
+                                                    operands->push_back($1);
+                                                    operands->push_back($3);
+                                                    Operator *node = new Operator(__assignment, 3, operands);
                                                     $$ = node;
                                                 }
                     ;
@@ -284,7 +291,7 @@ term: term '*' power                     {
     | term '/' power                      {
                                               Operands *operands = new Operands();
                                               operands->push_back( $1 );
-                                              operands->push_back( $3 );
+                                              operands->push_back($3);
                                               Operator *divNode = new Operator( __div, 2, operands );
                                               $$ = divNode;
                                           }
@@ -330,12 +337,12 @@ atom  : IDENTIFIER    { $$ = $1; }
 empty :
       ;
 
-type : INTEGER_T  {  $$ = new Type( __integer_t ); }
-     | DOUBLE_T   {  $$ = new Type( __double_t );  }
-     | STRING_T   {  $$ = new Type( __string_t );  }
-     | FUNCTION_T {  $$ = new Type( __function_t ); }
-     | NOTHING    {  $$ = new Type( __nothing_t ); }
-     | ARRAY_T    {  $$ = new Type( __array_t ); }
+type : INTEGER_T  {  $$ = new Type(__integer, 8 ); }
+     | DOUBLE_T   {  $$ = new Type(__double, 8 );  }
+     | STRING_T   {  $$ = new Type(__string, 0 );  }
+     | FUNCTION_T {  $$ = new Type(__function_t, 0); }
+     | NOTHING    {  $$ = new Type(__nothing, 0); }
+     | ARRAY_T    {  $$ = new Type(__array_t, 0); }
      ;
 
 functCall : IDENTIFIER '(' arguments ')'  {
@@ -405,14 +412,26 @@ void yyerror( const char* error ){
 int main(){   
     yyparse();
     Context *ctx = new Context();
-    Interpreter interp;
+    TreeWalker treewalker;
     int length;
     length = programAST->getLength();
+    ctx->addInstruction(new Push(push, Register::getRegister(__reg, rbp)));
+    ctx->addInstruction(new Move(mov, Register::getRegister(__reg, rsp), NULL, Register::getRegister(__reg, rbp)));    
+    //cout<<"Parsing done.."<<endl;
     for( int i = 0; i < length; i++ ){
       if( !programAST->empty() ){
-        interp.evaluate( programAST->pop_front(), ctx, -1 );
+        treewalker.evaluate( programAST->get(i), ctx, NULL );
       }
     }
+    cout<<treewalker.pre();
+    vector<Context*>* contexts = treewalker.getContexts();
+    //contexts->push_back(ctx);
+    for(int i = 0, len = contexts->size(); i < len; i++){
+        (*contexts)[i]->generateCode();
+    }
+    cout<<treewalker.post();
+    ctx->generateCode(true, true);
+    cout<<treewalker.end();
     return 0;
 }
 

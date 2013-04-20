@@ -2,17 +2,17 @@ function move(Int n, Int from, Int to, Int via):Nothing
 {
 	if( n == 1 ){
 		print("move disk 1 from peg: ");
-		print(from, " to peg: ");
+		print(from);
 		print(to);
-		newline();
+		#newline();
 	}
 	else{
 		move(n-1, from, via, to);
 		print("move disk: ");
-		print(n, " from peg: ");
-		print(from, " to peg: ");
+		print(n);
+		print(from);
 		print(to);
-		newline();
+		#newline();
 		move(n-1, via, to, from);
 	}
 }

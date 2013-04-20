@@ -1,0 +1,2 @@
+Move Register code logic to respective Context class.
+Then work on malloc, and combining c code files to your generated assembly file.

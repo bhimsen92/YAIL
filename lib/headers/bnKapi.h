@@ -10,6 +10,9 @@ using namespace bnk_types;
                            ( dynamic_cast<target*>(source) )
 
 typedef Object* (*BuiltInFunction)(list<Object*> *args);
+#define ISINSIDE_FUNCTION(x) ( x > 0 )
+#define INSIDE_FUNCTION(x)   ( x++ )
+#define OUTSIDE_FUNCTION(x)  ( x-- )
 
 /*void debugMessage( int size, ... ){
     int i;

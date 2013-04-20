@@ -8,6 +8,5 @@ using namespace bnk_types;
 #define __BUILTINS
 namespace bnk_builtins{
 	Object* __bprint( list<Object*> *args );
-	Object* __emit(list<Object*> *args);
 }
 #endif
