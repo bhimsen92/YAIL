@@ -18,4 +18,4 @@ function fibo(Int n):Int{
 	}
 }
 
-fibo(13);
+fibo(8);
