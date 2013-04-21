@@ -30,7 +30,7 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                 if(rval != NULL){
                                     Node *reg;
                                     if(!rval->isInRegister()){
-                                        reg = Register::getRegister(__reg);
+                                        reg = ctx->getRegister();
                                         reg->setDataType(rval->getDataType());
                                         reg->setTypeClass(rval->getTypeClass());
                                         if(reg->hasLocationAdded()){
@@ -62,7 +62,7 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                             Integer *integer;
                             integer = CAST_TO(Integer, astNode);
                             // create new Register.[uses current unused register]
-                            Node *reg = Register::getRegister(__reg);
+                            Node *reg = ctx->getRegister();
                             if(reg == NULL){
                                 cout<<"Its null i am dead..."<<endl;
                             }
@@ -92,7 +92,7 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                 // as it is the last statement that will be executed in this context.                                
                                 Register *raxReg;
                                 if(result && !result->is(rax)){
-                                    raxReg = Register::getRegister(__reg, rax);
+                                    raxReg = ctx->getRegister(rax);
                                     raxReg->setDataType(result->getDataType());
                                     raxReg->setTypeClass(result->getTypeClass());
                                     ctx->addInstruction(new Move(mov, result, NULL, raxReg));
@@ -120,14 +120,14 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                     // get the else node[code which needs to be executed on false truthValue]
                                     Node *nextLabel = this->evaluate(ops->get(2), ctx, dtype);
                                     ctx->clearLocations();
-                                    Register::clearAll();
+                                    ctx->clearAll();
                                     // generate an unconditional jump node which will get you out of the control
                                     // statement "if else, if elif else."
                                     // emit true branch label name.
                                     ctx->addInstruction(new EmitLabel(emitlabel, truthLabel, NULL, NULL));
                                     Node *rval = this->evaluate(ops->get(1), ctx, dtype);
                                     ctx->clearLocations();
-                                    Register::clearAll();
+                                    ctx->clearAll();
                                     // generate label for converging the control.
                                     if(nextLabel && nextLabel->getType() != __return)
                                         ctx->addInstruction(new EmitLabel(emitlabel, nextLabel, NULL, NULL));
@@ -169,14 +169,14 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                 // get the else node[code which needs to be executed on false truthValue]
                                 Node *nextLabel = this->evaluate(ops->get(2), ctx, dtype);
                                 ctx->clearLocations();
-                                Register::clearAll();
+                                ctx->clearAll();
                                 // generate an unconditional jump node which will get you out of the control
                                 // statement "if else, if elif else."
                                 // emit true branch label name.
                                 ctx->addInstruction(new EmitLabel(emitlabel, truthLabel, NULL, NULL));
                                 Node *rval = this->evaluate(ops->get(1), ctx, dtype);
                                 ctx->clearLocations();
-                                Register::clearAll();                                
+                                ctx->clearAll();                                
                                 // generate label for converging the control.
                                 if(nextLabel && nextLabel->getType() != __return)
                                     ctx->addInstruction(new Jump(jmp, nextLabel, NULL, NULL));
@@ -263,12 +263,12 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                         sprintf(buffer, "\n.type %s, @function", functName->getName());
                                         nctx->addInstruction(new Emit(emit, new String(buffer)));
                                         nctx->addInstruction(new EmitLabel(emitlabel, new Label(functName), NULL, NULL));
-                                        nctx->addInstruction(new Push(push, Register::getRegister(__reg, rbp)));
-                                        nctx->addInstruction(new Move(mov, Register::getRegister(__reg, rsp), NULL, Register::getRegister(__reg, rbp)));
+                                        nctx->addInstruction(new Push(push, ctx->getRegister(rbp)));
+                                        nctx->addInstruction(new Move(mov, ctx->getRegister(rsp), NULL, ctx->getRegister(rbp)));
                                         Function *f = new Function();
                                         FormalParameter *fp;
                                         for(int i = 0, len = fplist->getLength(); i < len; i++){
-                                            fp = CAST_TO(FormalParameter, fplist->get(i));                                            
+                                            fp = CAST_TO(FormalParameter, fplist->get(i));             
                                             // get the name of the parameter.
                                             char* name = fp->getParameterName();
                                             // generate an identifier node.
@@ -278,11 +278,11 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                             id->setTypeClass(Type::getTypeClass(t));
                                             if(!nctx->isBound(id,0)){
                                                 nctx->put(string(name), id);
-                                                Register *functReg = Register::getRegister(__reg, Register::functReg(i));
+                                                Register *functReg = ctx->getRegister(Register::functReg(i));
                                                 functReg->setDataType(id->getDataType());
                                                 functReg->setTypeClass(id->getTypeClass());
                                                 nctx->addInstruction(new Move(mov, functReg, NULL, id));
-                                                functReg->unsetReg();
+                                                ctx->unsetAvailabilityFlag(functReg->getRegIndex());
                                                 //id->addLocation(functReg);
                                                 //functReg->addLocation(id);
                                                 // put it paramter list.
@@ -302,12 +302,12 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                         nctx->attachContext(ctx);
                                         this->evaluate(ops->get(3), nctx, returnType);
                                         nctx->addInstruction(new EmitLabel(emitlabel, new String(ctx->getExitLabel()), NULL, NULL));
-                                        nctx->addInstruction(new Move(mov, Register::getRegister(__reg, rbp), NULL, Register::getRegister(__reg, rsp)));
-                                        nctx->addInstruction(new Pop(pop, Register::getRegister(__reg, rbp)));
+                                        nctx->addInstruction(new Move(mov, ctx->getRegister(rbp), NULL, ctx->getRegister(rsp)));
+                                        nctx->addInstruction(new Pop(pop, ctx->getRegister(rbp)));
                                         nctx->addInstruction(new Return(ret));
                                         // store this context into the global context list.
                                         this->addContext(nctx);
-                                        Register::clearAll();
+                                        ctx->clearAll();
                                         OUTSIDE_FUNCTION(this->insideFunctionCounter);
                                     }
                                 }
@@ -318,8 +318,8 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                     // check to see whether the function exists or not in the current context.
                                     // if so, evaluate the user defined function.
                                     stack<Register*> regStack;
-                                    int index = 0, count = Register::allocatedRegisterLength();
-                                    Register *tmp = Register::spill();
+                                    int index = 0, count = ctx->getRegisterAllocatedLength();
+                                    Register *tmp = ctx->spill();
                                     while(index < count){
                                         if(tmp && tmp->hasLocationAdded()){
                                             // get the location.
@@ -334,7 +334,7 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                                 ctx->addInstruction(new Push(push, tmp));
                                             }
                                         }
-                                        tmp = Register::spill();
+                                        tmp = ctx->spill();
                                         index++;
                                     }
                                     // all registers that got used are spilled.
@@ -347,30 +347,30 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                         Node *result = this->evaluate(arglist->get(i), ctx, dtype);
                                         // generate a new register and move the result into
                                         // this register.
-                                        Register *functReg = Register::getRegister(__reg, Register::functReg(i));
+                                        Register *functReg = ctx->getRegister(Register::functReg(i));
                                         functReg->setDataType(result->getDataType());
                                         functReg->setTypeClass(result->getTypeClass());
                                         ctx->addInstruction(new Move(mov, result, NULL, functReg));
                                         Register *dummy = CAST_TO(Register, result);
                                         if(dummy != NULL){
-                                            dummy->unsetReg();                                            
+                                            ctx->unsetAvailabilityFlag(dummy->getRegIndex());
                                         }
                                     }
                                     // generate call instruction.
                                     Identifier *functName = CAST_TO(Identifier, ops->get(0));
                                     ctx->addInstruction(new Call(call, functName));
                                     // call is done. restore values stored in the registers.
-                                    Register::clearAll();
+                                    ctx->clearAll();
                                     ctx->clearLocations();
                                     while(!regStack.empty()){
                                         Register *r = regStack.top();
                                         if(r != NULL){
-                                            Register::setReg(r->getRegIndex());
+                                            ctx->setAvailabilityFlag(r->getRegIndex());
                                             ctx->addInstruction(new Pop(pop, r));
                                         }
                                         regStack.pop();
                                     }
-                                    Register *returnVal = Register::getRegister(__reg, rax);
+                                    Register *returnVal = ctx->getRegister(rax);
                                     Function *f = CAST_TO(Function, ctx->get(string(functName->getName()), 0));
                                     if(f != NULL){
                                         Type *rtype = f->getReturnType();

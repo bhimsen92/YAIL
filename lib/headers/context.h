@@ -7,6 +7,7 @@
 #include "bnKapi.h"
 #include "node.h"
 #include "tokens.h"
+#include "../codegen/headers/instr.h"
 #include "../codegen/headers/ir.h"
 
 #ifndef __CONTEXT
@@ -39,24 +40,140 @@ class Context{
             // list of ids for arguments to the function.
             vector<Identifier*> firstSixArgs;
             vector<Identifier*> arguments;
+            // Register related attributes.
+            int reg[16];
+            bool alreadyUsed[16];
+            bool instanciated[16];
+            int  len;
+            vector<Register*> registerAllocated;
             static int exitLabelCounter;
     public:
             Context(void){
+                //cout<<"Hello..."<<endl;
                 //symtab = new map<string, Node*>();
                 offset = 8;
                 reverseOffset = 0;
                 memory = 0;
+                len = 16;
                 ctxChain = NULL;
                 exitLabelCounter++;
+                // initialize alreadyUsed array to false.
+                for(int i = 0; i < len; i++){
+                    alreadyUsed[i] = false;
+                    instanciated[i] = false;
+                    reg[i] = i;
+                }
             }
+
             ~Context(void){
-                //cout<<"Herr: "<<endl;
-                //char ch;
-                //cin>>ch;
-                //delete symtab;
-                //cout<<"Destruction called[Context]"<<endl;
             }
+
+            Register* getRegister(){
+                int _register = getReg();
+                if(_register == -1){
+                    return NULL;
+                }
+                else if(!instanciated[_register]){
+                    // create the register object.
+                    // set the respective instantiated bit to true.
+                    // return the object.
+                    Register *val = new Register(__reg, _register);
+                    instanciated[_register] = true;
+                    registerAllocated.push_back(val);
+                    //cout<<"Reg: "<<val->toString()<<", Register allocated: "<<registerAllocated.size()<<endl;
+                    return val;
+                }
+                else{
+                    return getRegisterFromAllocated(_register);                    
+                }
+            }
+
+            Register* getRegister(int _register){
+                alreadyUsed[_register] = true;
+                if(!instanciated[_register]){
+                    Register *val = new Register(__reg, _register);
+                    instanciated[_register] = true;
+                    registerAllocated.push_back(val);
+                    //cout<<"Reg: "<<val->toString()<<", Register allocated: "<<registerAllocated.size()<<endl;
+                    return val;                    
+                }
+                else{
+                    return getRegisterFromAllocated(_register);
+                }
+            }
+
+            int getReg(){
+                for(int i = 0; i < len; i++){
+                    if(!alreadyUsed[i]){
+                        alreadyUsed[i] = true;
+                        return i;
+                    }
+                }
+                return -1;
+            }
+
+            bool free(int _register){
+                return !alreadyUsed[_register];
+            }
+
+            void setAvailabilityFlag(int _register){
+                alreadyUsed[_register] = true;
+            }
+
+            void unsetAvailabilityFlag(int _register){
+                alreadyUsed[_register] = false;
+            }
+
+            Register* getRegisterFromAllocated(int _register){
+                int length = registerAllocated.size();
+                for(int i = 0; i < length; i++){
+                    if(registerAllocated[i]->is((Reg)_register)){
+                        return registerAllocated[i];
+                    }
+                }
+                return NULL;
+            }
+
+            void clearAll(){
+                int length = registerAllocated.size();
+                for(int i = 0; i < len; i++){
+                    alreadyUsed[i] =false;
+                }
+                //cout<<"Length: "<<length<<endl;
+                for(int i = 0; i < length; i++){
+                    //cout<<"i: "<<i<<endl;
+                    if(registerAllocated[i] != NULL)
+                        registerAllocated[i]->removeLocation();
+                }
+            }
+
+            Register* spill(){
+                int length = registerAllocated.size(), i = 0;
+                vector<Register*>::iterator it = registerAllocated.begin();
+                while(i < length){
+                    Register *reg = *it;
+                    if(!reg->is(rax) && !reg->is(rsp) && !reg->is(rbp) && alreadyUsed[reg->getRegIndex()]){
+                        alreadyUsed[reg->getRegIndex()] = false;
+                        return reg;
+                    }
+                    i++;
+                }
+            }
+
+            int getRegisterAllocatedLength(){
+                return registerAllocated.size();
+            }
+
+            bool areAvailable(){
+                for(int i = 0; i < len; i++){
+                    if(!alreadyUsed[i])
+                        return true;
+                }
+                return false;
+            }
+
             void setSymbolTable( map< string, Object* > *symTab );
+
             void put(string ident, Node *value){
                 symtab[ident] = value;
             }
@@ -81,6 +198,7 @@ class Context{
             void attachContext(Context *ctx){
                 ctxChain = ctx;
             }
+
             bool isBound(Identifier *id, int dummy){
                 string varName = id->getName();
                 if( symtab[varName] != NULL ){
@@ -90,6 +208,7 @@ class Context{
                     return false;
                 }
             }
+
             void updateOffset(int amount){
                 offset += amount;
             }
@@ -156,7 +275,8 @@ class Context{
                     IRCode *instr = instructions[i];
                     cout<<instr->emit();
                 }
-            }            
+            }
+
             void addFunctionParamter(Identifier *id){
                 int len = firstSixArgs.size();
                 if(len < 6){

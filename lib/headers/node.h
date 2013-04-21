@@ -308,110 +308,13 @@ class Register;
     class Register : public Node{
         private:
                 Reg _register;
-                static int reg[16];
-                static bool alreadyUsed[16];
-                static bool instanciated[16];
-                static int  len;
-                static vector<Register*> registerAllocated;
                 vector<Node*> registerDescriptor;
-                //char regName[8];
         public:
                 Register(int dtype) : Node(dtype){
-                    /*len = 16;
-                    for(int i = 0; i < len; i++){
-                        reg[i] = i;
-                    }*/                   
-                    _register = (Reg)getReg();
-                    instanciated[_register] = true;
-                    registerAllocated.push_back(this);
                 }
                 
                 Register(int dtype, int regt): Node(dtype){
                     _register = (Reg)regt;
-                    if(!instanciated[_register]){
-                        instanciated[_register] = true;
-                        registerAllocated.push_back(this);
-                    }
-                    alreadyUsed[_register] = true;
-                }
-
-                static Register* getRegister(int dtype){
-                    Reg r = (Reg)getReg();
-                    if(!instanciated[r]){
-                        return new Register(dtype, r);
-                    }
-                    else if( r != -1){
-                        return getRegisterFromAllocated(dtype, r);
-                    }
-                    else{
-                        return Register::spill();
-                    }
-                }
-
-                static Register* getRegister(int dtype, int regt){                    
-                    if(!instanciated[regt]){
-                        return new Register(dtype, regt);
-                    }
-                    else{
-                        return getRegisterFromAllocated(dtype, regt);
-                    }
-                }
-
-                static int allocatedRegisterLength(){
-                    //return registerAllocated.size();
-                    int val = 0;
-                    for(int i = 0; i < len; i++){
-                        if(alreadyUsed[i])
-                            val++;
-                    }
-                    return val;
-                }
-
-                static Register* getRegisterFromAllocated(int dtype, int reg){
-                    for(int i = 0; i < registerAllocated.size(); i++){
-                        if(reg != rax && reg != rsp && reg != rbp && 
-                           registerAllocated[i]->_register == reg){
-                            Register::setReg(reg);
-                            Register::alreadyUsed[reg] = true;
-                            return registerAllocated[i];
-                        }
-                    }
-                    return new Register(dtype, reg);
-                }
-
-                static Register* spill(){
-                    int size = registerAllocated.size();
-                    int index = 0;
-                    vector<Register*>::iterator it = registerAllocated.begin();
-                    while(index < size){                        
-                        Register *reg = *it;
-                        if(!reg->is(rsp) && !reg->is(rbp) && Register::alreadyUsed[reg->_register]){
-                            // remove this register from the list.                    
-                            Register::alreadyUsed[reg->_register] = false;
-                            registerAllocated.erase(it, it + 1);
-                            registerAllocated.push_back(*it);
-                            return reg;
-                        }
-                        /*else if(!reg->is(rsp) && !reg->is(rbp)){
-                            registerAllocated.erase(it, it + 1);
-                            registerAllocated.push_back(*it);
-                            Register::alreadyUsed[reg->_register] = false;
-                            return reg;
-                        }*/
-                        index++;
-                        it++;
-                    }
-                    // if control comes upto this => no registers have been 
-                    // allocated.
-                    return NULL;
-                }
-                
-                bool isFree(){
-                    return !alreadyUsed[_register];
-                }
-                
-                bool is(Reg reg){
-                    return _register == reg;
                 }
 
                 char* toString(){
@@ -449,66 +352,9 @@ class Register;
                         return (char*)"%r15";                                                                                                                                                                    
                 }
                 
-                static int getReg(){
-                    // go through "used" array.
-                    // return first unused register.
-                    for(int i = 0; i < len; i++){
-                        if(!alreadyUsed[i] && i != rax && i != rsp && i != rbp){
-                            alreadyUsed[i] = true;
-                            return reg[i];
-                        }
-                    }
-                    return -1;
-                }
-                
-                static bool areAvailable(){
-                    for(int i = 0; i < len; i++){
-                        if(!alreadyUsed[i])
-                            return true;
-                    }
-                    return false;
-                }
-
-                /*static Register* getRegister(Reg reg){
-                    Register *val = NULL;
-                    for(int i = 0; i < registerAllocated.size(); i++){
-                        if(registerAllocated[i]->_register == reg){
-                            return registerAllocated[i];
-                        }
-                    }
-                    if(!Register::alreadyUsed[reg]){
-                        return new Register(__reg, reg);
-                    }
-                    else{
-                        cout<<"Error..."<<endl;
-                        exit(1);
-                    }
-                }*/
-
-                void unsetReg(){
-                    alreadyUsed[_register] = false;
-                }
-
-                static void printUsed(){
-                    for(int i = 0; i < len; i++){
-                        if(alreadyUsed[i]){
-                            cout<<"used: "<<i<<" ";
-                        }
-                    }
-                    cout<<endl;
-                }
-                
-                static void setReg(int i){
-                    alreadyUsed[i] = true;
-                }
-
-                static void clearAll(){
-                    for(int i = 0; i < len; i++){
-                        alreadyUsed[i] = false;
-//                        if(registerAllocated.size() > 0)
-//                            registerAllocated.pop_back();
-                    }
-                }
+                bool is(Reg reg){
+                    return _register == reg;
+                }                
                 
                 bool equals(Node *reg){
                     Register *other = CAST_TO(Register, reg);

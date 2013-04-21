@@ -50,10 +50,10 @@ Node* AdditionOperation::exec( int a, int b ){
     else{
         // secondOp has been attached to a memory location.
         // need to spit out it.
-        if(!Register::areAvailable() && secondOp->hasLocationAdded()){
+        if(!ctx->areAvailable() && secondOp->hasLocationAdded()){
             // if registers are not avaiable.
             // remove the registers in a fifo manner.
-            Register *spilledReg = Register::spill();
+            Register *spilledReg = ctx->spill();
             // generate a move instruction from spilledReg to the location.
             Node *loc = spilledReg->getLocation();
             // remove the var location from the spilledReg.
@@ -64,7 +64,7 @@ Node* AdditionOperation::exec( int a, int b ){
             ctx->addInstruction(new Move(mov, spilledReg, NULL, loc));
         }
         if(secondOp->hasLocationAdded()){
-            Register *reg = Register::getRegister(__reg);
+            Register *reg = ctx->getRegister();
             // add location from secondOp to this newly created reg.
             Node *location = secondOp->getLocation();
             location->removeLocation();
@@ -102,10 +102,10 @@ Node* SubtractionOperation::exec( int a, int b ){
     else{
         // secondOp has been attached to a memory location.
         // need to spit out it.
-        if(!Register::areAvailable() && firstOp->hasLocationAdded()){
+        if(!ctx->areAvailable() && firstOp->hasLocationAdded()){
             // if registers are not avaiable.
             // remove the registers in a fifo manner.
-            Register *spilledReg = Register::spill();
+            Register *spilledReg = ctx->spill();
             // generate a move instruction from spilledReg to the location.
             Node *loc = spilledReg->getLocation();
             // remove the var location from the spilledReg.
@@ -116,7 +116,7 @@ Node* SubtractionOperation::exec( int a, int b ){
             ctx->addInstruction(new Move(mov, spilledReg, NULL, loc));
         }
         if(firstOp->hasLocationAdded()){
-            Register *reg = Register::getRegister(__reg);
+            Register *reg = ctx->getRegister();
             // add location from secondOp to this newly created reg.
             Node *location = firstOp->getLocation();
             location->removeLocation();
@@ -148,10 +148,10 @@ Register *guardVar = CAST_TO(Register, secondOp);
     else{
         // secondOp has been attached to a memory location.
         // need to spit out it.
-        if(!Register::areAvailable() && secondOp->hasLocationAdded()){
+        if(!ctx->areAvailable() && secondOp->hasLocationAdded()){
             // if registers are not avaiable.
             // remove the registers in a fifo manner.
-            Register *spilledReg = Register::spill();
+            Register *spilledReg = ctx->spill();
             // generate a move instruction from spilledReg to the location.
             Node *loc = spilledReg->getLocation();
             // remove the var location from the spilledReg.
@@ -162,7 +162,7 @@ Register *guardVar = CAST_TO(Register, secondOp);
             ctx->addInstruction(new Move(mov, spilledReg, NULL, loc));
         }
         if(secondOp->hasLocationAdded()){
-            Register *reg = Register::getRegister(__reg);
+            Register *reg = ctx->getRegister();
             // add location from secondOp to this newly created reg.
             Node *location = secondOp->getLocation();
             location->removeLocation();

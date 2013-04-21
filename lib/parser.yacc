@@ -30,12 +30,6 @@ stack<StatementList*> statementStack;
 stack<DataType> typeStack;
 StatementList *stmtList = NULL;
 int counter = 0;
-// to get rid of multiple def error.
-bool Register::alreadyUsed[] = {false};
-int Register::reg[16] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15};
-int Register::len = 16;
-vector<Register*> Register::registerAllocated;
-bool Register::instanciated[16]={false};
 %}
 
 %union{
@@ -415,8 +409,8 @@ int main(){
     TreeWalker treewalker;
     int length;
     length = programAST->getLength();
-    ctx->addInstruction(new Push(push, Register::getRegister(__reg, rbp)));
-    ctx->addInstruction(new Move(mov, Register::getRegister(__reg, rsp), NULL, Register::getRegister(__reg, rbp)));    
+    ctx->addInstruction(new Push(push, ctx->getRegister(rbp)));
+    ctx->addInstruction(new Move(mov, ctx->getRegister(rsp), NULL, ctx->getRegister(rbp)));    
     //cout<<"Parsing done.."<<endl;
     for( int i = 0; i < length; i++ ){
       if( !programAST->empty() ){
