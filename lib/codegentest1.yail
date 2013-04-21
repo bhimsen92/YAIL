@@ -1,9 +1,21 @@
-function add(Int a, Int b):Int{
-	return a + b;
-}
-
 function sub(Int a, Int b):Int{
 	return a - b;
 }
 
-add(100, add(5, sub(10, 5)));
+function add(Int a, Int b):Int{
+	return a + b;
+}
+
+function fibo(Int n):Int{
+	if(n == 0){
+		return 0;
+	}
+	elif(n == 1){
+		return 1;
+	}
+	else{
+		return add(fibo(sub(n, 2)), fibo(sub(n, 1)));
+	}
+}
+
+fibo(13);

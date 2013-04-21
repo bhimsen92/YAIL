@@ -110,7 +110,6 @@ elseBlock: ELSE block  {
                                                                     operands->push_back( $3 );
                                                                     operands->push_back( $5 );
                                                                     operands->push_back( $6 );
-                                                                    cout<<"In elif parser..."<<endl;
                                                                     Operator *elifNode = new Operator( __elif, 3, operands );
                                                                     $$ = elifNode;
                                                               }

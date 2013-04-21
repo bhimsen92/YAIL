@@ -102,7 +102,7 @@ class Context{
                     instanciated[_register] = true;
                     registerAllocated.push_back(val);
                     //cout<<"Reg: "<<val->toString()<<", Register allocated: "<<registerAllocated.size()<<endl;
-                    return val;                    
+                    return val;   
                 }
                 else{
                     return getRegisterFromAllocated(_register);
@@ -111,7 +111,7 @@ class Context{
 
             int getReg(){
                 for(int i = 0; i < len; i++){
-                    if(!alreadyUsed[i]){
+                    if(!alreadyUsed[i] && i != rax && i != rsp && i != rbp){
                         alreadyUsed[i] = true;
                         return i;
                     }

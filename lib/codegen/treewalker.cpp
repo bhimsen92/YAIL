@@ -386,7 +386,7 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                     else{
                                         Type *rtype = new Type(__integer, 8);
                                         returnVal->setDataType(rtype);
-                                        returnVal->setTypeClass(Type::getTypeClass(rtype));                                        
+                                        returnVal->setTypeClass(Type::getTypeClass(rtype));
                                     }
                                     return returnVal;
                                 }
@@ -425,6 +425,7 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                 break;
         case __equality:
                                 {
+                                    //cout<<"In equalityNode..\n";
                                     Operator *equalityNode = CAST_TO(Operator, astNode);
                                     return this->execOperation(equalityNode, ctx, new EqualityOperator(ctx));
                                 }
@@ -444,7 +445,7 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
     return NULL;
 }
 
-Node* TreeWalker::execOperation( Operator* opNode, Context* ctx, BinaryOperation* op ){
+Node* TreeWalker::execOperation(Operator* opNode, Context* ctx, BinaryOperation* op){
     // get the operands from the operator node.
     // evaluate the operands by generating code for them,
     // then, check for type compatibility, if everything seems ok,
@@ -452,14 +453,32 @@ Node* TreeWalker::execOperation( Operator* opNode, Context* ctx, BinaryOperation
     // temp node generation and generating code for them is offloaded to BinaryOperation subclasses.
     Operands *ops = opNode->getOperands();
     Register *firstOp = CAST_TO(Register, this->evaluate(ops->get(0), ctx, NULL));
+    if(firstOp->is(rax)){
+        Register *tmp = ctx->getRegister();
+        tmp->setDataType(firstOp->getDataType());
+        tmp->setTypeClass(Type::getTypeClass(firstOp->getDataType()));
+        // generate move instruction.
+        ctx->addInstruction(new Move(mov, firstOp, NULL, tmp));
+        firstOp = tmp;
+    }
     Node *location = firstOp->getLocation();
-    Node *secondOp = this->evaluate(ops->get(1), ctx, NULL);    
+    Node *secondOp = CAST_TO(Register, this->evaluate(ops->get(1), ctx, NULL));
+    if(secondOp->is(rax)){
+        Register *tmp = ctx->getRegister();
+        tmp->setDataType(secondOp->getDataType());
+        tmp->setTypeClass(Type::getTypeClass(secondOp->getDataType()));
+        // generate move instruction.
+        ctx->addInstruction(new Move(mov, secondOp, NULL, tmp));
+        secondOp = tmp;
+    }
     Register *reg = CAST_TO(Register, location != NULL ? location->getLocation() : NULL);
 
     if(reg && firstOp && reg->getRegIndex() == firstOp->getRegIndex())
         op->setFirstOperand(firstOp);
-    else
+    else if(location)
         op->setFirstOperand(location);
+    else
+        op->setFirstOperand(firstOp);
     op->setSecondOperand(secondOp);
     if(op->isTypeCompatible()){
         Node *rval = op->executeOperation();

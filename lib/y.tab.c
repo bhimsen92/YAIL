@@ -522,13 +522,13 @@ static const yytype_int8 yyrhs[] =
 static const yytype_uint16 yyrline[] =
 {
        0,    53,    53,    60,    65,    74,    79,    82,    93,    99,
-     102,   108,   118,   119,   122,   125,   126,   135,   136,   145,
-     146,   155,   162,   169,   176,   183,   187,   198,   201,   203,
-     204,   207,   212,   221,   227,   227,   237,   243,   252,   262,
-     269,   276,   279,   286,   293,   296,   303,   306,   312,   318,
-     321,   322,   323,   324,   325,   326,   327,   328,   329,   330,
-     332,   335,   336,   337,   338,   339,   340,   343,   354,   358,
-     361,   369,   377,   380,   385,   393
+     102,   108,   117,   118,   121,   124,   125,   134,   135,   144,
+     145,   154,   161,   168,   175,   182,   186,   197,   200,   202,
+     203,   206,   211,   220,   226,   226,   236,   242,   251,   261,
+     268,   275,   278,   285,   292,   295,   302,   305,   311,   317,
+     320,   321,   322,   323,   324,   325,   326,   327,   328,   329,
+     331,   334,   335,   336,   337,   338,   339,   342,   353,   357,
+     360,   368,   376,   379,   384,   392
 };
 #endif
 
@@ -1675,7 +1675,6 @@ yyreduce:
                                                                     operands->push_back( (yyvsp[(3) - (6)].node) );
                                                                     operands->push_back( (yyvsp[(5) - (6)].node) );
                                                                     operands->push_back( (yyvsp[(6) - (6)].node) );
-                                                                    cout<<"In elif parser..."<<endl;
                                                                     Operator *elifNode = new Operator( __elif, 3, operands );
                                                                     (yyval.node) = elifNode;
                                                               }
@@ -1684,35 +1683,35 @@ yyreduce:
   case 12:
 
 /* Line 1806 of yacc.c  */
-#line 118 "parser.yacc"
+#line 117 "parser.yacc"
     {  (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 13:
 
 /* Line 1806 of yacc.c  */
-#line 119 "parser.yacc"
+#line 118 "parser.yacc"
     {  (yyval.node) = (yyvsp[(2) - (3)].node); }
     break;
 
   case 14:
 
 /* Line 1806 of yacc.c  */
-#line 122 "parser.yacc"
+#line 121 "parser.yacc"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 15:
 
 /* Line 1806 of yacc.c  */
-#line 125 "parser.yacc"
+#line 124 "parser.yacc"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 16:
 
 /* Line 1806 of yacc.c  */
-#line 126 "parser.yacc"
+#line 125 "parser.yacc"
     {
                                                   Operands *operands = new Operands();
                                                   operands->push_back( (yyvsp[(1) - (3)].node) );
@@ -1725,14 +1724,14 @@ yyreduce:
   case 17:
 
 /* Line 1806 of yacc.c  */
-#line 135 "parser.yacc"
+#line 134 "parser.yacc"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 18:
 
 /* Line 1806 of yacc.c  */
-#line 136 "parser.yacc"
+#line 135 "parser.yacc"
     {
                                                   Operands *operands = new Operands();
                                                   operands->push_back( (yyvsp[(1) - (3)].node) );
@@ -1745,14 +1744,14 @@ yyreduce:
   case 19:
 
 /* Line 1806 of yacc.c  */
-#line 145 "parser.yacc"
+#line 144 "parser.yacc"
     {  (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 20:
 
 /* Line 1806 of yacc.c  */
-#line 146 "parser.yacc"
+#line 145 "parser.yacc"
     { 
                                                   Operands *operands = new Operands();
                                                   operands->push_back( (yyvsp[(1) - (3)].node) );
@@ -1765,7 +1764,7 @@ yyreduce:
   case 21:
 
 /* Line 1806 of yacc.c  */
-#line 155 "parser.yacc"
+#line 154 "parser.yacc"
     {
                                                   Operands *operands = new Operands();
                                                   operands->push_back( (yyvsp[(1) - (3)].node) );
@@ -1778,7 +1777,7 @@ yyreduce:
   case 22:
 
 /* Line 1806 of yacc.c  */
-#line 162 "parser.yacc"
+#line 161 "parser.yacc"
     {
                                                   Operands *operands = new Operands();
                                                   operands->push_back( (yyvsp[(1) - (3)].node) );
@@ -1791,7 +1790,7 @@ yyreduce:
   case 23:
 
 /* Line 1806 of yacc.c  */
-#line 169 "parser.yacc"
+#line 168 "parser.yacc"
     {
                                                   Operands *operands = new Operands();
                                                   operands->push_back( (yyvsp[(1) - (3)].node) );
@@ -1804,7 +1803,7 @@ yyreduce:
   case 24:
 
 /* Line 1806 of yacc.c  */
-#line 176 "parser.yacc"
+#line 175 "parser.yacc"
     {
                                                   Operands *operands = new Operands();
                                                   operands->push_back( (yyvsp[(1) - (3)].node) );
@@ -1817,14 +1816,14 @@ yyreduce:
   case 25:
 
 /* Line 1806 of yacc.c  */
-#line 183 "parser.yacc"
+#line 182 "parser.yacc"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 26:
 
 /* Line 1806 of yacc.c  */
-#line 187 "parser.yacc"
+#line 186 "parser.yacc"
     {
                                                                                                 Operands *operands = new Operands();
                                                                                                 operands->push_back( (yyvsp[(2) - (8)].node) );
@@ -1839,35 +1838,35 @@ yyreduce:
   case 27:
 
 /* Line 1806 of yacc.c  */
-#line 198 "parser.yacc"
+#line 197 "parser.yacc"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 28:
 
 /* Line 1806 of yacc.c  */
-#line 201 "parser.yacc"
+#line 200 "parser.yacc"
     { (yyval.node) = (yyvsp[(2) - (3)].node); }
     break;
 
   case 29:
 
 /* Line 1806 of yacc.c  */
-#line 203 "parser.yacc"
+#line 202 "parser.yacc"
     { (yyval.node) = new FormalParameterList(); }
     break;
 
   case 30:
 
 /* Line 1806 of yacc.c  */
-#line 204 "parser.yacc"
+#line 203 "parser.yacc"
     { (yyval.node) = (yyvsp[(1) - (1)].node);   }
     break;
 
   case 31:
 
 /* Line 1806 of yacc.c  */
-#line 207 "parser.yacc"
+#line 206 "parser.yacc"
     {
                                                                    FormalParameterList *fpList = new FormalParameterList();
                                                                    fpList->push_back( (yyvsp[(1) - (1)].node) );
@@ -1878,7 +1877,7 @@ yyreduce:
   case 32:
 
 /* Line 1806 of yacc.c  */
-#line 212 "parser.yacc"
+#line 211 "parser.yacc"
     {
                                                                     FormalParameterList *fpList = CAST_TO( FormalParameterList, (yyvsp[(1) - (3)].node) );
                                                                     if( fpList != NULL ){
@@ -1891,7 +1890,7 @@ yyreduce:
   case 33:
 
 /* Line 1806 of yacc.c  */
-#line 221 "parser.yacc"
+#line 220 "parser.yacc"
     {
                                             FormalParameter *fParameter = new FormalParameter( (yyvsp[(1) - (2)].node), (yyvsp[(2) - (2)].node) );
                                             (yyval.node) = fParameter;
@@ -1901,14 +1900,14 @@ yyreduce:
   case 34:
 
 /* Line 1806 of yacc.c  */
-#line 227 "parser.yacc"
+#line 226 "parser.yacc"
     { putType( (yyvsp[(1) - (1)].node)->getType() ); }
     break;
 
   case 35:
 
 /* Line 1806 of yacc.c  */
-#line 227 "parser.yacc"
+#line 226 "parser.yacc"
     {
                                                               Operands *operands = new Operands();
                                                               operands->push_back( (yyvsp[(1) - (3)].node) );
@@ -1922,7 +1921,7 @@ yyreduce:
   case 36:
 
 /* Line 1806 of yacc.c  */
-#line 237 "parser.yacc"
+#line 236 "parser.yacc"
     {
                                                         VariableList *vlist = new VariableList( -1 );
                                                         vlist->push_back( (yyvsp[(1) - (1)].node) );
@@ -1933,7 +1932,7 @@ yyreduce:
   case 37:
 
 /* Line 1806 of yacc.c  */
-#line 243 "parser.yacc"
+#line 242 "parser.yacc"
     {
                                                          VariableList *vlist = CAST_TO( VariableList, (yyvsp[(1) - (3)].node) );
                                                          if( vlist != NULL ){
@@ -1946,7 +1945,7 @@ yyreduce:
   case 38:
 
 /* Line 1806 of yacc.c  */
-#line 252 "parser.yacc"
+#line 251 "parser.yacc"
     {
                                                     Operands *operands = new Operands();
                                                     operands->push_back(NULL);
@@ -1960,7 +1959,7 @@ yyreduce:
   case 39:
 
 /* Line 1806 of yacc.c  */
-#line 262 "parser.yacc"
+#line 261 "parser.yacc"
     {
                                               Operands *operands = new Operands();
                                               operands->push_back( (yyvsp[(1) - (3)].node) );
@@ -1973,7 +1972,7 @@ yyreduce:
   case 40:
 
 /* Line 1806 of yacc.c  */
-#line 269 "parser.yacc"
+#line 268 "parser.yacc"
     {
                                               Operands *operands = new Operands();
                                               operands->push_back( (yyvsp[(1) - (3)].node) );
@@ -1986,14 +1985,14 @@ yyreduce:
   case 41:
 
 /* Line 1806 of yacc.c  */
-#line 276 "parser.yacc"
+#line 275 "parser.yacc"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 42:
 
 /* Line 1806 of yacc.c  */
-#line 279 "parser.yacc"
+#line 278 "parser.yacc"
     {
                                               Operands *operands = new Operands();
                                               operands->push_back( (yyvsp[(1) - (3)].node) );
@@ -2006,7 +2005,7 @@ yyreduce:
   case 43:
 
 /* Line 1806 of yacc.c  */
-#line 286 "parser.yacc"
+#line 285 "parser.yacc"
     {
                                               Operands *operands = new Operands();
                                               operands->push_back( (yyvsp[(1) - (3)].node) );
@@ -2019,14 +2018,14 @@ yyreduce:
   case 44:
 
 /* Line 1806 of yacc.c  */
-#line 293 "parser.yacc"
+#line 292 "parser.yacc"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 45:
 
 /* Line 1806 of yacc.c  */
-#line 296 "parser.yacc"
+#line 295 "parser.yacc"
     {
                                               Operands *operands = new Operands();
                                               operands->push_back( (yyvsp[(1) - (3)].node) );
@@ -2039,14 +2038,14 @@ yyreduce:
   case 46:
 
 /* Line 1806 of yacc.c  */
-#line 303 "parser.yacc"
+#line 302 "parser.yacc"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 47:
 
 /* Line 1806 of yacc.c  */
-#line 306 "parser.yacc"
+#line 305 "parser.yacc"
     {
                                               Operands *operands = new Operands();
                                               operands->push_back( (yyvsp[(2) - (2)].node) );
@@ -2058,7 +2057,7 @@ yyreduce:
   case 48:
 
 /* Line 1806 of yacc.c  */
-#line 312 "parser.yacc"
+#line 311 "parser.yacc"
     {
                                               Operands *operands = new Operands();
                                               operands->push_back( (yyvsp[(2) - (2)].node) );
@@ -2070,126 +2069,126 @@ yyreduce:
   case 49:
 
 /* Line 1806 of yacc.c  */
-#line 318 "parser.yacc"
+#line 317 "parser.yacc"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 50:
 
 /* Line 1806 of yacc.c  */
-#line 321 "parser.yacc"
+#line 320 "parser.yacc"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 51:
 
 /* Line 1806 of yacc.c  */
-#line 322 "parser.yacc"
+#line 321 "parser.yacc"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 52:
 
 /* Line 1806 of yacc.c  */
-#line 323 "parser.yacc"
+#line 322 "parser.yacc"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 53:
 
 /* Line 1806 of yacc.c  */
-#line 324 "parser.yacc"
+#line 323 "parser.yacc"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 54:
 
 /* Line 1806 of yacc.c  */
-#line 325 "parser.yacc"
+#line 324 "parser.yacc"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 55:
 
 /* Line 1806 of yacc.c  */
-#line 326 "parser.yacc"
+#line 325 "parser.yacc"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 56:
 
 /* Line 1806 of yacc.c  */
-#line 327 "parser.yacc"
+#line 326 "parser.yacc"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 57:
 
 /* Line 1806 of yacc.c  */
-#line 328 "parser.yacc"
+#line 327 "parser.yacc"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 58:
 
 /* Line 1806 of yacc.c  */
-#line 329 "parser.yacc"
+#line 328 "parser.yacc"
     { (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 59:
 
 /* Line 1806 of yacc.c  */
-#line 330 "parser.yacc"
+#line 329 "parser.yacc"
     { (yyval.node) = (yyvsp[(2) - (3)].node); }
     break;
 
   case 61:
 
 /* Line 1806 of yacc.c  */
-#line 335 "parser.yacc"
+#line 334 "parser.yacc"
     {  (yyval.node) = new Type(__integer, 8 ); }
     break;
 
   case 62:
 
 /* Line 1806 of yacc.c  */
-#line 336 "parser.yacc"
+#line 335 "parser.yacc"
     {  (yyval.node) = new Type(__double, 8 );  }
     break;
 
   case 63:
 
 /* Line 1806 of yacc.c  */
-#line 337 "parser.yacc"
+#line 336 "parser.yacc"
     {  (yyval.node) = new Type(__string, 0 );  }
     break;
 
   case 64:
 
 /* Line 1806 of yacc.c  */
-#line 338 "parser.yacc"
+#line 337 "parser.yacc"
     {  (yyval.node) = new Type(__function_t, 0); }
     break;
 
   case 65:
 
 /* Line 1806 of yacc.c  */
-#line 339 "parser.yacc"
+#line 338 "parser.yacc"
     {  (yyval.node) = new Type(__nothing, 0); }
     break;
 
   case 66:
 
 /* Line 1806 of yacc.c  */
-#line 340 "parser.yacc"
+#line 339 "parser.yacc"
     {  (yyval.node) = new Type(__array_t, 0); }
     break;
 
   case 67:
 
 /* Line 1806 of yacc.c  */
-#line 343 "parser.yacc"
+#line 342 "parser.yacc"
     {
                                               Operands *operands = new Operands();
                                               operands->push_back( (yyvsp[(1) - (4)].node) );
@@ -2204,7 +2203,7 @@ yyreduce:
   case 68:
 
 /* Line 1806 of yacc.c  */
-#line 354 "parser.yacc"
+#line 353 "parser.yacc"
     {
                                       (yyval.node) = new ArgumentList();
                                    }
@@ -2213,14 +2212,14 @@ yyreduce:
   case 69:
 
 /* Line 1806 of yacc.c  */
-#line 358 "parser.yacc"
+#line 357 "parser.yacc"
     {  (yyval.node) = (yyvsp[(1) - (1)].node); }
     break;
 
   case 70:
 
 /* Line 1806 of yacc.c  */
-#line 361 "parser.yacc"
+#line 360 "parser.yacc"
     {
                                         ArgumentList *arglist = new ArgumentList();
                                         arglist->push_back( (yyvsp[(1) - (1)].node) );
@@ -2233,7 +2232,7 @@ yyreduce:
   case 71:
 
 /* Line 1806 of yacc.c  */
-#line 369 "parser.yacc"
+#line 368 "parser.yacc"
     {
                                         ArgumentList *arglist = CAST_TO( ArgumentList, (yyvsp[(1) - (3)].node) );
                                         arglist->push_back( (yyvsp[(3) - (3)].node) );
@@ -2245,14 +2244,14 @@ yyreduce:
   case 72:
 
 /* Line 1806 of yacc.c  */
-#line 377 "parser.yacc"
+#line 376 "parser.yacc"
     { (yyval.node) = (yyvsp[(2) - (3)].node); }
     break;
 
   case 73:
 
 /* Line 1806 of yacc.c  */
-#line 380 "parser.yacc"
+#line 379 "parser.yacc"
     { ValueList *vlist = new ValueList();
                                        vlist->push_back( (yyvsp[(1) - (1)].node) );
                                        (yyval.node) = vlist;
@@ -2262,7 +2261,7 @@ yyreduce:
   case 74:
 
 /* Line 1806 of yacc.c  */
-#line 385 "parser.yacc"
+#line 384 "parser.yacc"
     {
                                         ValueList *vlist = CAST_TO( ValueList, (yyvsp[(1) - (3)].node) );
                                         if( vlist != NULL ){
@@ -2275,7 +2274,7 @@ yyreduce:
   case 75:
 
 /* Line 1806 of yacc.c  */
-#line 393 "parser.yacc"
+#line 392 "parser.yacc"
     {
                                         Operands *operands = new Operands();
                                         operands->push_back( (yyvsp[(1) - (4)].node) );
@@ -2288,7 +2287,7 @@ yyreduce:
 
 
 /* Line 1806 of yacc.c  */
-#line 2292 "y.tab.c"
+#line 2291 "y.tab.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2519,7 +2518,7 @@ yyreturn:
 
 
 /* Line 2067 of yacc.c  */
-#line 401 "parser.yacc"
+#line 400 "parser.yacc"
 
 
 void yyerror( const char* error ){
