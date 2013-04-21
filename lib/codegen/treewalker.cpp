@@ -319,8 +319,14 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                     // if so, evaluate the user defined function.
                                     stack<Register*> regStack;
                                     int index = 0, count = ctx->getRegisterAllocatedLength();
+                                    //cout<<"contextId: "<<ctx->getContextId()<<", Length: "<<count<<endl;
+                                    //ctx->printUsed();
                                     Register *tmp = ctx->spill();
                                     while(index < count){
+                                        //if(tmp == NULL)
+                                        //    cout<<"it is null, i am dead :("<<endl;
+                                        //else
+                                        //    cout<<"In funct_call: "<<tmp->toString()<<endl;
                                         if(tmp && tmp->hasLocationAdded()){
                                             // get the location.
                                             Node *location = tmp->getLocation();

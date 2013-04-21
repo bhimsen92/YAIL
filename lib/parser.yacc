@@ -30,6 +30,7 @@ stack<StatementList*> statementStack;
 stack<DataType> typeStack;
 StatementList *stmtList = NULL;
 int counter = 0;
+int Context::contextIdCounter = 0;
 %}
 
 %union{

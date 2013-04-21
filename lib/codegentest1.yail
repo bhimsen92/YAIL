@@ -1,8 +1,9 @@
-function power(Int n, Int k):Int{
-    if(k == 0)
-        return 1;
-    else
-        return n * power(n, k - 1);
+function add(Int a, Int b):Int{
+	return a + b;
 }
 
-power(6, 3);
+function sub(Int a, Int b):Int{
+	return a - b;
+}
+
+add(100, add(5, sub(10, 5)));

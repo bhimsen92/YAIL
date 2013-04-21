@@ -18,6 +18,7 @@ using namespace yacl::codegen::ir;
 class Context{
     private:
             // this symtab var is for treewalker
+            int contextId;
             map<string, Node*> symtab;
             Context *ctxChain;
             //vector<Symbol*> symtab;
@@ -47,10 +48,9 @@ class Context{
             int  len;
             vector<Register*> registerAllocated;
             static int exitLabelCounter;
+            static int contextIdCounter;
     public:
             Context(void){
-                //cout<<"Hello..."<<endl;
-                //symtab = new map<string, Node*>();
                 offset = 8;
                 reverseOffset = 0;
                 memory = 0;
@@ -63,9 +63,16 @@ class Context{
                     instanciated[i] = false;
                     reg[i] = i;
                 }
+                contextId = contextIdCounter;
+                Context::contextIdCounter++;
+                //cout<<"Context instanciated...: "<<contextIdCounter<<endl;
             }
 
             ~Context(void){
+            }
+
+            int getContextId(){
+                return contextId;
             }
 
             Register* getRegister(){
@@ -157,7 +164,9 @@ class Context{
                         return reg;
                     }
                     i++;
+                    it++;
                 }
+                return NULL;
             }
 
             int getRegisterAllocatedLength(){
@@ -300,5 +309,13 @@ class Context{
                 sprintf(label, "EXIT%d", exitLabelCounter);
                 return label;
             }
+            void printUsed(){
+                    for(int i = 0; i < len; i++){
+                        if(alreadyUsed[i]){
+                            cout<<"used: "<<i<<" ";
+                        }
+                    }
+                    cout<<endl;
+            }            
 };
 #endif
