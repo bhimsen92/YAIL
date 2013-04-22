@@ -1,13 +1,13 @@
 function move(Int n, Int from, Int to, Int via):Nothing
 {
 	if( n == 1 ){
-		#printf("move disk 1 from peg: %d to %d\n", from, to);
+		printf("move disk 1 from peg: %d to %d\n", from, to);
 	}
 	else{
 		move(n-1, from, via, to);
-		#printf("move disk %d from %d to %d\n", n, from, to);
+		printf("move disk %d from %d to %d\n", n, from, to);
 		move(n-1, via, to, from);
 	}
 }
 
-move(14,1,2,3);
+move(3,1,2,3);
