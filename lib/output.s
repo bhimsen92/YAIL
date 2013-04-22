@@ -50,6 +50,7 @@ movq %rbx, %rdx
 movq -16(%rbp), %rbx
 movq %rbx, %rcx
 call move
+jmp L2
 L0:
 movq $L3, %rbx
 movq %rbx, %rdi
@@ -58,6 +59,7 @@ movq %rbx, %rsi
 movq -24(%rbp), %rbx
 movq %rbx, %rdx
 call printf
+L2:
 EXIT2:
 movq %rbp, %rsp
 popq %rbp
@@ -67,7 +69,7 @@ ret
 main:
 pushq %rbp
 movq %rsp, %rbp
-movq $3, %rbx
+movq $20, %rbx
 movq %rbx, %rdi
 movq $1, %rbx
 movq %rbx, %rsi

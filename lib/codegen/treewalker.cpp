@@ -143,7 +143,7 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                     // get the else node[code which needs to be executed on false truthValue]
                                     Node *nextLabel = this->evaluate(ops->get(2), ctx, dtype);
                                     ctx->clearLocations();
-                                    ctx->clearAll();                                    
+                                    ctx->clearAll();
                                     // generate an unconditional jump node which will get you out of the control
                                     // statement "if else, if elif else."
                                     // emit true branch label name.
@@ -194,7 +194,7 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                 // get the else node[code which needs to be executed on false truthValue]
                                 Node *nextLabel = this->evaluate(ops->get(2), ctx, dtype);
                                 ctx->clearLocations();
-                                ctx->clearAll();                                
+                                ctx->clearAll();
                                 // generate an unconditional jump node which will get you out of the control
                                 // statement "if else, if elif else."
                                 // emit true branch label name.
@@ -466,11 +466,13 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
         case __stmtlist:
                                 {
                                     StatementList *stmtList = CAST_TO(StatementList, astNode);
+                                    Node *val = NULL;
                                     if(stmtList != NULL){
                                         int len = stmtList->getLength();
                                         for(int i = 0; i < len; i++){
-                                            this->evaluate(stmtList->get(i), ctx, dtype);
+                                            val = this->evaluate(stmtList->get(i), ctx, dtype);
                                         }
+                                        return val;
                                     }
                                 }
                                 break;
