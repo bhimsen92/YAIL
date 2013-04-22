@@ -259,6 +259,7 @@ class Context{
                     Identifier *id = variables[i];
                     id->setOffset(getOffset());
                     updateOffset(id->getDataType()->getDataWidth());
+                    //updateStorage(id->getDataType()->getDataWidth());
                 }
                 
                 // update offsets of temps.
@@ -266,16 +267,17 @@ class Context{
                     Temp *tmp = temps[i];
                     tmp->setOffset(getOffset());
                     updateOffset(tmp->getDataType()->getDataWidth());
+                    updateStorage(tmp->getDataType()->getDataWidth());
                 }
                 
                 // generate allocate instructions.
                 IRCode *allocInstr = new Allocate(allocate, new Integer(memory), NULL, NULL);
                 //cout<<allocInstr->emit();
-                if(!flag){
+                if(!flag && memory > 0){
                     vector<IRCode*>::iterator it = instructions.begin() + 4;
                     instructions.insert(it, allocInstr);
                 }
-                else if(nonFunctionFlag){
+                else if(nonFunctionFlag && memory > 0){
                     vector<IRCode*>::iterator it = instructions.begin() + 2;
                     instructions.insert(it, allocInstr);
                 }

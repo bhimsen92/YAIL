@@ -1,20 +1,13 @@
 function move(Int n, Int from, Int to, Int via):Nothing
 {
 	if( n == 1 ){
-		print("move disk 1 from peg: ");
-		print(from);
-		print(to);
-		#newline();
+		#printf("move disk 1 from peg: %d to %d\n", from, to);
 	}
 	else{
 		move(n-1, from, via, to);
-		print("move disk: ");
-		print(n);
-		print(from);
-		print(to);
-		#newline();
+		#printf("move disk %d from %d to %d\n", n, from, to);
 		move(n-1, via, to, from);
 	}
 }
 
-move(3,1,2,3);
+move(14,1,2,3);

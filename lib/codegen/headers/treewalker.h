@@ -23,6 +23,7 @@ class TreeWalker{
             //map<string, BuiltInFunction> builtins;
             int insideFunctionCounter;
             vector<Context*> *contexts;
+            vector<Data*> staticDataValues;
     public:
         TreeWalker(){
             //this->loadBuiltIns();
@@ -50,19 +51,35 @@ class TreeWalker{
         }
 
         char* pre(){
-            const char *buffer = ".section .text\n";
-            return (char*)buffer;
+            char *buffer = new char[1024  * (staticDataValues.size() + 1)];
+            char *tmpBuffer = new char[2048];
+            int length = staticDataValues.size();
+            memset(buffer, '\0', 1024  * (staticDataValues.size() + 1));
+            for(int i = 0; i < length; i++){
+                //cout<<"Hello world...\n";
+                sprintf(tmpBuffer, "%s", staticDataValues[i]->toString());
+                strcat(buffer, tmpBuffer);
+            }
+            sprintf(tmpBuffer, "%s", ".section .text\n");
+            //cout<<"In pre: "<<tmpBuffer<<endl;
+            strcat(buffer, tmpBuffer);
+            return buffer;
         }
 
         char* post(){
-            const char* buffer = ".globl _start\n""_start:\n";
+            const char* buffer = ".globl main\n.type main, @function\n""main:\n";
             //const char* buffer = "main:\n";
             return (char*)buffer;
         }
 
         char* end(){
-            const char* buffer = "mov %rax, %rdi\nmov $60, %rax\nsyscall\n";
+            //const char* buffer = "mov %rax, %rdi\nmov $60, %rax\nsyscall\n";
+            const char* buffer = "mov %rbp, %rsp\n" "pop %rbp\n" "ret\n";
             return (char*)buffer;
+        }
+
+        void addDataObject(Data *obj){
+            staticDataValues.push_back(obj);
         }
 };
 #endif

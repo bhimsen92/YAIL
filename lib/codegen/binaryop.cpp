@@ -122,7 +122,7 @@ Node* SubtractionOperation::exec( int a, int b ){
             location->removeLocation();
             location->addLocation(reg);
             reg->addLocation(location);
-            secondOp->removeLocation();
+            firstOp->removeLocation();
             // generate an instruction which moves data from secondOp
             // to newly crated register.
             ctx->addInstruction(new Move(mov, firstOp, NULL, reg));

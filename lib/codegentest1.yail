@@ -1,5 +1,5 @@
-function sub(Int a, Int b):Int{
-	return a - b;
+function foo(Int a, Int b):Int{
+	return a + b;
 }
 
-sub(5, 3);
+printf( "%d\n", foo(1, 2));

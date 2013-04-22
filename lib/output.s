@@ -1,32 +1,61 @@
 .section .text
 
-.type sub, @function
-sub:
-push %rbp
-mov %rsp, %rbp
-sub $16, %rsp
-mov %rdi, -8(%rbp)
-mov %rsi, -16(%rbp)
-mov -8(%rbp), %rbx
-mov -16(%rbp), %rcx
-mov %rbx, %rdx
-sub %rcx, %rbx
-mov %rbx, %rax
-jmp EXIT2
+.type move, @function
+move:
+pushq %rbp
+movq %rsp, %rbp
+subq $32, %rsp
+movq %rdi, -8(%rbp)
+movq %rsi, -16(%rbp)
+movq %rdx, -24(%rbp)
+movq %rcx, -32(%rbp)
+movq -8(%rbp), %rbx
+movq $1, %rcx
+cmpq %rbx, %rcx
+je L0
+movq -8(%rbp), %rbx
+movq $1, %rcx
+movq %rbx, %rdx
+subq %rcx, %rbx
+movq %rbx, %rdi
+movq -16(%rbp), %rbx
+movq %rbx, %rsi
+movq -32(%rbp), %rbx
+movq %rbx, %rdx
+movq -24(%rbp), %rbx
+movq %rbx, %rcx
+call move
+movq -8(%rbp), %rbx
+movq $1, %rcx
+movq %rbx, %rdx
+subq %rcx, %rbx
+movq %rbx, %rdi
+movq -32(%rbp), %rbx
+movq %rbx, %rsi
+movq -24(%rbp), %rbx
+movq %rbx, %rdx
+movq -16(%rbp), %rbx
+movq %rbx, %rcx
+call move
+L0:
 EXIT2:
+movq %rbp, %rsp
+popq %rbp
+ret
+.globl main
+.type main, @function
+main:
+pushq %rbp
+movq %rsp, %rbp
+movq $14, %rbx
+movq %rbx, %rdi
+movq $1, %rbx
+movq %rbx, %rsi
+movq $2, %rbx
+movq %rbx, %rdx
+movq $3, %rbx
+movq %rbx, %rcx
+call move
 mov %rbp, %rsp
 pop %rbp
 ret
-.globl _start
-_start:
-push %rbp
-mov %rsp, %rbp
-sub $0, %rsp
-mov $5, %rbx
-mov %rbx, %rdi
-mov $3, %rbx
-mov %rbx, %rsi
-call sub
-mov %rax, %rdi
-mov $60, %rax
-syscall

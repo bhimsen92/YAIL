@@ -56,6 +56,27 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                 }
                             }
         case __string:
+                            {
+                                // generate a label for the string.
+                                // create a dataSection object, with type set to "asciz".
+                                // add it to the trewalker object, this will be used when it calls
+                                // pre() function.
+                                // create a register, then generate move instruction, which will
+                                // load the address of this label to the generated register.
+                                // return the pointer to register which will be further used in other
+                                // instructions.
+                                String *str = CAST_TO(String, astNode);
+                                Label *stringLabel = new Label();
+                                //cout<<"Label in string: "<<stringLabel->toString()<<endl;
+                                Data *dobj = new Data(stringLabel, _asciz, str);
+                                this->addDataObject(dobj);
+                                Register *reg = ctx->getRegister();
+                                Type *type = new Type(__string, 8);
+                                reg->setDataType(type);
+                                reg->setTypeClass(Type::getTypeClass(type));
+                                ctx->addInstruction(new MoveAddress(mov_address, stringLabel, NULL, reg));
+                                return reg;
+                            }
                             break;
         case __integer:
                         {
@@ -117,10 +138,12 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                     // evaluate the cond node.
                                     // return value would be label to true branch.
                                     Node *truthLabel = this->evaluate(ops->get(0), ctx, dtype);
+                                    ctx->clearLocations();
+                                    ctx->clearAll();                                    
                                     // get the else node[code which needs to be executed on false truthValue]
                                     Node *nextLabel = this->evaluate(ops->get(2), ctx, dtype);
                                     ctx->clearLocations();
-                                    ctx->clearAll();
+                                    ctx->clearAll();                                    
                                     // generate an unconditional jump node which will get you out of the control
                                     // statement "if else, if elif else."
                                     // emit true branch label name.
@@ -166,10 +189,12 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                 // evaluate the cond node.
                                 // return value would be label to true branch.
                                 Node *truthLabel = this->evaluate(ops->get(0), ctx, dtype);
+                                ctx->clearLocations();
+                                ctx->clearAll();                                
                                 // get the else node[code which needs to be executed on false truthValue]
                                 Node *nextLabel = this->evaluate(ops->get(2), ctx, dtype);
                                 ctx->clearLocations();
-                                ctx->clearAll();
+                                ctx->clearAll();                                
                                 // generate an unconditional jump node which will get you out of the control
                                 // statement "if else, if elif else."
                                 // emit true branch label name.
@@ -360,6 +385,14 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                         Register *dummy = CAST_TO(Register, result);
                                         if(dummy != NULL){
                                             ctx->unsetAvailabilityFlag(dummy->getRegIndex());
+                                            if(dummy->hasLocationAdded()){
+                                                // function args are just expressions,
+                                                // they are not going to change any memory locations.
+                                                // so no need to generate move instruction, in this case.
+                                                Node *loc = dummy->getLocation();
+                                                loc->removeLocation();
+                                                dummy->removeLocation();
+                                            }
                                         }
                                     }
                                     // generate call instruction.

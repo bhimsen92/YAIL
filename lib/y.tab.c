@@ -2161,7 +2161,7 @@ yyreduce:
 
 /* Line 1806 of yacc.c  */
 #line 336 "parser.yacc"
-    {  (yyval.node) = new Type(__string, 0 );  }
+    {  (yyval.node) = new Type(__string, 8 );  }
     break;
 
   case 64:

@@ -8,6 +8,7 @@ namespace yacl{
         enum Instr{
             allocate,
             mov,
+            mov_address,
             add,
             sub,
             imul,
@@ -44,6 +45,11 @@ namespace yacl{
             r13 = 13,
             r14 = 14,
             r15 = 15
+        };
+
+        // anonymous enum for data label type.
+        enum{
+            _asciz = 0
         };
     }
 }

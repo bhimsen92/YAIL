@@ -46,7 +46,7 @@ namespace yacl{
                     
                     char* emit(){
                         char *buffer = new char[256];
-                        sprintf(buffer, "sub %s, %s\n", arg1->toString(), "%rsp");
+                        sprintf(buffer, "subq %s, %s\n", arg1->toString(), "%rsp");
                         //sprintf(buffer, "(allocate, %s, NULL, NULL)\n", arg1->toString());
                         return buffer;
                     }
@@ -61,9 +61,24 @@ namespace yacl{
                     }
                     char* emit(){
                         char *buffer = new char[256];
-                        sprintf(buffer, "mov %s, %s\n", arg1->toString(), result->toString());
+                        sprintf(buffer, "movq %s, %s\n", arg1->toString(), result->toString());
                         //sprintf(buffer, "(mov, %s, , %s)\n", arg1->toString(), result->toString());
                         return buffer;
+                    }
+        };
+
+        // move address instruction.
+        class MoveAddress : public IRCode{
+            public:
+                    MoveAddress(Instr instrType, Node *a1, Node *a2, Node *r): IRCode(instrType, a1, NULL, r){
+
+                    }
+
+                    char* emit(){
+                        char *buffer = new char[256];
+                        sprintf(buffer, "movq $%s, %s\n", arg1->toString(), result->toString());
+                        //sprintf(buffer, "(mov, %s, , %s)\n", arg1->toString(), result->toString());
+                        return buffer;                        
                     }
         };
         
@@ -77,7 +92,7 @@ namespace yacl{
                     
                     char* emit(){
                         char *buffer = new char[256];
-                        sprintf(buffer, "add %s, %s\n", arg1->toString(), arg2->toString());//result->toString());
+                        sprintf(buffer, "addq %s, %s\n", arg1->toString(), arg2->toString());//result->toString());
                         //sprintf(buffer, "(add, %s, %s, %s)\n", arg1->toString(), arg2->toString(), result->toString());
                         return buffer;
                     }
@@ -92,7 +107,7 @@ namespace yacl{
                     
                     char* emit(){
                         char *buffer = new char[256];
-                        sprintf(buffer, "sub %s, %s\n", arg1->toString(), arg2->toString());
+                        sprintf(buffer, "subq %s, %s\n", arg1->toString(), arg2->toString());
                         return buffer;
                     }
             
@@ -107,7 +122,7 @@ namespace yacl{
                     
                     char* emit(){
                         char *buffer = new char[256];
-                        sprintf(buffer, "imul %s, %s\n", arg1->toString(), arg2->toString());
+                        sprintf(buffer, "imulq %s, %s\n", arg1->toString(), arg2->toString());
                         return buffer;                 
                     }
             
@@ -122,7 +137,7 @@ namespace yacl{
                     
                     char* emit(){
                         char *buffer = new char[256];
-                        sprintf(buffer, "cmp %s, %s\n", arg1->toString(), arg2->toString());
+                        sprintf(buffer, "cmpq %s, %s\n", arg1->toString(), arg2->toString());
                         //sprintf(buffer, "(cmp %s, %s)\n", arg1->toString(), arg2->toString());
                         return buffer;
                     }
@@ -186,7 +201,7 @@ namespace yacl{
                     
                     char* emit(){
                         char *buffer = new char[256];
-                        sprintf(buffer, "push %s\n", arg1->toString());
+                        sprintf(buffer, "pushq %s\n", arg1->toString());
                         //sprintf(buffer, "(push, %s)\n", arg1->toString());
                         return buffer;
                     }
@@ -201,7 +216,7 @@ namespace yacl{
 
                     char* emit(){
                         char *buffer = new char[256];
-                        sprintf(buffer, "pop %s\n", arg1->toString());
+                        sprintf(buffer, "popq %s\n", arg1->toString());
                         //sprintf(buffer, "(pop, %s)\n", arg1->toString());
                         return buffer;
                     }

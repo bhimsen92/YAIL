@@ -333,7 +333,7 @@ empty :
 
 type : INTEGER_T  {  $$ = new Type(__integer, 8 ); }
      | DOUBLE_T   {  $$ = new Type(__double, 8 );  }
-     | STRING_T   {  $$ = new Type(__string, 0 );  }
+     | STRING_T   {  $$ = new Type(__string, 8 );  }
      | FUNCTION_T {  $$ = new Type(__function_t, 0); }
      | NOTHING    {  $$ = new Type(__nothing, 0); }
      | ARRAY_T    {  $$ = new Type(__array_t, 0); }

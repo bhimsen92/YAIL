@@ -193,6 +193,9 @@ class Register;
                     if(dtype == __integer){
                         return new Type(__integer, 8);
                     }
+                    else if(dtype == __string){
+                        return new Type(__string, 8);
+                    }
                     return NULL;
                 }
                 
@@ -441,6 +444,25 @@ class Register;
 
                 Type* getReturnType(){
                     return returnType;
+                }
+    };
+
+    class Data : public Node{
+        protected:
+                    Label *dataLabel;
+                    int labelType;
+                    String *value;
+        public:
+                Data(Label *l, int t, String *val) : Node(-1){
+                    dataLabel = l;
+                    labelType = t;
+                    value = val;
+                }
+
+                char* toString(){
+                    char *buffer = new char[512];
+                    sprintf(buffer, "%s:\n\t%s  \"%s\"\n", dataLabel->toString(), ".asciz", value->toString());
+                    return buffer;
                 }
     };
     

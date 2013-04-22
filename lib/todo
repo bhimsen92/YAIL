@@ -1,2 +1,11 @@
-Move Register code logic to respective Context class.
-Then work on malloc, and combining c code files to your generated assembly file.
+# Move Register code logic to respective Context class.[ done ]
+# i am able to call malloc and other c friendly functions.
+1. Then work on malloc, and combining c code files to your generated assembly file.
+2. Add support for strings.[ done ]
+3. Start working on closure and array type.
+
+
+Things that need to be done today.
+    1. Write code to support strings, printf function[ done ]
+    2. Think about creating an array.
+    3. Then think about creating the closure.
