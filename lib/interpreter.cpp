@@ -69,10 +69,15 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                 Object *val;
                                 if(dataTypeInfo == __array_int_t)
                                     checkType = __integer_t;
+                                else if( dataTypeInfo == __integer_t || dataTypeInfo == __double_t)
+                                    checkType = dataTypeInfo;
                                 else
                                     checkType = -1;
                                 for( i = 0; i < length; i++ ){
                                     val = this->evaluate( vlist->get(i), execContext, -1 );
+                                    if(checkType == -1){
+                                        checkType = val->getDataType();
+                                    }
                                     if(val->getDataType() == checkType){
                                         array->push_back(val);
                                     }
@@ -80,6 +85,13 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                         errorMessage(1, "variable is not an array.");
                                         exit(1);
                                     }
+                                }
+                            }
+                            if(dataTypeInfo == -1){
+                                if(checkType == __integer_t)
+                                    array->setDataType(__array_int_t);
+                                else{
+                                    array->setDataType(__array_empty_t);
                                 }
                             }
                             return array;
@@ -257,6 +269,9 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                         // with the defined type.
                                         if( dataType == value->getDataType() ){
                                             execContext->put( string( id->getName() ), value );
+                                        }
+                                        else if(dataType == __array_int_t && value->getDataType() == __array_empty_t ){
+                                            execContext->put( string( id->getName() ), value );   
                                         }
                                         else{
                                             errorMessage( 1, "Type of the expression does not match with defined type." );
@@ -445,7 +460,10 @@ Object* Interpreter::evaluateUserDefinedFunction( Identifier *functName, Operand
     // check whether closure exist on this function.
     if( function->closureExist() ){
         // if so, attache the closure context to the current context.
-        newContext->setEnclosingContext( function->getClosureContext() );
+        newContext->setEnclosingContext(function->getClosureContext());
+    }
+    else{
+        newContext->setEnclosingContext(execContext);
     }
     if( function != NULL ){
         // get formal parameter list.

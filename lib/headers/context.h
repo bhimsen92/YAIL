@@ -21,9 +21,9 @@ class Context{
                 symbolTable = new map< string, Object* >();
             }
             ~Context(void){                
-                if( enclosingEnv != NULL )
-                    delete enclosingEnv;
-                delete symbolTable;
+                //if( enclosingEnv != NULL )
+                    //delete enclosingEnv;
+                //delete symbolTable;
             }
             map< string, Object* >* getSymbolTable();    
 //            stack< Thread* > getSpawnStack();

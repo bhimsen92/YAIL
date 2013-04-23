@@ -3,6 +3,7 @@
 #include<cstdlib>
 #include "bnKapi.h"
 #include "object.h"
+#include "array.h"
 
 #ifndef __BINARYOP
 #define __BINARYOP
@@ -21,6 +22,7 @@ class BinaryOperation{
             virtual Object* exec( int, int ) = 0;
             virtual Object* exec( int, double ) = 0;
             virtual Object* exec( double, double ) = 0;
+            virtual Object* exec(Array*, Array*){}
             virtual bool isTypeCompatible(void);
             
             Object* getFirstOperand(void){
@@ -49,6 +51,7 @@ class AdditionOperation: public BinaryOperation{
             Object* exec( int, int );
             Object* exec( int, double ){ return NULL; }
             Object* exec( double, double );
+            Object* exec(Array*, Array*);
 };
 
 class SubtractionOperation: public BinaryOperation{

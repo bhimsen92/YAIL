@@ -1,9 +1,12 @@
 #include<iostream>
 #include<cstdlib>
+#include "./headers/bnKapi.h"
+#include "./headers/object.h"
 #include "./headers/tokens.h"
 #include "./headers/binaryop.h"
 #include "./headers/number.h"
 #include "./headers/bool.h"
+#include "./headers/array.h"
 
 using namespace std;
 using namespace bnk_types;
@@ -44,6 +47,17 @@ Object* BinaryOperation::executeOperation(void){
         rval = this->exec( da, db );
         finalType = __double_t;
     }
+    else if(fOpType == __array_int_t || fOpType == __array_empty_t){
+        if(sOpType == __array_int_t || sOpType == __array_empty_t){
+            Array *aa = CAST_TO(Array, firstOp);
+            Array *ab = CAST_TO(Array, secondOp);
+            rval = this->exec(aa, ab);
+        }
+        else{
+            cout<<"can only add array of same type.\n";
+            exit(1);
+        }
+    }
     return rval;
 }
 
@@ -57,6 +71,22 @@ Object* AdditionOperation::exec( int a, int b ){
 
 Object* AdditionOperation::exec( double a, double b ){
     return new Double( a + b );
+}
+
+Object* AdditionOperation::exec(Array *a, Array *b){
+    int al = a->getLength(), bl = b->getLength();
+    int t = a->getDataType();
+    if(t == __array_empty_t){
+        t = b->getDataType();
+    }
+    Array *rval = new Array(t, al + bl);
+    for(int i = 0; i < al; i++){
+        rval->push_back(a->index(i));
+    }
+    for(int i = 0; i < bl; i++){
+        rval->push_back(b->index(i));
+    }
+    return rval;
 }
 
 bool AdditionOperation::isTypeCompatible(void){

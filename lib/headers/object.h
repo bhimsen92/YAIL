@@ -19,6 +19,9 @@ namespace bnk_types{
                 Object( int t );
                 Object( int t, int typeCls );
               	int getDataType(void);
+                void setDataType(int t){
+                    dataType = t;
+                }
                 int getTypeClass(void);
                 Value* getValue(void);
                 void   setValue(Value *val);

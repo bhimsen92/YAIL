@@ -44,6 +44,10 @@ namespace bnk_types{
                 }
                 return rval;
             }
+
+            int getLength(){
+                return length;
+            }
             
             Object* getCopy(void){
                 return NULL;

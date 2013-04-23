@@ -1,12 +1,23 @@
-function iterate(Int[] a, Int index):Nothing{
-	if(index < 3){
-		return a[index] + iterate(a, index + 1);
+function increment(Int a):Int{
+	return a * 10;
+}
+
+function helper(Int[] arr, Int index, Function f):Int[]{
+	if(index < 5){
+		return [f(arr[index])] + helper(arr, index + 1, f);
 	}
 	else{
-		return 0;
+		return [];
 	}
 }
 
-Int[] a = [100, 100, 100];
-print(iterate(a, 0));
+function map(Int[] arr, Function f):Int[]{
+	return helper(arr, 0, f);
+}
+
+Int[] a = [1, 2, 3, 4, 5];
+
+Int[] b = map(a, increment);
+
+print(a[4]);
 newline();

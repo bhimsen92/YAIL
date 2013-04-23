@@ -375,9 +375,13 @@ arglist : expression                 {
 list : '[' valueList ']'   { $$ = $2; }
      ;
 
-valueList : expression               { ValueList *vlist = new ValueList();
-                                       vlist->push_back( $1 );
+valueList : empty                    {  ValueList *vlist = new ValueList();
+                                       //vlist->push_back( $1 );
                                        $$ = vlist;
+                                     }
+          | expression               {  ValueList *vlist = new ValueList();
+                                        vlist->push_back( $1 );
+                                        $$ = vlist;
                                      }
                                      
           | valueList ',' expression {
@@ -406,7 +410,7 @@ int main(){
     yyparse();
     Context *ctx = new Context();
     Interpreter interp;
-    int length;
+    int length;    
     length = programAST->getLength();
     for( int i = 0; i < length; i++ ){
       if( !programAST->empty() ){

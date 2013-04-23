@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-c
+CFLAGS=-c -ggdb
 LDFLAGS=-lfl -ly
 
 all: bnK-lang
