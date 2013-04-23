@@ -159,7 +159,8 @@ class Context{
                 vector<Register*>::iterator it = registerAllocated.begin();
                 while(i < length){
                     Register *reg = *it;
-                    if(!reg->is(rax) && !reg->is(rsp) && !reg->is(rbp) && alreadyUsed[reg->getRegIndex()]){
+                    //!reg->is(rax) &&
+                    if(!reg->is(rsp) && !reg->is(rbp) && alreadyUsed[reg->getRegIndex()]){
                         alreadyUsed[reg->getRegIndex()] = false;
                         return reg;
                     }

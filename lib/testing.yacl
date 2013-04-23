@@ -1,3 +1,21 @@
-function foo(Int n):Int{
-    return n + 3;
+function sub(Int a, Int b):Int{
+    return a - b;
 }
+
+function fibo(Int n):Int{
+    #String tmp = "Executing function call";
+    #printf("%s\n", tmp);
+    if(n == 0){
+        return 0;
+    }
+    elif(n == 1){
+        return 1;
+    }
+    else{
+        Int a = fibo(sub(n, 1));
+        Int b = fibo(sub(n, 2));
+        return a + b;
+    }
+}
+
+printf("%d\n", fibo(20));

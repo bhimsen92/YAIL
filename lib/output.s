@@ -1,66 +1,67 @@
-L1:
-	.asciz  "move disk %d from %d to %d\n"
 L3:
-	.asciz  "move disk 1 from peg: %d to %d\n"
+	.asciz  "%d\n"
 .section .text
 
-.type move, @function
-move:
+.type sub, @function
+sub:
 pushq %rbp
 movq %rsp, %rbp
-subq $32, %rsp
+subq $16, %rsp
 movq %rdi, -8(%rbp)
 movq %rsi, -16(%rbp)
-movq %rdx, -24(%rbp)
-movq %rcx, -32(%rbp)
 movq -8(%rbp), %rbx
-movq $1, %rcx
+movq -16(%rbp), %rcx
+movq %rbx, %rdx
+subq %rcx, %rbx
+movq %rbx, %rax
+jmp EXIT2
+EXIT2:
+movq %rbp, %rsp
+popq %rbp
+ret
+
+.type fibo, @function
+fibo:
+pushq %rbp
+movq %rsp, %rbp
+subq $24, %rsp
+movq %rdi, -8(%rbp)
+movq -8(%rbp), %rbx
+movq $0, %rcx
 cmpq %rbx, %rcx
 je L0
 movq -8(%rbp), %rbx
 movq $1, %rcx
-movq %rbx, %rdx
-subq %rcx, %rbx
-movq %rbx, %rdi
-movq -16(%rbp), %rbx
-movq %rbx, %rsi
-movq -32(%rbp), %rbx
-movq %rbx, %rdx
-movq -24(%rbp), %rbx
-movq %rbx, %rcx
-call move
-movq $L1, %rbx
-movq %rbx, %rdi
+cmpq %rbx, %rcx
+je L1
 movq -8(%rbp), %rbx
-movq %rbx, %rsi
-movq -16(%rbp), %rbx
-movq %rbx, %rdx
-movq -24(%rbp), %rbx
-movq %rbx, %rcx
-call printf
-movq -8(%rbp), %rbx
-movq $1, %rcx
-movq %rbx, %rdx
-subq %rcx, %rbx
 movq %rbx, %rdi
-movq -32(%rbp), %rbx
+movq $1, %rbx
 movq %rbx, %rsi
-movq -24(%rbp), %rbx
-movq %rbx, %rdx
+call sub
+movq %rax, %rdi
+call fibo
+movq %rax, -16(%rbp)
+movq -8(%rbp), %rbx
+movq %rbx, %rdi
+movq $2, %rbx
+movq %rbx, %rsi
+call sub
+movq %rax, %rdi
+call fibo
 movq -16(%rbp), %rbx
-movq %rbx, %rcx
-call move
-jmp L2
+movq %rax, %rcx
+addq %rbx, %rax
+jmp EXIT3
+L1:
+movq $1, %rbx
+movq %rbx, %rax
+jmp EXIT3
 L0:
-movq $L3, %rbx
-movq %rbx, %rdi
-movq -16(%rbp), %rbx
-movq %rbx, %rsi
-movq -24(%rbp), %rbx
-movq %rbx, %rdx
-call printf
-L2:
-EXIT2:
+movq $0, %rbx
+movq %rbx, %rax
+jmp EXIT3
+EXIT3:
 movq %rbp, %rsp
 popq %rbp
 ret
@@ -69,15 +70,15 @@ ret
 main:
 pushq %rbp
 movq %rsp, %rbp
+movq $L3, %rbx
+movq %rbx, %rdi
+pushq %rdi
 movq $20, %rbx
 movq %rbx, %rdi
-movq $1, %rbx
-movq %rbx, %rsi
-movq $2, %rbx
-movq %rbx, %rdx
-movq $3, %rbx
-movq %rbx, %rcx
-call move
+call fibo
+popq %rdi
+movq %rax, %rsi
+call printf
 mov %rbp, %rsp
 pop %rbp
 ret

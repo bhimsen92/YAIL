@@ -260,6 +260,11 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                         ctx->addVar(id);
                                         // add assignment instruction to contexts instruction list.
                                         // [assigment instruction=> move instruction]
+                                        /* THINK ABOUT THE FOLLOWING LINES, looks like there is no need for it.*/
+                                        // generate move instruction, if the result is returned in
+                                        // rax register, as it will be a result of function call,
+                                        // and it can be overwritten in the future.
+
                                         //ctx->addInstruction(new Move(mov, result, NULL, id));
                                         // assignment instruction returns nothing.
                                         //Register::clearAll();
@@ -360,7 +365,7 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                             ctx->addInstruction(new Move(mov, tmp, NULL, location));
                                         }
                                         else if(tmp){
-                                            if(tmp && !tmp->is(rsp) && !tmp->is(rbp) && !tmp->is(rax)){// && !tmp->isFree()){
+                                            if(tmp && !tmp->is(rsp) && !tmp->is(rbp)){//&& !tmp->is(rax)){// && !tmp->isFree()){
                                                 regStack.push(tmp);
                                                 ctx->addInstruction(new Push(push, tmp));
                                             }
