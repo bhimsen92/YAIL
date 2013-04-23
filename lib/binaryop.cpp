@@ -2,13 +2,11 @@
 #include<cstdlib>
 #include "./headers/tokens.h"
 #include "./headers/binaryop.h"
-#include "./headers/value.h"
 #include "./headers/number.h"
 #include "./headers/bool.h"
 
 using namespace std;
 using namespace bnk_types;
-using namespace bnk;
 
 Object* BinaryOperation::executeOperation(void){
     int fOpType = this->firstOp->getDataType(),

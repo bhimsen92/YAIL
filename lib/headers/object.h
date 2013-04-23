@@ -1,15 +1,15 @@
 #include<iostream>
 #include<cstdlib>
 #include<cstring>
-#include "value.h"
+#include<vector>
 #include "tokens.h"
 
 #ifndef __OBJECT_TYPE
 #define __OBJECT_TYPE
 using namespace std;
-using namespace bnk;
 
 namespace bnk_types{
+	class Value;
 	class Object{
     	protected:
                 int     dataType;
@@ -51,5 +51,62 @@ namespace bnk_types{
 	                return new ReturnValue( value );
 	            }
 	};
+
+    class Value{
+        protected:
+                    int typeTag; // right now tag is not being used. it may prove useful in future.
+                    union YACLValue{
+                      int    i32;
+                      double real64;
+                      char*  str;
+                      bool   truthValue;
+                      vector<Object*> *yail_array;
+                    };
+                    YACLValue value;
+        public:
+                // empty constuctor is for yail_array.
+                Value( void ){
+                    value.yail_array = NULL;
+                }
+                Value( int val ){
+                    value.i32 = val; 
+                }
+                
+                Value( double val ){
+                    value.real64 = val;
+                }
+                
+                Value( char *val ){
+                    value.str = val;
+                }
+                
+                Value( bool val ){
+                    value.truthValue = val;
+                }
+
+                void setYailArrayVal(vector<Object*>*arr){
+                    value.yail_array = arr;
+                }
+                
+                int getIntVal(void){
+                    return value.i32;
+                }
+                
+                double getDoubleVal(void){
+                    return value.real64;
+                }
+                
+                char* getStringVal(void){
+                    return value.str;
+                }
+                
+                bool getBooleanValue(void){
+                    return value.truthValue;
+                }
+                
+                vector<Object*>* getYailArrayVal(void){
+                    return value.yail_array;
+                }
+    };
 }
 #endif

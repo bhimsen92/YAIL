@@ -10,7 +10,6 @@ namespace bnk_types{
     class List : public Object{
         public:
                 List( int t ) : Object( t, ListClass ){
-                    
                 }
                 Object* getCopy(void){ return NULL; }
     };
@@ -23,6 +22,8 @@ namespace bnk_types{
                 value = new Value();
                 capacity = size;
                 length = 0;
+                vector<Object*> *arr = new vector<Object*>();
+                value->setYailArrayVal(arr);
             }
             
             void push_back( Object *item ){
@@ -49,3 +50,4 @@ namespace bnk_types{
             }
     };
 }
+#endif

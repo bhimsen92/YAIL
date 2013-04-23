@@ -1,15 +1,12 @@
-function addFun(Int n):Function{
-	Int a = n;
-	function const():Int{
-		return a + 10;
+function iterate(Int[] a, Int index):Nothing{
+	if(index < 3){
+		return a[index] + iterate(a, index + 1);
 	}
-	return const;
+	else{
+		return 0;
+	}
 }
 
-Function f = addFun(5);
-Function c = addFun(20);
-
-print(f());
-newline();
-print(c());
+Int[] a = [100, 100, 100];
+print(iterate(a, 0));
 newline();

@@ -335,7 +335,7 @@ type : INTEGER_T  {  $$ = new Type( __integer_t ); }
      | STRING_T   {  $$ = new Type( __string_t );  }
      | FUNCTION_T {  $$ = new Type( __function_t ); }
      | NOTHING    {  $$ = new Type( __nothing_t ); }
-     | ARRAY_T    {  $$ = new Type( __array_t ); }
+     | INTEGER_T'['']'    {  $$ = new Type(__array_int_t); }
      ;
 
 functCall : IDENTIFIER '(' arguments ')'  {
@@ -388,7 +388,7 @@ valueList : expression               { ValueList *vlist = new ValueList();
                                         $$ = vlist;
                                      }
           ;
-indexOp : IDENTIFIER '[' INTEGER ']' {
+indexOp : IDENTIFIER '[' expression ']' {
                                         Operands *operands = new Operands();
                                         operands->push_back( $1 );
                                         operands->push_back( $3 );

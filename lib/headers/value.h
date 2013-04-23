@@ -1,12 +1,12 @@
 #include<iostream>
 #include<string>
 #include<cstdlib>
-//#include "object.h"
 
 #ifndef __BNK_VALUE
 #define __BNK_VALUE
 using namespace std;
 namespace bnk{
+    class Object;
     class Value{
         protected:
                     int typeTag; // right now tag is not being used. it may prove useful in future.
@@ -38,6 +38,10 @@ namespace bnk{
                 Value( bool val ){
                     value.truthValue = val;
                 }
+
+                /*void setYailArray(vector<Object*>*arr){
+                    value.yail_array = arr;
+                }*/
                 
                 int getIntVal(void){
                     return value.i32;
@@ -55,10 +59,9 @@ namespace bnk{
                     return value.truthValue;
                 }
                 
-                /*Object* getYailArrayVal(void){
+                /*vector<Object*> getYailArrayVal(void){
                     return value.yail_array;
                 }*/
     };
 }
-
 #endif

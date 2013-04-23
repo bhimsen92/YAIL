@@ -8,6 +8,7 @@
 
 using namespace std;
 using namespace bnk_types;
+
 namespace bnk_builtins{
 
 	Object* __emit(list<Object*> *args){

@@ -7,12 +7,14 @@
 #include<cstring>
 #include<cstdarg>
 #include<map>
-#include "headers/interpreter.h"
+#include "headers/object.h"
 #include "headers/string.h"
 #include "headers/number.h"
 #include "headers/udf.h"
+#include "headers/array.h"
 #include "headers/builtins.h"
 #include "headers/binaryop.h"
+#include "headers/interpreter.h"
 
 using namespace std;
 
@@ -55,22 +57,60 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                 return new bnk_types::Nothing( nothing->getValue() );
                             }
                             break;
-/*                            
+                            
         case __array_list:
                             bnk_astNodes::ValueList *vlist;
-                            Object *array;
+                            Array *array;
+                            int checkType;
                             vlist = CAST_TO( bnk_astNodes::ValueList, astNode );
-                            array = new Array();
                             if( vlist != NULL ){
+                                array = new Array(dataTypeInfo, vlist->getLength());
                                 int length = vlist->getLength(), i;
                                 Object *val;
+                                if(dataTypeInfo == __array_int_t)
+                                    checkType = __integer_t;
+                                else
+                                    checkType = -1;
                                 for( i = 0; i < length; i++ ){
                                     val = this->evaluate( vlist->get(i), execContext, -1 );
-                                    array->push_back( val );
+                                    if(val->getDataType() == checkType){
+                                        array->push_back(val);
+                                    }
+                                    else{
+                                        errorMessage(1, "variable is not an array.");
+                                        exit(1);
+                                    }
                                 }
                             }
-                            return array;                            
-*/                            
+                            return array;
+        case __indexOp:
+                            {
+                                Operator *indexOperand = CAST_TO(Operator, astNode);
+                                Operands *ops = indexOperand->getOperands();
+                                // get the identifier.
+                                Identifier *id = CAST_TO(Identifier, ops->get(0));
+                                string varName = id->getName();
+                                // get the index value.
+                                bnk_types::Integer *integer = CAST_TO(bnk_types::Integer, this->evaluate(ops->get(1), execContext, dataTypeInfo));
+                                Array *array = CAST_TO(Array, execContext->get(varName));
+                                Object *rval = NULL;
+                                if(array != NULL){
+                                    if(integer != NULL){
+                                        rval = array->index(integer->getValue()->getIntVal());
+                                        if(rval != NULL){
+                                            return rval;
+                                        }
+                                        else{
+                                            errorMessage(1, "ArrayOutOfBoundException...");
+                                            exit(1);
+                                        }
+                                    }
+                                    else{
+                                        errorMessage(1, "Index has to be an integer...");
+                                        exit(1);
+                                    }
+                                }
+                            }
         case __double:
                             bnk_astNodes::Double *realVal;
                             realVal = CAST_TO( bnk_astNodes::Double, astNode );
@@ -172,7 +212,7 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                             elifNode = CAST_TO( bnk_astNodes::Operator, astNode );
                             bnk_astNodes::Operator *_ifNode;
                             _ifNode = new Operator( __if, elifNode->getOpsLength(), elifNode->getOperands() );
-                            this->evaluate( _ifNode, execContext, -1 );
+                            return this->evaluate( _ifNode, execContext, -1 );
                             break;
         case __var_definition:
                                     int dataType;
