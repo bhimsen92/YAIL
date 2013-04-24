@@ -37,6 +37,9 @@ string     \"(.*)\"
 "Function" {
                 return FUNCTION_T;
            }
+"Bool"     {
+                return BOOL_T;
+           }
 
 "if"       {
                 return IF;

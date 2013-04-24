@@ -36,7 +36,7 @@ int counter = 0;
     bnk_astNodes::Node *node;
 };
 
-%token FUNCTION INTEGER_T DOUBLE_T STRING_T FUNCTION_T OR AND EQUAL LE GE IF ELSE NOT ELIF RETURN ARRAY_T
+%token FUNCTION INTEGER_T DOUBLE_T STRING_T FUNCTION_T BOOL_T OR AND EQUAL LE GE IF ELSE NOT ELIF RETURN ARRAY_T
 %token <node> IDENTIFIER
 %token <node> STRING
 %token <node> INTEGER
@@ -47,6 +47,7 @@ int counter = 0;
 %type <node> program statement statementList variableList variableDeclarations variableDefinition expression atom type
 %type <node> functionDefinition returnType formalParameters formalParameterList formalParameterDef functionBody arglist arguments functCall
 %type <node> block conditionalExpression orExp andExp equality relationalOp term power unary elseBlock list indexOp valueList
+%type <node> sliceExp slice
 
 %%
 program: statementList {
@@ -89,13 +90,14 @@ statement: variableDefinition ';'  {
                                                                 Operator *ifNode = new Operator( __if, 3, operands );
                                                                 $$ = ifNode;
                                                             }
-         | RETURN expression ';'   {
+         | RETURN conditionalExpression ';'   {
                                         Operands *operands = new Operands();
                                         operands->push_back( $2 );
                                         Operator *returnNode = new Operator( __return, 1, operands );
                                         $$ = returnNode;
                                    }
-         | expression ';'          { $$ = $1; }
+
+         | conditionalExpression ';'          { $$ = $1; }
          ;
 
 elseBlock: ELSE block  { 
@@ -325,16 +327,18 @@ atom  : IDENTIFIER    { $$ = $1; }
       | functCall     { $$ = $1; }
       | list          { $$ = $1; }
       | indexOp       { $$ = $1; }
+      | slice         { $$ = $1; }
       | '(' conditionalExpression ')'  { $$ = $2; }
 
 empty :
       ;
 
-type : INTEGER_T  {  $$ = new Type( __integer_t ); }
-     | DOUBLE_T   {  $$ = new Type( __double_t );  }
-     | STRING_T   {  $$ = new Type( __string_t );  }
-     | FUNCTION_T {  $$ = new Type( __function_t ); }
-     | NOTHING    {  $$ = new Type( __nothing_t ); }
+type : INTEGER_T  {  $$ = new Type(__integer_t ); }
+     | DOUBLE_T   {  $$ = new Type(__double_t );  }
+     | STRING_T   {  $$ = new Type(__string_t );  }
+     | FUNCTION_T {  $$ = new Type(__function_t ); }
+     | NOTHING    {  $$ = new Type(__nothing_t ); }
+     | BOOL_T     {  $$ = new Type(__boolean_t); }
      | INTEGER_T'['']'    {  $$ = new Type(__array_int_t); }
      ;
 
@@ -393,12 +397,26 @@ valueList : empty                    {  ValueList *vlist = new ValueList();
                                      }
           ;
 indexOp : IDENTIFIER '[' expression ']' {
-                                        Operands *operands = new Operands();
-                                        operands->push_back( $1 );
-                                        operands->push_back( $3 );
-                                        Operator *arrayReadOp = new Operator( __indexOp, 2, operands );
-                                        $$ = arrayReadOp;
-                                     }
+                                          Operands *operands = new Operands();
+                                          operands->push_back($1);
+                                          operands->push_back($3);
+                                          Operator *arrayReadOp = new Operator(__indexOp, 2, operands);
+                                          $$ = arrayReadOp;
+                                        }
+        ;
+
+slice : IDENTIFIER '[' sliceExp ':' sliceExp ']' {
+                                                        Operands *operands = new Operands();
+                                                        operands->push_back($1);
+                                                        operands->push_back($3);
+                                                        operands->push_back($5);
+                                                        Operator *sliceOp = new Operator(__sliceOp, 3, operands);
+                                                        $$ = sliceOp;
+                                                 }
+        ;
+
+sliceExp : empty          { $$ = NULL; }
+        | expression     { $$ = $1; }
         ;
 %%
 
@@ -412,6 +430,7 @@ int main(){
     Interpreter interp;
     int length;    
     length = programAST->getLength();
+    cout<<"Parsing Done\n";
     for( int i = 0; i < length; i++ ){
       if( !programAST->empty() ){
         interp.evaluate( programAST->pop_front(), ctx, -1 );

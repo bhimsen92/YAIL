@@ -42,23 +42,24 @@
      DOUBLE_T = 260,
      STRING_T = 261,
      FUNCTION_T = 262,
-     OR = 263,
-     AND = 264,
-     EQUAL = 265,
-     LE = 266,
-     GE = 267,
-     IF = 268,
-     ELSE = 269,
-     NOT = 270,
-     ELIF = 271,
-     RETURN = 272,
-     ARRAY_T = 273,
-     IDENTIFIER = 274,
-     STRING = 275,
-     INTEGER = 276,
-     DOUBLE = 277,
-     NOTHING = 278,
-     EMPTY = 279
+     BOOL_T = 263,
+     OR = 264,
+     AND = 265,
+     EQUAL = 266,
+     LE = 267,
+     GE = 268,
+     IF = 269,
+     ELSE = 270,
+     NOT = 271,
+     ELIF = 272,
+     RETURN = 273,
+     ARRAY_T = 274,
+     IDENTIFIER = 275,
+     STRING = 276,
+     INTEGER = 277,
+     DOUBLE = 278,
+     NOTHING = 279,
+     EMPTY = 280
    };
 #endif
 /* Tokens.  */
@@ -67,23 +68,24 @@
 #define DOUBLE_T 260
 #define STRING_T 261
 #define FUNCTION_T 262
-#define OR 263
-#define AND 264
-#define EQUAL 265
-#define LE 266
-#define GE 267
-#define IF 268
-#define ELSE 269
-#define NOT 270
-#define ELIF 271
-#define RETURN 272
-#define ARRAY_T 273
-#define IDENTIFIER 274
-#define STRING 275
-#define INTEGER 276
-#define DOUBLE 277
-#define NOTHING 278
-#define EMPTY 279
+#define BOOL_T 263
+#define OR 264
+#define AND 265
+#define EQUAL 266
+#define LE 267
+#define GE 268
+#define IF 269
+#define ELSE 270
+#define NOT 271
+#define ELIF 272
+#define RETURN 273
+#define ARRAY_T 274
+#define IDENTIFIER 275
+#define STRING 276
+#define INTEGER 277
+#define DOUBLE 278
+#define NOTHING 279
+#define EMPTY 280
 
 
 
@@ -100,7 +102,7 @@ typedef union YYSTYPE
 
 
 /* Line 2068 of yacc.c  */
-#line 104 "y.tab.h"
+#line 106 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

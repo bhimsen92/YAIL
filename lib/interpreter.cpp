@@ -123,6 +123,46 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                     }
                                 }
                             }
+        case __sliceOp:
+                            {
+                                Operator *sliceOp = CAST_TO(Operator, astNode);
+                                Operands *ops = sliceOp->getOperands();
+                                // get the identifier node.
+                                Identifier *id = CAST_TO(Identifier, ops->get(0));
+                                Array *array = CAST_TO(Array, execContext->get(string(id->getName())));
+                                if(array == NULL){
+                                    errorMessage(1, "Variable needs to be an array for slice operation.");
+                                }
+                                // get the first expression node.
+                                Node *firstOp = ops->get(1);
+                                Node *secondOp = ops->get(2);
+                                if(firstOp == NULL && secondOp == NULL){
+                                    errorMessage(1, "Invalid slice operation.");
+                                    exit(1);
+                                }
+                                else if(firstOp == NULL){
+                                    // evaluate the secondOp.
+                                    Object *index_2 = this->evaluate(secondOp, execContext, dataTypeInfo);
+                                    if(index_2->getDataType() == __integer_t){
+                                        return array->slice(NULL, index_2);
+                                    }
+                                }
+                                else if(secondOp == NULL){
+                                    // evaluate the firstOp.
+                                    Object *index_1 = this->evaluate(firstOp, execContext, dataTypeInfo);
+                                    if(index_1->getDataType() == __integer_t){
+                                        return array->slice(index_1, NULL);
+                                    }
+                                }
+                                else{
+                                    // both operands are specified.
+                                    Object *index_1 = this->evaluate(firstOp, execContext, dataTypeInfo);
+                                    Object *index_2 = this->evaluate(secondOp, execContext, dataTypeInfo);
+                                    if(index_1->getDataType() == __integer_t && index_2->getDataType() == __integer_t){
+                                        return array->slice(index_1, index_2);
+                                    }
+                                }
+                            }
         case __double:
                             bnk_astNodes::Double *realVal;
                             realVal = CAST_TO( bnk_astNodes::Double, astNode );

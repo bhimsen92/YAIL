@@ -45,6 +45,30 @@ namespace bnk_types{
                 return rval;
             }
 
+            Object* slice(Object *index_1, Object *index_2){
+                int start, end;
+                // get the first index value.
+                if(index_1 == NULL){
+                    start = 0;
+                }
+                else{
+                    start = index_1->getValue()->getIntVal();
+                }
+                // get the second index value.
+                if(index_2 == NULL){
+                    end = length;
+                }
+                else{
+                    end = index_2->getValue()->getIntVal();
+                }
+
+                Array *arr = new Array(this->getDataType(), end - start + 1);
+                for(int i = start; i < end; i++){
+                    arr->push_back(index(i));
+                }
+                return arr;
+            }
+
             int getLength(){
                 return length;
             }

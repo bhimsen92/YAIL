@@ -1,0 +1,9 @@
+Interpreter:
+    1. Implement slice operation.
+    2. Then currying.
+
+
+Machine Code:
+    1. Implement array in assembly code.
+    2. Implement closure in assembly code.
+
