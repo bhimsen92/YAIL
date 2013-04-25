@@ -1,5 +1,5 @@
 /**
-    The following code contains the implementation of the interpreter for this language.
+    The following code contains implementation of the interpreter for this language.
     It process the AST[Abstract Syntax Tree] built by the parser.
     Parser embeds enough information in the nodes so that interpreter knows what needs to be
     done with that node.
@@ -21,11 +21,11 @@
                                    ]
                   }
         Now the interpreter recursively traverses each node and on each node it fires an action which is specified 
-        in and identifier by case blocks in the following code.
+        and identified by case blocks in the following code.
         So when it sees a var_def node, First it gets the var_list node from the current node, iterate through it, 
         executing each node in turn. When it sees an assignment node, Interpreter knows that it needs to create 
         a varible so it first fecthes the identifier from the current node and then evaluates the expression.
-        Now the expression involves addition operation, the interpreter evaluates it, the sum is returned an Integer
+        Now the expression involves addition operation, the interpreter evaluates it, the sum is returned as an Integer
         object which is a subclass of Object. Now interpreter has the value, it checks whether the name "a" already
         exists in the context, if it does, it will through an error, otherwise it will insert that name and value into
         the hash table.
