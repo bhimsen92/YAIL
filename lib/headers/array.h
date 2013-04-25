@@ -74,7 +74,11 @@ namespace bnk_types{
             }
             
             Object* getCopy(void){
-                return NULL;
+                Array *arr = new Array(this->getDataType(), length);
+                for(int i = 0; i < length; i++){
+                    arr->push_back(index(i));
+                }
+                return arr;
             }
     };
 }

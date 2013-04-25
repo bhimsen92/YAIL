@@ -1,5 +1,5 @@
 function filter_helper(Int[] arr, Int index, Function f):Int[]{
-	if(index < 5){
+	if(index < arr.length){
 		if(f(arr[index])){
 			return [arr[index]] + filter_helper(arr, index + 1, f);
 		}
@@ -11,28 +11,27 @@ function filter_helper(Int[] arr, Int index, Function f):Int[]{
 		return [];
 	}	
 }
-function test(Int a):Bool{
-	return a > 100;
+
+function g(Int a):Bool{	
+	return a > 20;
 }
 
-function quickSort(Int[] arr):Int[]{
+function l(Int a):Bool{
+	return a < 20;
+}
+
+function printArray(Int[] arr):Nothing{
 	if(arr.length > 0){
-		Int x = arr[0];
-		Int[] left = quickSort(filter(arr[1:], function(Int a):Bool{
-			return a <= x;
-		}));
-		Int[] right = quickSort(filter(arr[1:], function(Int a):Bool{
-			return a > x;
-		}));
-		return left + x + right;
+		print(arr[0], " ");
+		printArray(arr[1:]);
 	}
 	else{
-		return [];
+		newline();
 	}
 }
+
 Int[] a = [1, 23, 100, 23, 1];
 
-Int[] b = filter_helper(a, 0, test);
+Int[] b = filter_helper(a, 0, g);
 
-print(b[0]);
-newline();
+printArray(b);

@@ -47,7 +47,7 @@ int counter = 0;
 %type <node> program statement statementList variableList variableDeclarations variableDefinition expression atom type
 %type <node> functionDefinition returnType formalParameters formalParameterList formalParameterDef functionBody arglist arguments functCall
 %type <node> block conditionalExpression orExp andExp equality relationalOp term power unary elseBlock list indexOp valueList
-%type <node> sliceExp slice
+%type <node> sliceExp slice memberShipOperator
 
 %%
 program: statementList {
@@ -328,6 +328,7 @@ atom  : IDENTIFIER    { $$ = $1; }
       | list          { $$ = $1; }
       | indexOp       { $$ = $1; }
       | slice         { $$ = $1; }
+      | memberShipOperator { $$ = $1; }
       | '(' conditionalExpression ')'  { $$ = $2; }
 
 empty :
@@ -418,6 +419,15 @@ slice : IDENTIFIER '[' sliceExp ':' sliceExp ']' {
 sliceExp : empty          { $$ = NULL; }
         | expression     { $$ = $1; }
         ;
+
+memberShipOperator : IDENTIFIER'.'IDENTIFIER { 
+                                                Operands *operands = new Operands();
+                                                operands->push_back($1);
+                                                operands->push_back($3);
+                                                Operator *memberShipOp = new Operator(__memberShipOp, 2, operands);
+                                                $$ = memberShipOp;
+                                             }
+                   ;
 %%
 
 void yyerror( const char* error ){

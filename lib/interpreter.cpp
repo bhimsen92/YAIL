@@ -163,6 +163,29 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                     }
                                 }
                             }
+                            break;
+        case __memberShipOp:
+                            {
+                                Operator *memberOp = CAST_TO(Operator, astNode);
+                                Operands *ops = memberOp->getOperands();
+                                // get the identfier.
+                                Identifier *id = CAST_TO(Identifier, ops->get(0));
+                                // get the member operator.
+                                Identifier *member = CAST_TO(Identifier, ops->get(1));
+                                // make sure that member is "length" and "id" is an array.
+                                Array *arr = CAST_TO(Array, execContext->get(string(id->getName())));
+                                if(arr != NULL){
+                                    char *mem = member->getName();
+                                    if(strcmp("length", mem) == 0){
+                                        return new bnk_types::Integer(arr->getLength());
+                                    }
+                                    else{
+                                        errorMessage(1, "Invalid member operator.");
+                                        exit(1);
+                                    }
+                                }
+                            }
+                            break;
         case __double:
                             bnk_astNodes::Double *realVal;
                             realVal = CAST_TO( bnk_astNodes::Double, astNode );
@@ -523,6 +546,7 @@ Object* Interpreter::evaluateUserDefinedFunction( Identifier *functName, Operand
                     newContext->put( string( fParameter->getParameterName() ), argVal );
                 }
                 else{
+                    cout<<"Function name: "<<functName->getName()<<endl;
                     errorMessage( 1, "Type mismatch in function call." );
                     exit(1);
                 }
