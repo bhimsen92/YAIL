@@ -1,3 +1,11 @@
+/**
+    The following code contains implementation for binary operations.
+    Before performing any binary operation, the operands are checked to confirm that they
+    support the operation. Checking is done in "isTypeCompatible" function.
+    Once the checking is done, respective "exec" function is called to execute the operation.
+    all functions returns pointer to an Object.
+    Created by: Bhimsen S K.
+*/
 #include<iostream>
 #include<cstdlib>
 #include "./headers/bnKapi.h"

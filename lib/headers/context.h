@@ -1,3 +1,10 @@
+/**
+    The following code contains Context class which is used to store variables stored in that context.
+    The Context Class contains a hash table to store the names and their corresponding objects.
+    Before adding any name to the context, it is checked to make sure that it does not exist in the context, 
+    If it does error is thrown.
+    Created by : Bhimsen S K
+*/
 #include<iostream>
 #include<cstdlib>
 #include<string>

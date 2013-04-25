@@ -1,3 +1,6 @@
+/**
+    The following code contains Class files for Binary Opeators.
+*/
 #include<iostream>
 #include<list>
 #include<cstdlib>

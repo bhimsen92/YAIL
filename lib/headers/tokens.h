@@ -1,3 +1,7 @@
+/**
+    Tokens used in this language.
+    things which end it "_t" are used to identify data types. 
+*/
 #include<iostream>
 
 #ifndef __TOKENS

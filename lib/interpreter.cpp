@@ -1,5 +1,70 @@
-// modifications that needs to be done: add stmtlist in case expressions, it will avoid lots of repeating code.
-// 2264 lines.
+/**
+    The following code contains the implementation of the interpreter for this language.
+    It process the AST[Abstract Syntax Tree] built by the parser.
+    Parser embeds enough information in the nodes so that interpreter knows what needs to be
+    done with that node.
+    For example: 
+        Int a = 1 + 2;
+        Parser builds following tree.
+        var_def = {
+                        var_list : [ 
+                                        assignment_node : {
+                                                             identifer : "a",
+                                                             expression : {
+                                                                                OperatorNode : {
+                                                                                                    op : '+',
+                                                                                                    op1 : 1,
+                                                                                                    op2 : 2
+                                                                                               }
+                                                                         }
+                                                          }
+                                   ]
+                  }
+        Now the interpreter recursively traverses each node and on each node it fires an action which is specified 
+        in and identifier by case blocks in the following code.
+        So when it sees a var_def node, First it gets the var_list node from the current node, iterate through it, 
+        executing each node in turn. When it sees an assignment node, Interpreter knows that it needs to create 
+        a varible so it first fecthes the identifier from the current node and then evaluates the expression.
+        Now the expression involves addition operation, the interpreter evaluates it, the sum is returned an Integer
+        object which is a subclass of Object. Now interpreter has the value, it checks whether the name "a" already
+        exists in the context, if it does, it will through an error, otherwise it will insert that name and value into
+        the hash table.
+
+        Function Definition[funct_def case block]:
+        The same process happens when Interpreter sees a function definition.
+        For example.
+        function add(Int a, Int b):Int{
+            return a + b;
+        }
+        The parser builds the following subtree.
+        funct_def : {
+                        name : add,
+                        formalparameterlist : [ identifier, identifier ], # arglist is made up of expressions
+                        returnType : INTEGER_T, # instance of Type object
+                        statementlist : [ statmements, statmenets, ... ]
+                    }
+        Now interpreter creates a UserDefinedFunctionObject object and stores the above information into it.
+        If the function is inside a function, then a closure is formed, So the enclosing environment is also
+        Stored in this UserDefinedFunctionObject. Unlike javascript, Here values will be copied and not the references.
+        The statment list is not evaluated and are evaluated only when function is called.
+        Interpreter inserts the name of the function and UserDefinedFunctionObject into the symbol table.
+    
+        Function Call[funct_call case block]:
+        For example:
+            add(1, 3);
+            parser builds the following tree:
+            funct_call : {
+                            name : "add",
+                            arglist : [ expression, expression, ... ]
+                         }
+            Interpreter evaluates all the expressions in the argument list and check their types against the one
+            defined during the function definition of "add" function. If they do not match error is thrown, execution
+            is halted. Otherwise execution proceeds and the statments inside the function are evaluated.
+            The funct_call case block contains other more information regarding this.
+
+    created by : Bhimsen S K.
+        
+*/
 #include<iostream>
 #include<cstdlib>
 #include<vector>

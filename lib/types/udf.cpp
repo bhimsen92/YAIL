@@ -1,3 +1,9 @@
+/**
+    Following code contains class UserDefinedFunctionObject, which is used to store
+    information regarding a function defined in this language.
+    This class stores, ReturnType info, statments that will be executed in respective function, 
+    And a link to the enclosing context[in case of closure] if one exist.
+*/
 #include<iostream>
 #include<map>
 #include<cstring>

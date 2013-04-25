@@ -1,3 +1,9 @@
+/**
+    The following code contains Class file Object, the root for all the types in the language.
+    This class holds information, regarding the type class and datatype of the respective types and
+    also the value associated with that object.
+    create by : Bhimsen S K.
+*/
 #include<iostream>
 #include<cstdlib>
 #include<cstring>

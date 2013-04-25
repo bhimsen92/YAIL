@@ -1,3 +1,11 @@
+/**
+    The following code implements the Array data type. Right now only one dimensional arrays are supported.
+    created by: Bhimsen S K [bhimsen.pes@gmail.com]
+
+    Array class is a subclass List class which in turn is a subclass of Object[the root object for all types]
+    List class exist just to create hirarchy.
+    Array class is based on C++'s vector data type, and supports addition, slicing and index operation.
+*/
 #include<iostream>
 #include<vector>
 #include "object.h"
@@ -25,7 +33,7 @@ namespace bnk_types{
                 vector<Object*> *arr = new vector<Object*>();
                 value->setYailArrayVal(arr);
             }
-            
+            // appends an item at the end of the array.
             void push_back( Object *item ){
                 vector<Object*> *array = value->getYailArrayVal();
                 if( array == NULL ){
@@ -35,7 +43,7 @@ namespace bnk_types{
                 array->push_back( item );
                 length++;
             }
-            
+            // returns the specified element from the array[given by the index]
             Object* index( int i ){
                 Object* rval = NULL;
                 if( i < length ){
@@ -44,7 +52,7 @@ namespace bnk_types{
                 }
                 return rval;
             }
-
+            // returns a subarray from the source array.
             Object* slice(Object *index_1, Object *index_2){
                 int start, end;
                 // get the first index value.
@@ -69,10 +77,12 @@ namespace bnk_types{
                 return arr;
             }
 
+            // returns the length of the array.
             int getLength(){
                 return length;
             }
             
+            // creates a copy of the array, needed while creating closure.
             Object* getCopy(void){
                 Array *arr = new Array(this->getDataType(), length);
                 for(int i = 0; i < length; i++){
