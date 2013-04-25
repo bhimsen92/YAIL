@@ -70,8 +70,8 @@ namespace bnk_types{
         for( ; it != enclosingEnv->end(); ++it ){
             string key = it->first;
             Object *value = it->second;
-            if( value != NULL )
-                closureLink->put( key, value->getCopy() );
+            if( value != NULL && !closureLink->isBound(new Identifier((char*)key.c_str())))
+                closureLink->put(key, value->getCopy() );
         }
     }
     

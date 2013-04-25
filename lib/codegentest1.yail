@@ -12,12 +12,22 @@ function filter_helper(Int[] arr, Int index, Function f):Int[]{
 	}	
 }
 
-function g(Int a):Bool{	
-	return a > 20;
-}
-
-function l(Int a):Bool{
-	return a < 20;
+function quickSort(Int[] arr):Int[]{
+	if(arr.length > 0){
+		Int x = arr[0];
+		function le(Int a):Bool{
+			return a <= x;
+		}
+		function g(Int a):Bool{
+			return a > x;
+		}	
+		Int[] left = quickSort(filter_helper(arr[1:], 0, le));
+		Int[] right = quickSort(filter_helper(arr[1:], 0, g));
+		return left + [x] + right;
+	}
+	else{
+		return [];
+	}
 }
 
 function printArray(Int[] arr):Nothing{
@@ -30,8 +40,7 @@ function printArray(Int[] arr):Nothing{
 	}
 }
 
-Int[] a = [1, 23, 100, 23, 1];
+Int[] a = [10, 5, 1, 9, 4, 0, 6, 7, 3, 2, 0, 0, 0];
 
-Int[] b = filter_helper(a, 0, g);
-
+Int[] b = quickSort(a);
 printArray(b);

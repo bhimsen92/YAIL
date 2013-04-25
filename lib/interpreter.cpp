@@ -358,11 +358,14 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                   if( functName != NULL && !execContext->isBound( functName ) ){
                                     UserDefinedFunction *funct = new UserDefinedFunction( operands );
                                     execContext->put( string(functName->getName()), funct );
+                                    //cout<<"defining: "<<functName->getName()<<endl;
                                     if( ISINSIDE_FUNCTION ){
                                         // if so, a closure needs to be formed.
                                         // copy the current context into the function as closureLink.
                                         funct->createClosure( execContext );
+                                        //cout<<"Inside function: "<<execContext->get(string("x"))->getValue()->getIntVal()<<endl;                                        
                                         if( execContext->hasEnclosingContextSet() ){
+                                            //cout<<"I am in Hell..\n";
                                             // if the existing context has already has closure link.
                                             // then add this to the current function closure.
                                             // name here is misleading, i am too lazy to change it :D
@@ -522,8 +525,10 @@ Object* Interpreter::evaluateUserDefinedFunction( Identifier *functName, Operand
     }
     // check whether closure exist on this function.
     if( function->closureExist() ){
-        // if so, attache the closure context to the current context.
+        // if so, attache the closure context to the current context.        
         newContext->setEnclosingContext(function->getClosureContext());
+        //cout<<"Function_Name: "<<function->getFunctionName()<<endl;
+        //cout<<"X: "<<newContext->get(string("x"))->getValue()->getIntVal()<<endl;
     }
     else{
         newContext->setEnclosingContext(execContext);
@@ -542,7 +547,10 @@ Object* Interpreter::evaluateUserDefinedFunction( Identifier *functName, Operand
                 Object *argVal = this->evaluate( arglist->get(i), execContext, -1 );
                 // check fParameter and argVal type match or not.
                 // if not throw error.
-                if( fParameter->getDataType() == argVal->getDataType() ){
+                if(fParameter->getDataType() == argVal->getDataType()){
+                    newContext->put( string( fParameter->getParameterName() ), argVal );
+                }
+                else if(fParameter->getDataType() == __array_int_t && argVal->getDataType() == __array_empty_t){
                     newContext->put( string( fParameter->getParameterName() ), argVal );
                 }
                 else{
