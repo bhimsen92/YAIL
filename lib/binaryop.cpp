@@ -77,11 +77,17 @@ Object* BinaryOperation::executeOperation(void){
             exit(1);
         }
     }
+    else if(fOpType == __boolean_t && sOpType == __boolean_t){
+        int ia = (int)firstOp->getValue()->getBooleanValue(),
+            ib = (int)secondOp->getValue()->getBooleanValue();
+        rval = this->exec(ia, ib);
+    }
     return rval;
 }
 
 bool BinaryOperation::isTypeCompatible(void){
-    return ( ( firstOp->getTypeClass() == NumberClass ) && ( secondOp->getTypeClass() == NumberClass ) );
+    return ((firstOp->getTypeClass() == NumberClass) && (secondOp->getTypeClass() == NumberClass))
+           ||( firstOp->getTypeClass() == BooleanClass && secondOp->getTypeClass() == BooleanClass);
 }
 
 Object* AdditionOperation::exec( int a, int b ){

@@ -49,7 +49,7 @@ Int[] a = [10, -5, 1, 9, 4, 0, 6, -7, 3, 2, 0, 0, 0];
 
 Int[] b = quickSort(a);
 
-Int c = 600, d = 100;
+Int c = 600, d = 10;
 
 if(c >= 100 and d == 100){
 	print("Equal..\n");
