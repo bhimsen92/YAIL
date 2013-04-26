@@ -1,6 +1,12 @@
-Int[] a = [1, 2, 3, 4];
+function printArray(Double[] arr):Nothing{
+    if(arr.length > 0){
+        print(arr[0], " ");
+        printArray(arr[1:]);
+    }
+    else{
+        print("\n");
+    }
+}
 
-Int[] b = [];
-
-print(b.length);
-newline();
+Double[] a = [ -1.23, 3.32 ];
+printArray(a);

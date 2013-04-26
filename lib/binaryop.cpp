@@ -64,6 +64,17 @@ Object* BinaryOperation::executeOperation(void){
         else{
             cout<<"can only add array of same type.\n";
             exit(1);
+        } 
+    }
+    else if(fOpType == __array_double_t || fOpType == __array_empty_t){
+        if(sOpType == __array_double_t || sOpType == __array_empty_t){
+            Array *aa = CAST_TO(Array, firstOp);
+            Array *ab = CAST_TO(Array, secondOp);
+            rval = this->exec(aa, ab);
+        }
+        else{
+            cout<<"can only add array of same type.\n";
+            exit(1);
         }
     }
     return rval;

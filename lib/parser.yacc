@@ -340,7 +340,8 @@ type : INTEGER_T  {  $$ = new Type(__integer_t ); }
      | FUNCTION_T {  $$ = new Type(__function_t ); }
      | NOTHING    {  $$ = new Type(__nothing_t ); }
      | BOOL_T     {  $$ = new Type(__boolean_t); }
-     | INTEGER_T'['']'    {  $$ = new Type(__array_int_t); }
+     | INTEGER_T'['']' {  $$ = new Type(__array_int_t); }
+     | DOUBLE_T'['']'  {  $$ = new Type(__array_double_t); }
      ;
 
 functCall : IDENTIFIER '(' arguments ')'  {

@@ -93,17 +93,17 @@ string     \"(.*)\"
                 return IDENTIFIER;
            }
            
-{realVal}  {
+{realVal}|-{realVal}  {
                 Node *realVal = new Double( yytext );
                 yylval.node = realVal;
                 return DOUBLE;
            }
            
-{digits}   {
-                Node *integer = new Integer( yytext );
-                yylval.node = integer;
-                return INTEGER;
-           }
+{digits}|-{digits}   {
+                        Node *integer = new Integer( yytext );
+                        yylval.node = integer;
+                        return INTEGER;
+                     }
 
 {string}   {
                 Node *string = new String( yytext );

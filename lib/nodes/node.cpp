@@ -37,11 +37,22 @@ namespace bnk_astNodes{
     }
              
     char* String::removeQuotes( char* str, int length ){
-        char *target = new char[ length - 1 ];
+        char *target = new char[ length - 1 ], c;
         int j = 0;
         for( int i = 0; str[i] != '\0'; i++ ){
             if( str[i] != '"' ){
-                target[j++] = str[i];
+                if(str[i] == '\\' && str[i + 1] == 'n'){
+                    c = '\n';
+                    i += 2;
+                }
+                else if(str[i] == '\\' && str[i + 1] == 't'){
+                    c = '\t';
+                    i += 2;
+                }
+                else{
+                    c = str[i];
+                }
+                target[j++] = c;
             }
         }
         target[j] = '\0';
@@ -54,12 +65,18 @@ namespace bnk_astNodes{
     
     void Integer::toInteger( char* str ){            
         char *pEnd = str + strlen( str ) - 1;
-        int multiplier = 1;
+        int multiplier = 1, isMinus = false;
         value = 0;
+        if(str[0] == '-'){
+            isMinus = true;
+            str++;
+        }
         for( ; pEnd >= str; pEnd-- ){
             value += ( (*pEnd - '0') * multiplier );
             multiplier *= 10;
         }
+        if(isMinus)
+            value = -value;
     }
     int Integer::getValue(void){
         return value;
@@ -75,10 +92,14 @@ namespace bnk_astNodes{
     void Double::toDouble( char *str ){
         int dotPos = 0;
         double dotLeft = 0.0, dotRight = 0.0, multiplier = 0.0;
-        int i, length;
+        int i, length, isMinus = false;
         // go through the string, remember the dot position.
         // then calculate value on the right and left of the dot,
         // sum it, assign it to value.
+        if(str[0] == '-'){
+            isMinus = true;
+            str++;
+        }
         for( i = 0; str[i] != '\0'; i++ ){
             if( str[i] == '.' ){
                 dotPos = i;
@@ -96,6 +117,9 @@ namespace bnk_astNodes{
             multiplier *= 10;
         }
         value = dotLeft + dotRight;
+        if(isMinus){
+            value = -value;
+        }
     }
     
     double Double::getValue(void){

@@ -134,6 +134,9 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                 Object *val;
                                 if(dataTypeInfo == __array_int_t)
                                     checkType = __integer_t;
+                                else if(dataTypeInfo == __array_double_t)
+                                    checkType = __double_t;
+                                // i have forgotten why i had added this following code. o_O
                                 else if( dataTypeInfo == __integer_t || dataTypeInfo == __double_t)
                                     checkType = dataTypeInfo;
                                 else
@@ -155,6 +158,8 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                             if(dataTypeInfo == -1){
                                 if(checkType == __integer_t)
                                     array->setDataType(__array_int_t);
+                                else if(checkType == __double_t)
+                                    array->setDataType(__array_double_t);
                                 else{
                                     array->setDataType(__array_empty_t);
                                 }
