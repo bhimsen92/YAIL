@@ -461,7 +461,47 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                       return this->evaluateBuiltInFunction( functName, operands, execContext );
                                     }
                                     else if( this->isUserDefinedFunction( functName, execContext ) ){
-                                      return this->evaluateUserDefinedFunction( functName, operands, execContext );
+                                      // get the function object from the current context.
+                                      UserDefinedFunction *f = CAST_TO(UserDefinedFunction, execContext->get(string(functName->getName())));
+                                      // get the formal parameter list
+                                      FormalParameterList *fplist = f->getFormalParameterList();
+                                      // get the arglist from function object.
+                                      ArgumentList *farglist =  f->getArgumentList();
+                                      // get arglist from current astNode.
+                                      ArgumentList *arglist = CAST_TO(ArgumentList, operands->get(1));
+                                      int argLength = farglist->getLength() + arglist->getLength(),
+                                          fpLength = fplist->getLength();
+                                      //cout<<"function_name: "<<functName->getName()<<endl;
+                                      //cout<<"arglength: "<<arglist->getLength()<<endl;
+                                      //cout<<"farglength: "<<farglist->getLength()<<endl;
+                                      ArgumentList *newArglist = new ArgumentList();
+                                      for(int i = 0; i < farglist->getLength(); i++){
+                                        newArglist->push_back(farglist->get(i));
+                                      }
+                                      for(int i = 0; i < arglist->getLength(); i++){
+                                        newArglist->push_back(arglist->get(i));
+                                      }
+                                      if(argLength < fpLength){
+                                        // it is a currying case.
+                                        // create a new UserDefinedFunction object, add these args to the existing
+                                        // arglist and return the object to the caller.
+                                        UserDefinedFunction *curriedFunction = new UserDefinedFunction(f->getFunctionName(),
+                                            f->getFormalParameterList(), f->getReturnType(), f->getStatementList(), f->getClosureContext());
+                                        curriedFunction->setArgumentList(newArglist);
+                                        //cout<<"Good work\n";
+                                        return curriedFunction;
+                                      }
+                                      else if(argLength == fpLength){
+                                        // set new arglist in current operands object.                                        
+                                        Operands *ops = new Operands();
+                                        for(int i = 0; i < operands->size(); i++){
+                                            ops->push_back(operands->get(i));
+                                        }
+                                        ops->set(1, newArglist);
+                                        Object *rval = this->evaluateUserDefinedFunction( functName, ops, execContext );
+                                        OUTSIDE_FUNCTION;
+                                        return rval;
+                                      }        
                                     }
                                     else{
                                       errorMessage( 2, "Undefined function: ", functName->getName() );

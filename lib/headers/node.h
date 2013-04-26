@@ -33,6 +33,12 @@ class Operands{
                 }
                 return NULL;
             }
+
+            void set(int index, Node *val){
+              if(index < operands.size()){
+                operands[index] = val;
+              }
+            }
             
             void pop_front(void){
                 operands.erase( operands.begin() );

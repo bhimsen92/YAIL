@@ -1,12 +1,59 @@
-function printArray(Double[] arr):Nothing{
-    if(arr.length > 0){
-        print(arr[0], " ");
-        printArray(arr[1:]);
-    }
-    else{
-        print("\n");
-    }
+function filter_helper(Int[] arr, Int index, Function f):Int[]{
+	if(index < arr.length){
+		if(f(arr[index])){
+			return [arr[index]] + filter_helper(arr, index + 1, f);
+		}
+		else{
+			return filter_helper(arr, index + 1, f);
+		}
+	}
+	else{
+		return [];
+	}	
 }
 
-Double[] a = [ -1.23, 3.32 ];
-printArray(a);
+function filter(Int[] arr, Function f):Int[]{
+	return filter_helper(arr, 0, f);
+}
+
+function le(Int x, Int a):Bool{
+	return a <= x;
+}
+function g(Int x, Int a):Bool{
+	return a > x;
+}
+
+function quickSort(Int[] arr):Int[]{
+	if(arr.length > 0){
+		Int x = arr[0];
+		Int[] left = quickSort(filter(arr[1:], le(x)));
+		Int[] right = quickSort(filter(arr[1:], g(x)));
+		return left + [x] + right;
+	}
+	else{
+		return [];
+	}
+}
+
+function printArray(Int[] arr):Nothing{
+	if(arr.length > 0){
+		print(arr[0], " ");
+		printArray(arr[1:]);
+	}
+	else{
+		newline();
+	}
+}
+
+Int[] a = [10, -5, 1, 9, 4, 0, 6, -7, 3, 2, 0, 0, 0];
+
+Int[] b = quickSort(a);
+
+Int c = 600, d = 100;
+
+if(c >= 100 and d == 100){
+	print("Equal..\n");
+}
+else{
+	print("Not equal..\n");
+}
