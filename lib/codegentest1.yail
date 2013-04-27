@@ -1,17 +1,3 @@
-function filter_helper(Int[] arr, Int index, Function f):Int[]{
-	if(index < arr.length){
-		if(f(arr[index])){
-			return [arr[index]] + filter_helper(arr, index + 1, f);
-		}
-		else{
-			return filter_helper(arr, index + 1, f);
-		}
-	}
-	else{
-		return [];
-	}	
-}
-
 function reducer_helper(Int[] arr, Int base, Int index, Function f):Int{
 	if(index < arr.length){
 		Int result = f(base, arr[index]);
@@ -22,49 +8,15 @@ function reducer_helper(Int[] arr, Int base, Int index, Function f):Int{
 	}
 }
 
-function filter(Int[] arr, Function f):Int[]{
-	return filter_helper(arr, 0, f);
-}
-
 function reducer(Function f, Int base, Int[] arr):Int{
 	return reducer_helper(arr, base, 0, f);
-}
-
-function quickSort(Int[] arr):Int[]{
-	if(arr.length > 0){
-		Int x = arr[0];
-		function le(Int a):Bool{
-			return a <= x;
-		}
-		function g(Int a):Bool{
-			return a > x;
-		}
-		Int[] left = quickSort(filter(arr[1:], le));
-		Int[] right = quickSort(filter(arr[1:], g));
-		return left + [x] + right;
-	}
-	else{
-		return [];
-	}
-}
-
-function printArray(Int[] arr):Nothing{
-	if(arr.length > 0){
-		print(arr[0], " ");
-		printArray(arr[1:]);
-	}
-	else{
-		newline();
-	}
 }
 
 function sum(Int a, Int b):Int{
 	return a + b;
 }
 
-Int[] a = [10, -5, 1, 9, 4, 0, 6, -7, 3, 2, 0, 0, 0];
+Int[] a = [10, -5, 1, 9, 4, 0, 6, -7, 3, 2, 0, 0, 0, -100, 3, 12, 123, 121, 11, -1000, 3];
 
 Int[] b = quickSort(a);
-Int[] c = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-
 printArray(b);
