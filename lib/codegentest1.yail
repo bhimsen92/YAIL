@@ -65,6 +65,5 @@ function sum(Int a, Int b):Int{
 Int[] a = [10, -5, 1, 9, 4, 0, 6, -7, 3, 2, 0, 0, 0];
 
 Int[] b = quickSort(a);
-Int[] c = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 printArray(b);
