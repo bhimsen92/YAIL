@@ -18,4 +18,4 @@ function fibo(Int n):Int{
     }
 }
 
-printf("%d\n", fibo(20));
+printf("value of fib %d = %d\n", 20, fibo(20));

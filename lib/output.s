@@ -1,5 +1,5 @@
 L3:
-	.asciz  "%d\n"
+	.asciz  "value of fib %d = %d\n"
 .section .text
 
 .type sub, @function
@@ -72,12 +72,16 @@ pushq %rbp
 movq %rsp, %rbp
 movq $L3, %rbx
 movq %rbx, %rdi
+movq $20, %rbx
+movq %rbx, %rsi
 pushq %rdi
+pushq %rsi
 movq $20, %rbx
 movq %rbx, %rdi
 call fibo
+popq %rsi
 popq %rdi
-movq %rax, %rsi
+movq %rax, %rdx
 call printf
 mov %rbp, %rsp
 pop %rbp
