@@ -102,6 +102,143 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                         }
         case __nothing:
                             break;
+        case __array_list:
+                            {
+                                // get the value list from the astNode,
+                                // then get the length and the type info, 
+                                // based on that allocate storage and generate move 
+                                // instructions to fill the space.
+                                // then return the register which holds the pointer to that
+                                // memory address.
+                                // the first item of the array would be the length of the array.
+                                // so indexing starts from 1 and not 0.
+                                ValueList *vlist = CAST_TO(ValueList, astNode);
+                                Temp *tmp;
+                                int length;
+                                int checkType, dataType, dataWidth, multiplier, memory, tp;
+                                vector<Node*> rlist;
+                                Register *reg;                                
+                                if(vlist != NULL){
+                                    // get the length.
+                                    length = vlist->getLength();
+                                    if(dtype != NULL){
+                                        //cout<<"Good morning..."<<endl;
+                                        dataType = dtype->getDataType();
+                                        dataWidth = dtype->getDataWidth();
+                                    }
+                                    else{
+                                        dataType = -1;
+                                        dataWidth = 8;
+                                    }
+                                        if(dataType == __array_int){
+                                            checkType = __integer;
+                                        }
+                                        else if(dataType == __array_double){
+                                            checkType = __double;
+                                        }
+                                        else if(dataType == __integer || dataType == __double){
+                                            checkType = dataType;
+                                        }
+                                        else{
+                                            checkType = -1;
+                                        }
+                                        Node *val;
+                                        bool storageAllocated = false;
+                                        for(int i = 0; i < length; i++){
+                                            val = this->evaluate(vlist->get(i), ctx, dtype);
+                                            if(checkType == -1){
+                                                checkType = val->getDataType()->getDataType();
+                                                multiplier = val->getDataType()->getDataWidth();
+                                            }
+                                            else{
+                                                multiplier = val->getDataType()->getDataWidth();
+                                            }
+                                            if(val->getDataType()->getDataType() == checkType){
+                                                if(!storageAllocated){
+                                                    storageAllocated = true;
+                                                    memory = (length + 1) * multiplier;
+                                                    // generate malloc instruction.
+                                                    // address will be in rax register,
+                                                    // move the address from rax to some other register.
+                                                    // because rax could be used inside other expressions also.
+                                                    // then push the length into the first location of the list.
+                                                    stack<Register*> *regStack = this->saveRegisters(ctx);
+                                                    // load memory size into register rdi.
+                                                    Integer *memSize = new Integer(memory);
+                                                    Register *regRSI = ctx->getRegister(Register::functReg(0));
+                                                    ctx->addInstruction(new Move(mov, memSize, NULL, regRSI));
+                                                    ctx->addInstruction(new Call(call, new Identifier((char*)"malloc")));
+                                                    // you get the result in rax register.
+                                                    // generate a temp register.
+                                                    tmp = new Temp(__tmp);
+                                                    if(checkType == __integer){
+                                                        tp = __array_int;
+                                                    }
+                                                    else{
+                                                        tp = __array_empty;
+                                                    }
+                                                    Type *t = new Type(tp, multiplier);
+                                                    tmp->setDataType(t);
+                                                    tmp->setTypeClass(Type::getTypeClass(t));
+                                                    Register *raxReg = ctx->getRegister(rax);
+                                                    ctx->addTemp(tmp);        
+                                                    // generate a move instruction
+                                                    ctx->clearAll();
+                                                    ctx->clearLocations();
+                                                    ctx->addInstruction(new Move(mov, raxReg, NULL, tmp));
+                                                    // restore the registers.                                                    
+                                                    this->restoreRegisters(ctx, regStack);
+                                                    reg = ctx->getRegister();
+                                                    // generate a move instruction to move tmp to reg.
+                                                    ctx->addInstruction(new Move(mov, tmp, NULL, reg));
+                                                    ctx->addInstruction(new Move(mov, new Integer(length), NULL, new Offset(0, reg)));
+                                                    tmp->setArrayLength(length);
+                                                }
+                                            }
+                                            else{
+                                                errorMessage(1, "variable is not an array...");
+                                                exit(1);
+                                            }
+                                            // generate a move instrcution.tmp->setArrayLength(length);
+                                            ctx->addInstruction(new Move(mov, val, NULL, new Offset((i + 1)* multiplier, reg)));
+                                            // free val register.
+                                            Register *regCasted = CAST_TO(Register, val);
+                                            ctx->unsetAvailabilityFlag(regCasted->getRegIndex());
+                                        }                         
+                                } // vlist not null
+                                reg->setDataType(tmp->getDataType());
+                                reg->setTypeClass(tmp->getTypeClass());
+                                reg->setArrayLength(tmp->getArrayLength());
+                                return reg;
+                            }
+        case __memberShipOp: 
+                             {
+                                Operator *memOp = CAST_TO(Operator, astNode);
+                                Operands *ops = memOp->getOperands();
+                                // get the first operands.
+                                Identifier *id = CAST_TO(Identifier, ops->get(0));
+                                // get the member name.
+                                Identifier *mem = CAST_TO(Identifier, ops->get(1));
+                                Node *array = ctx->get(string(id->getName()), 0);
+                                int type = array->getDataType()->getDataType();
+                                //cout<<"type: "<<type<<endl;
+                                if(type != __array_int && type != __array_empty){
+                                    errorMessage(1, "Name needs to be an array...");
+                                    exit(1);
+                                }
+                                else{
+                                    // get the register.
+                                    if(strcmp("length", mem->getName()) == 0){
+                                        Register *reg = ctx->getRegister();
+                                        ctx->addInstruction(new Move(mov, new Integer(array->getArrayLength()), NULL, reg));
+                                        return reg;
+                                    }
+                                    else{
+                                        errorMessage(1, "member needs to be length..");
+                                        exit(1);
+                                    }
+                                }
+                             }
         case __double:
                             break;
         case __return:
@@ -248,8 +385,12 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                         // generate op code for expression and
                                         // return the result in an temp node.
                                         Node *result = this->evaluate(expressionNode, ctx, dtype);
-                                        id->setDataType(result->getDataType());
+                                        Type *type = result->getDataType();
+                                        id->setDataType(type);
                                         id->setTypeClass(result->getTypeClass());
+                                        if(type->getDataType() == __array_int || type->getDataType() == __array_empty){
+                                            id->setArrayLength(result->getArrayLength());
+                                        }
                                         // add this register to the address descriptor of this identifier.
                                         id->addLocation(result);
                                         // add this id to the register descriptor of the result[register]
@@ -347,32 +488,7 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                     // before making a call first save all the the registers used by the current context.
                                     // check to see whether the function exists or not in the current context.
                                     // if so, evaluate the user defined function.
-                                    stack<Register*> regStack;
-                                    int index = 0, count = ctx->getRegisterAllocatedLength();
-                                    //cout<<"contextId: "<<ctx->getContextId()<<", Length: "<<count<<endl;
-                                    //ctx->printUsed();
-                                    Register *tmp = ctx->spill();
-                                    while(index < count){
-                                        //if(tmp == NULL)
-                                        //    cout<<"it is null, i am dead :("<<endl;
-                                        //else
-                                        //    cout<<"In funct_call: "<<tmp->toString()<<endl;
-                                        if(tmp && tmp->hasLocationAdded()){
-                                            // get the location.
-                                            Node *location = tmp->getLocation();
-                                            location->removeLocation();
-                                            tmp->removeLocation();
-                                            ctx->addInstruction(new Move(mov, tmp, NULL, location));
-                                        }
-                                        else if(tmp){
-                                            if(tmp && !tmp->is(rsp) && !tmp->is(rbp)){//&& !tmp->is(rax)){// && !tmp->isFree()){
-                                                regStack.push(tmp);
-                                                ctx->addInstruction(new Push(push, tmp));
-                                            }
-                                        }
-                                        tmp = ctx->spill();
-                                        index++;
-                                    }
+                                    stack<Register*> *regStack = this->saveRegisters(ctx);
                                     // all registers that got used are spilled.
                                     // or saved on the stack.
                                     Operator *functCallNode = CAST_TO(Operator, astNode);
@@ -406,14 +522,7 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                     // call is done. restore values stored in the registers.
                                     ctx->clearAll();
                                     ctx->clearLocations();
-                                    while(!regStack.empty()){
-                                        Register *r = regStack.top();
-                                        if(r != NULL){
-                                            ctx->setAvailabilityFlag(r->getRegIndex());
-                                            ctx->addInstruction(new Pop(pop, r));
-                                        }
-                                        regStack.pop();
-                                    }
+                                    this->restoreRegisters(ctx, regStack);
                                     Register *returnVal = ctx->getRegister(rax);
                                     Function *f = CAST_TO(Function, ctx->get(string(functName->getName()), 0));
                                     if(f != NULL){
@@ -543,6 +652,41 @@ Node* TreeWalker::evaluateUserDefinedFunction( Identifier *functName, Operands *
 }
 
 bool TreeWalker::isReturnType(Node* node){
+}
+
+stack<Register*>* TreeWalker::saveRegisters(Context *ctx){
+    stack<Register*> *regStack = new stack<Register*>();
+    int index = 0, count = ctx->getRegisterAllocatedLength();
+    Register *tmp = ctx->spill();
+    while(index < count){
+        if(tmp && tmp->hasLocationAdded()){
+            // get the location.
+            Node *location = tmp->getLocation();
+            location->removeLocation();
+            tmp->removeLocation();
+            ctx->addInstruction(new Move(mov, tmp, NULL, location));
+        }
+        else if(tmp){
+            if(tmp && !tmp->is(rsp) && !tmp->is(rbp)){//&& !tmp->is(rax)){// && !tmp->isFree()){
+                regStack->push(tmp);
+                ctx->addInstruction(new Push(push, tmp));
+            }
+        }
+        tmp = ctx->spill();
+        index++;
+    }
+    return regStack;
+}
+
+void TreeWalker::restoreRegisters(Context *ctx, stack<Register*> *regStack){
+    while(!regStack->empty()){
+        Register *r = regStack->top();
+        if(r != NULL){
+            ctx->setAvailabilityFlag(r->getRegIndex());
+            ctx->addInstruction(new Pop(pop, r));
+        }
+        regStack->pop();
+    }
 }
 
 //void TreeWalker::loadBuiltIns(void){

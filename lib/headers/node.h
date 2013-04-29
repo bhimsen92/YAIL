@@ -27,6 +27,7 @@ class Register;
                    // this is for typeClass.
                    int typeClass;
                    int tmpFlag;
+                   int length;
         public:
                 Node( int nType );
                 int getType(void);
@@ -36,6 +37,15 @@ class Register;
                 virtual Node* getLocation(void){ cout<<"Node::getLocation() executed"<<endl; exit(1);}
                 virtual void removeLocation(void){ cout<<"Node::removeLocation executed"<<endl; exit(1);}
                 virtual bool hasLocationAdded(){ cout<<"Node::hasLocationAdded executed"<<endl; exit(1);}
+
+                void setArrayLength(int l){
+                    length = l;
+                }
+
+                int getArrayLength(void){
+                    return length;
+                }
+
                 bool is(int t){
                     return nodeType == t;
                 }
@@ -303,7 +313,11 @@ class Register;
                 
                 char* toString(){
                     char *buffer = new char[256];
-                    sprintf(buffer, "%d(temp)", offset);
+                    if(offset > 0)
+                        sprintf(buffer, "-%d(%s)", offset, "%rbp");
+                    else{
+                        sprintf(buffer, "%d(%s)", offset, "%rbp");
+                    }
                     return buffer;
                 }
     };
@@ -413,8 +427,7 @@ class Register;
                     label = new char[256];
                     sprintf(label, "L%d", counter);
                     counter++;
-                }
-                
+                }                
                 Label(Identifier *id) : Node(-1){
                     char *l = id->getName();
                     label = new char[strlen(l) + 1];
@@ -462,6 +475,23 @@ class Register;
                 char* toString(){
                     char *buffer = new char[512];
                     sprintf(buffer, "%s:\n\t%s  \"%s\"\n", dataLabel->toString(), ".asciz", value->toString());
+                    return buffer;
+                }
+    };
+
+    class Offset : public Node{
+        protected:
+                    int offset;
+                    Node *r;
+        public:
+                Offset(int o, Node *reg) : Node(-1){
+                    offset = o;
+                    r = reg;
+                }
+
+                char* toString(){
+                    char* buffer = new char[256];
+                    sprintf(buffer, "%d(%s)", offset, r->toString());
                     return buffer;
                 }
     };

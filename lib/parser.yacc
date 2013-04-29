@@ -48,7 +48,7 @@ int Context::contextIdCounter = 0;
 %type <node> program statement statementList variableList variableDeclarations variableDefinition expression atom type
 %type <node> functionDefinition returnType formalParameters formalParameterList formalParameterDef functionBody arglist arguments functCall
 %type <node> block conditionalExpression orExp andExp equality relationalOp term power unary elseBlock list indexOp valueList
-
+%type <node> slice sliceExp memberShipOperator
 %%
 program: statementList {
                           programAST = CAST_TO( StatementList, $1 );
@@ -326,6 +326,8 @@ atom  : IDENTIFIER    { $$ = $1; }
       | functCall     { $$ = $1; }
       | list          { $$ = $1; }
       | indexOp       { $$ = $1; }
+      | slice         { $$ = $1; }
+      | memberShipOperator { $$ = $1; }
       | '(' conditionalExpression ')'  { $$ = $2; }
 
 empty :
@@ -336,7 +338,7 @@ type : INTEGER_T  {  $$ = new Type(__integer, 8 ); }
      | STRING_T   {  $$ = new Type(__string, 8 );  }
      | FUNCTION_T {  $$ = new Type(__function_t, 0); }
      | NOTHING    {  $$ = new Type(__nothing, 0); }
-     | ARRAY_T    {  $$ = new Type(__array_t, 0); }
+     | INTEGER_T'['']' { $$ = new Type(__array_int, 8); }     
      ;
 
 functCall : IDENTIFIER '(' arguments ')'  {
@@ -376,7 +378,13 @@ arglist : expression                 {
 list : '[' valueList ']'   { $$ = $2; }
      ;
 
-valueList : expression               { ValueList *vlist = new ValueList();
+valueList : empty                    {
+                                       ValueList *vlist = new ValueList();
+                                       $$ = vlist;  
+                                     }
+
+          | expression               { 
+                                       ValueList *vlist = new ValueList();
                                        vlist->push_back( $1 );
                                        $$ = vlist;
                                      }
@@ -389,14 +397,35 @@ valueList : expression               { ValueList *vlist = new ValueList();
                                         $$ = vlist;
                                      }
           ;
-indexOp : IDENTIFIER '[' INTEGER ']' {
+indexOp : IDENTIFIER '[' expression ']' {
                                         Operands *operands = new Operands();
                                         operands->push_back( $1 );
                                         operands->push_back( $3 );
                                         Operator *arrayReadOp = new Operator( __indexOp, 2, operands );
                                         $$ = arrayReadOp;
-                                     }
+                                     }                                     
         ;
+slice : IDENTIFIER '[' sliceExp ':' sliceExp ']' {
+                                                      Operands *operands = new Operands();
+                                                      operands->push_back($1);
+                                                      operands->push_back($3);
+                                                      operands->push_back($5);
+                                                      Operator *sliceOp = new Operator(__sliceOp, 3, operands);
+                                                      $$ = sliceOp;
+                                                 }
+        ;
+sliceExp : empty { $$ = NULL; }
+         | expression { $$ = $1; }
+         ;
+
+memberShipOperator : IDENTIFIER '.' IDENTIFIER {
+                                                  Operands *operands = new Operands();
+                                                  operands->push_back($1);
+                                                  operands->push_back($3);
+                                                  Operator *memOp = new Operator(__memberShipOp, 2, operands);
+                                                  $$ = memOp;
+                                               }
+                   ;
 %%
 
 void yyerror( const char* error ){
@@ -409,6 +438,7 @@ int main(){
     TreeWalker treewalker;
     int length;
     length = programAST->getLength();
+    //cout<<"Parsing done...\n";
     ctx->addInstruction(new Push(push, ctx->getRegister(rbp)));
     ctx->addInstruction(new Move(mov, ctx->getRegister(rsp), NULL, ctx->getRegister(rbp)));    
     //cout<<"Parsing done.."<<endl;

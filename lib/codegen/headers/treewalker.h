@@ -1,6 +1,7 @@
 #include<iostream>
 #include<cstdlib>
 #include<vector>
+#include<stack>
 #include<string>
 #include<cstring>
 #include<map>
@@ -37,6 +38,8 @@ class TreeWalker{
         bool isUserDefinedFunction( Identifier *functName, Context *execContext );
         Node* evaluateBuiltInFunction( Identifier *functName, Operands *operands, Context *execContext );
         Node* evaluateUserDefinedFunction( Identifier *functName, Operands *operands, Context *execContext );
+        stack<Register*>* saveRegisters(Context *ctx);
+        void restoreRegisters(Context *ctx, stack<Register*>*regStack);
         //void loadBuiltIns(void);
         //BuiltInFunction getBuiltInFunction( Identifier *functName );
         void errorMessage( int size, ... );
