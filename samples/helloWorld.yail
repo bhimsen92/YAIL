@@ -1,0 +1,10 @@
+function sayHelloWorld():Nothing{
+    print("Hello world\n");
+}
+
+# one way of saying hello world.
+sayHelloWorld();
+
+# simple way.
+
+print("Hello world\n");
