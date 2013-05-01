@@ -36,7 +36,7 @@ int counter = 0;
     bnk_astNodes::Node *node;
 };
 
-%token FUNCTION INTEGER_T DOUBLE_T STRING_T FUNCTION_T BOOL_T OR AND EQUAL LE GE IF ELSE NOT ELIF RETURN ARRAY_T
+%token FUNCTION INTEGER_T DOUBLE_T STRING_T FUNCTION_T BOOL_T OR AND EQUAL LE GE IF ELSE NOT ELIF RETURN SPAWN SYNC
 %token <node> IDENTIFIER
 %token <node> STRING
 %token <node> INTEGER
@@ -329,7 +329,15 @@ atom  : IDENTIFIER    { $$ = $1; }
       | indexOp       { $$ = $1; }
       | slice         { $$ = $1; }
       | memberShipOperator { $$ = $1; }
+      | SPAWN functCall {
+                          Operands *operands = new Operands();
+                          operands->push_back($2);
+                          Operator *spawnOp = new Operator(__spawn, 1, operands);
+                          $$ = spawnOp;
+                        }
+      | SYNC            { $$ = new Operator(__sync, 0, NULL); }
       | '(' conditionalExpression ')'  { $$ = $2; }
+      ;
 
 empty :
       ;

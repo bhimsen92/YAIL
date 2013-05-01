@@ -2,6 +2,7 @@
 #include<cstdlib>
 #include<string>
 #include<map>
+#include<pthread.h>
 #include "headers/context.h"
 #include "headers/node.h"
 
@@ -14,17 +15,27 @@ void Context::setSymbolTable( map< string, Object* > *symTab ){
 }
 
 void Context::put( string ident, Object* value ){
+    //pthread_mutex_lock(&door);
     (*symbolTable)[ ident ] = value;
+    //pthread_mutex_unlock(&door);
     //symbolTable->insert( pair< string, Object* >( ident, value ) );
 }
 
 Object* Context::get( string ident ){
-    Object *rval = (*symbolTable)[ ident ];
-    if( rval == NULL ){
-        if( enclosingEnv != NULL ){
-            rval = enclosingEnv->get( ident );
+    //cout<<"In context get..."<<endl;
+    Object *rval = NULL;
+    //pthread_mutex_lock(&door);
+    if(symbolTable->count(ident) > 0){
+        rval = (*symbolTable)[ident];
+    }
+    if(rval == NULL){
+        Context *tmp = enclosingEnv;
+        while( tmp != NULL && rval == NULL){
+            rval = tmp->get(ident);
+            tmp = tmp->getEnclosingContext();
         }
     }
+    //pthread_mutex_unlock(&door);
     return rval;
 }
 

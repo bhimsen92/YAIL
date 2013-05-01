@@ -69,6 +69,14 @@ string     \"(.*)\"
                 return RETURN;
            }
 
+"spawn"    {
+                return SPAWN;
+           }
+
+"sync"     {
+                return SYNC;
+           }
+
 "Nothing"         {
                       Node *nothingNode = new bnk_astNodes::Nothing();
                       yylval.node = nothingNode;

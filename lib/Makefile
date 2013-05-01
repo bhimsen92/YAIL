@@ -4,8 +4,8 @@ LDFLAGS=-lfl -ly
 
 all: bnK-lang
 
-bnK-lang: builtins.o node.o object.o number.o string.o udf.o interpreter.o context.o binaryop.o parser.o lexer.o
-	$(CC) -o $@ builtins.o node.o object.o number.o string.o udf.o binaryop.o interpreter.o context.o lexer.o parser.o -lfl -ly
+bnK-lang: builtins.o node.o object.o number.o string.o udf.o interpreter.o context.o binaryop.o parser.o lexer.o thread.o
+	$(CC) -o $@ builtins.o node.o object.o number.o string.o udf.o binaryop.o interpreter.o context.o lexer.o parser.o thread.o -pthread -lfl -ly
 	rm *.o
 
 builtins.o: 
@@ -42,6 +42,9 @@ lexer.o:
 parser.o:
 	yacc -dv parser.yacc
 	$(CC) $(CFLAGS) ./y.tab.c -o $@
+
+thread.o:
+	$(CC) $(CFLAGS) ./concurrent/TM.cpp -o $@
 
 clear:
 	rm *.o

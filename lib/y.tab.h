@@ -53,13 +53,14 @@
      NOT = 271,
      ELIF = 272,
      RETURN = 273,
-     ARRAY_T = 274,
-     IDENTIFIER = 275,
-     STRING = 276,
-     INTEGER = 277,
-     DOUBLE = 278,
-     NOTHING = 279,
-     EMPTY = 280
+     SPAWN = 274,
+     SYNC = 275,
+     IDENTIFIER = 276,
+     STRING = 277,
+     INTEGER = 278,
+     DOUBLE = 279,
+     NOTHING = 280,
+     EMPTY = 281
    };
 #endif
 /* Tokens.  */
@@ -79,13 +80,14 @@
 #define NOT 271
 #define ELIF 272
 #define RETURN 273
-#define ARRAY_T 274
-#define IDENTIFIER 275
-#define STRING 276
-#define INTEGER 277
-#define DOUBLE 278
-#define NOTHING 279
-#define EMPTY 280
+#define SPAWN 274
+#define SYNC 275
+#define IDENTIFIER 276
+#define STRING 277
+#define INTEGER 278
+#define DOUBLE 279
+#define NOTHING 280
+#define EMPTY 281
 
 
 
@@ -102,7 +104,7 @@ typedef union YYSTYPE
 
 
 /* Line 2068 of yacc.c  */
-#line 106 "y.tab.h"
+#line 108 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
