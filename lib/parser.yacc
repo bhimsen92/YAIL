@@ -446,7 +446,7 @@ void yyerror( const char* error ){
 int main(){   
     yyparse();
     Context *ctx = new Context();
-    Interpreter interp;
+    Interpreter interp(true);
     int length;    
     length = programAST->getLength();
     cout<<"Parsing Done\n";

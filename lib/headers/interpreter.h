@@ -4,7 +4,6 @@
 #include<string>
 #include<cstring>
 #include<map>
-#include<stack>
 #include<pthread.h>
 #include<queue>
 #include<cstdio>
@@ -60,12 +59,13 @@ class ThreadManager{
             void append(Job*); /* append a job to the queue          */
             void sync();        /* wait till all the jobs are done    */
             void worker();      /* the slave process to fetch and run */
+            void decrementJobNo();
 };
 
 class Interpreter{
     private:
             map<string, BuiltInFunction> builtins;
-            stack<Job*> jobStack;
+            queue<Job*> jobStack;
             static ThreadManager *threadManager;
             int insideFunctionCounter;
             bool mainThread;
@@ -75,10 +75,10 @@ class Interpreter{
             insideFunctionCounter = 0;
             mainThread = isMainThread;
             if(threadManager == NULL)
-                threadManager = new ThreadManager(64);
+                threadManager = new ThreadManager(128);
         }
         bool isCallable( Object* obj );
-        bnk_types::Object* evaluate( Node* astNode, Context* execContext, int dataTypeInfo );
+        bnk_types::Object* evaluate( Node* astNode, Context* execContext, int dataTypeInfo, Identifier *id = NULL );
         Object* execOperation( Operator* opNode, Context* execContext, BinaryOperation *op );
         bool isBuiltInFunction( Identifier *functName );
         bool isUserDefinedFunction( Identifier *functName, Context *execContext );
@@ -86,17 +86,10 @@ class Interpreter{
         Object* evaluateUserDefinedFunction( Identifier *functName, Operands *operands, Context *execContext );
         void loadBuiltIns(void);
         BuiltInFunction getBuiltInFunction( Identifier *functName );
-        void errorMessage( int size, ... );
-        bool isReturnType( Object *obj );
-
-        void spawn(Job *job){
-            jobStack.push(job);
-            threadManager->append(job);
-        }
-
-        void sync(void){
-            threadManager->sync();
-        }
+        void errorMessage(int size, ...);
+        bool isReturnType(Object *obj);
+        void spawn(Job *job);
+        void sync(void);
 
 };
 
@@ -106,17 +99,24 @@ class Job {
             Node *astNode;
             Context *ctx;
             Interpreter *interp;
-            char* ident;
+            Identifier* ident;
+            pthread_t threadId;
             Object *returnVal;
+            bool threadIdSet;
     public:
             Job(Node* node, Context *context, Interpreter *interpreter){
                 astNode = node;
                 ctx = context;
                 interp = interpreter;
                 returnVal = NULL;
+                threadIdSet = false;
             }
 
-            void setIdentifier(char* id){
+            void setThreadId(pthread_t tid){
+                threadId = tid;
+            }
+
+            void setIdentifier(Identifier* id){
                 ident = id;
             }
 
@@ -124,7 +124,11 @@ class Job {
                 returnVal = rval;
             }
 
-            char* getIdent(void){
+            pthread_t getThreadId(){
+                return threadId;
+            }
+
+            Identifier* getIdent(void){
                 return ident;
             }
 
@@ -132,10 +136,21 @@ class Job {
                 return returnVal;
             }
 
+            Context* getContext(){
+                return ctx;
+            }
+
+            void setThreadSetFlag(bool val){
+                threadIdSet = val;
+            }
+
+            bool set(){
+                return threadIdSet;
+            }
+
             void run(){
-                //cout<<"Whats wrong...\n";
                 returnVal = interp->evaluate(astNode, ctx, -1);
-                //cout<<"Nothing wrong..\n";
             }
 };
+
 #endif

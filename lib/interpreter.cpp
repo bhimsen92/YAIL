@@ -84,7 +84,7 @@
 using namespace std;
 ThreadManager* Interpreter::threadManager = NULL;
 
-bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, int dataTypeInfo ){
+bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, int dataTypeInfo, Identifier *lId ){
     int nodeType = astNode->getType();
     switch( nodeType ){
         case __identifier:
@@ -132,6 +132,7 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                             Operands *ops = spawnOp->getOperands();
                             // create a new job.
                             Job *task = new Job(ops->get(0), execContext, new Interpreter());
+                            task->setIdentifier(lId);
                             // spawn the thread.
                             this->spawn(task);
                             return NULL;
@@ -418,18 +419,23 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                     //operands->pop_front();
                                     if( !execContext->isBound( id ) ){
                                         // get the expression node.
-                                        Object *value = this->evaluate( operands->get(2), execContext, dataType );
-                                        // check whether the type of the expression matches
-                                        // with the defined type.
-                                        if( dataType == value->getDataType() ){
-                                            execContext->put( string( id->getName() ), value );
-                                        }
-                                        else if(dataType == __array_int_t && value->getDataType() == __array_empty_t ){
-                                            execContext->put( string( id->getName() ), value );   
+                                        if(operands->get(2)->getType() == __spawn){
+                                            this->evaluate( operands->get(2), execContext, dataType, id );
                                         }
                                         else{
-                                            errorMessage( 1, "Type of the expression does not match with defined type." );
-                                            exit(1);
+                                            Object *value = this->evaluate( operands->get(2), execContext, dataType );
+                                            // check whether the type of the expression matches
+                                            // with the defined type.
+                                            if( dataType == value->getDataType() ){
+                                                execContext->put( string( id->getName() ), value );
+                                            }
+                                            else if(dataType == __array_int_t && value->getDataType() == __array_empty_t ){
+                                                execContext->put( string( id->getName() ), value );   
+                                            }
+                                            else{
+                                                errorMessage( 1, "Type of the expression does not match with defined type." );
+                                                exit(1);
+                                            }
                                         }
                                     }
                                     else{
@@ -753,4 +759,43 @@ void Interpreter::errorMessage( int size, ... ){
 
 bool Interpreter::isCallable( Object *value ){
     return ( value->getDataType() == __function_t );
+}
+
+void Interpreter::sync(void){
+    while(!jobStack.empty()){
+    // get the job from the stack.
+                Job* task = jobStack.front();
+                // valid task.
+                if(task){
+                    // get the thread id.
+                    while(!task->set()){
+                        //cout<<"Waiting in sync..."<<endl;
+                        usleep(10);
+                    }
+                    pthread_t threadId = task->getThreadId();
+                    // i am lazy thats why i am not removing this if else code.[who will do re intendation again boring..]
+                    if(true){
+                        // get the identifier and the return value.
+                        Identifier *id = task->getIdent();
+                        if(id != NULL){
+                            // get return value.
+                            Object *val = task->getReturnValue();
+                            if(val != NULL){
+                                // get the context object and put the id in it.
+                                Context *ctx = task->getContext();
+                                ctx->put(string(id->getName()), val);
+                            }
+                        }
+                    }
+                }
+                jobStack.pop();
+            }
+            if(threadManager->size() == 0 && mainThread){
+                threadManager->sync();
+            }
+}
+
+void Interpreter::spawn(Job *job){
+    jobStack.push(job);
+    threadManager->append(job);
 }

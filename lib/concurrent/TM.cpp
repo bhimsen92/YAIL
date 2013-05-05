@@ -52,6 +52,12 @@ using namespace std;
 		while (running_jobs > 0) { usleep(10); }
 	}
 
+	void ThreadManager::decrementJobNo(){
+		mutex2.lock();
+		running_jobs--;
+		mutex2.unlock();
+	}
+
 	uint ThreadManager::size() 
 	{
 		return running_jobs;
@@ -75,6 +81,8 @@ using namespace std;
 				ajob->run();
 				//cout<<"job finished working...\n";
 				mutex2.lock();
+				ajob->setThreadId(pthread_self());
+				ajob->setThreadSetFlag(true);				
 				running_jobs--;
 				mutex2.unlock();
 			}
@@ -85,6 +93,7 @@ using namespace std;
 	{
 		mutex0.lock();
 		while (jobs.size() > this->thread_num * 2) {
+			//cout<<"Waiting...."<<endl;
 			usleep(10);
 		}
 		running_jobs++;
