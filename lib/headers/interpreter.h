@@ -75,7 +75,7 @@ class Interpreter{
             insideFunctionCounter = 0;
             mainThread = isMainThread;
             if(threadManager == NULL)
-                threadManager = new ThreadManager(128);
+                threadManager = new ThreadManager(4);
         }
         bool isCallable( Object* obj );
         bnk_types::Object* evaluate( Node* astNode, Context* execContext, int dataTypeInfo, Identifier *id = NULL );

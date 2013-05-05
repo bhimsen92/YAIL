@@ -23,8 +23,11 @@ using namespace std;
 		}
 
 		threads = new pthread_t[size];
+		pthread_attr_t attr;
+		pthread_attr_init(&attr);
+		pthread_attr_setscope( &attr, PTHREAD_SCOPE_SYSTEM);			
 		for (uint i = 0; i < size; i++) {
-			int rc = pthread_create(&threads[i], NULL, wrapper, (void *)this);
+			int rc = pthread_create(&threads[i], &attr, wrapper, (void *)this);
 			if(rc != 0){
 				fputs("Error while creating the thread...", stderr);
 				exit(1);
