@@ -1,0 +1,13 @@
+# function with no args
+
+function fun1():Nothing{
+}
+
+# function 7 args
+function fun2(Int a, Int b, Int c, Int d, Int e, Double f, String g):Nothing{
+    print(g, "\n");
+}
+
+fun2(1, 2, 3, 4, 5, 6.0, "Hello world\n");
+
+fun1();

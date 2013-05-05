@@ -1,0 +1,26 @@
+# function within a function which takes no args, returns nothing and does nothing.
+function outer_1():Nothing{
+    function inner():Nothing{
+    }
+}
+
+# checking name hiding.
+function outer_2():Function{
+    function inner():Nothing{
+    }
+    return inner;
+}
+
+# function within a function which takes one arg and returns it.
+function outer_3():Function{
+    function inner(Int a):Nothing{
+        return a;
+    }
+    return inner;
+}
+
+
+
+outer_1();
+outer_2();
+outer_3();

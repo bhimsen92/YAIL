@@ -1,0 +1,15 @@
+function power(Int n, Int k):Int{
+    if(k > 0){
+        return n * power(n, k - 1);
+    }
+    else{
+        return 1;
+    }
+}
+
+
+print(power(2, 10), "\n");
+print(power(6, 3), "\n");
+print(power(10, 5), "\n");
+print(power(5, 13), "\n");
+

@@ -1,0 +1,19 @@
+# Integer assignment
+Int a = 1;
+
+# Multiple variable declarations.
+Int b = 2, c = 12 + b;
+
+# Double initialization
+Double d = 12.34;
+
+# String Initialization
+String str = "Hello world\n";
+
+# Array Intialization
+Int[] arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+# Double Array Intialization
+Double[] darr = [ 12.3, 12.0, 123.23];
+
+
