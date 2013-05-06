@@ -26,8 +26,9 @@ function g(Int x, Int a):Bool{
 function quickSort(Int[] arr):Int[]{
 	if(arr.length > 0){
 		Int x = arr[0];
-		Int[] left = quickSort(filter(arr[1:], le(x)));
-		Int[] right = quickSort(filter(arr[1:], g(x)));
+		Int[] left = spawn quickSort(filter(arr[1:], le(x)));
+		Int[] right = spawn quickSort(filter(arr[1:], g(x)));
+		sync;
 		return left + [x] + right;
 	}
 	else{
@@ -47,5 +48,6 @@ function printArray(Int[] arr):Nothing{
 
 Int[] a = [10, -5, 1, 9, 4, 0, 6, -7, 3, 2, 0, 0, 0];
 
-Int[] b = quickSort(a);
+Int[] b = spawn quickSort(a);
+sync;
 printArray(b);

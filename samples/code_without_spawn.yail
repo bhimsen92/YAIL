@@ -9,9 +9,8 @@ function power(Int n, Int k):Int{
 
 function map_helper(Int[] arr, Int index, Function f):Int[]{
 	if(index < arr.length){
-		Int result = spawn f(arr[index], arr[index]);
+		Int result = f(arr[index], arr[index]);
 		Int[] list = map_helper(arr, index + 1, f);
-		sync;
 		return [result] + list;
 	}
 	else{
@@ -100,8 +99,7 @@ Int[] a = [999, 999, 999, 999, 999, 999, 999, 999, 999, 999,
 		   999, 999, 999, 999, 999, 999, 999, 999, 999, 999,
 		   999, 999, 999, 999, 999, 999, 999, 999, 999, 999,
 		   999, 999, 999, 999, 999, 999, 999, 999, 999, 999,
-		   999, 999, 999, 999, 999, 999, 999, 999, 999, 999];
+		   999, 999, 999, 999, 999, 999, 999, 999, 999, 999		   ];
 
-Int[] res = spawn map_helper(a, 0, power);
-sync;
+Int[] res = map_helper(a, 0, power);
 printArray(res);
