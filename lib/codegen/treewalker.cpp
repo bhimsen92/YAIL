@@ -43,7 +43,12 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                         }
                                         reg->addLocation(rval);
                                         rval->addLocation(reg);
-                                        ctx->addInstruction(new Move(mov, rval, NULL, reg));
+                                        if(this->isFunction(id)){
+                                            ctx->addInstruction(new MoveAddress(mov_address, new String(id->getName()), NULL, reg));
+                                        }
+                                        else{
+                                            ctx->addInstruction(new Move(mov, rval, NULL, reg));
+                                        }
                                     }
                                     else{
                                         reg = rval->getLocation();
@@ -507,6 +512,7 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                         f->addReturnType(returnType);
                                         // put the function info in the current context.
                                         // and in the new context.
+                                        this->addFunction(functName);
                                         ctx->put(string(functName->getName()), f);
                                         nctx->put(string(functName->getName()), f);
                                         nctx->attachContext(ctx);
@@ -557,7 +563,13 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                     }
                                     // generate call instruction.
                                     Identifier *functName = CAST_TO(Identifier, ops->get(0));
-                                    ctx->addInstruction(new Call(call, functName));
+                                    if(this->isFunction(functName)){
+                                        ctx->addInstruction(new Call(call, functName));
+                                    }
+                                    else{
+                                        Node *res = this->evaluate(ops->get(0), ctx, dtype);
+                                        ctx->addInstruction(new IndirectCall(call, res));
+                                    }
                                     // call is done. restore values stored in the registers.
                                     ctx->clearAll();
                                     ctx->clearLocations();
@@ -700,7 +712,7 @@ stack<Register*>* TreeWalker::saveRegisters(Context *ctx){
     while(index < count){
         if(tmp && tmp->hasLocationAdded()){
             // get the location.
-            Node *location = tmp->getLocation();
+            Identifier *location = CAST_TO(Identifier, tmp->getLocation());
             location->removeLocation();
             tmp->removeLocation();
             ctx->addInstruction(new Move(mov, tmp, NULL, location));

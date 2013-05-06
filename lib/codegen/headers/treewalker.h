@@ -25,11 +25,13 @@ class TreeWalker{
             int insideFunctionCounter;
             vector<Context*> *contexts;
             vector<Data*> staticDataValues;
+            vector<string> functions;
     public:
         TreeWalker(){
             //this->loadBuiltIns();
             insideFunctionCounter = 0;
             contexts = new vector<Context*>();
+            functions.push_back(string("printf"));
         }
         //bool isCallable( Object* obj );
         Node* evaluate( Node* astNode, Context* execContext, Type *dtype );
@@ -83,6 +85,20 @@ class TreeWalker{
 
         void addDataObject(Data *obj){
             staticDataValues.push_back(obj);
+        }
+
+        void addFunction(Identifier *id){
+            functions.push_back(string(id->getName()));
+        }
+
+        bool isFunction(Identifier *id){
+            string fname = id->getName();
+            for(int i = 0; i < functions.size(); i++){
+                if(functions[i] == fname){
+                    return true;
+                }
+            }
+            return false;
         }
 };
 #endif

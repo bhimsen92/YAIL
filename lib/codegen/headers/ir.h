@@ -61,7 +61,11 @@ namespace yacl{
                     }
                     char* emit(){
                         char *buffer = new char[256];
-                        sprintf(buffer, "movq %s, %s\n", arg1->toString(), result->toString());
+                        Identifier *id = CAST_TO(Identifier, result);
+                        if(id != NULL && id->getOffset() > 0)
+                            sprintf(buffer, "movq %s, %s\n", arg1->toString(), result->toString());
+                        else if(id == NULL)
+                            sprintf(buffer, "movq %s, %s\n", arg1->toString(), result->toString());
                         //sprintf(buffer, "(mov, %s, , %s)\n", arg1->toString(), result->toString());
                         return buffer;
                     }
@@ -266,6 +270,20 @@ namespace yacl{
                         return buffer;
                     }
 
+        };
+
+        // indirect function call.
+        class IndirectCall: public IRCode{
+            public:
+                    IndirectCall(Instr instrType, Node *a1): IRCode(instrType, a1, NULL, NULL){
+
+                    }
+
+                    char* emit(){
+                        char* buffer = new char[256];
+                        sprintf(buffer, "call *%s\n", arg1->toString());
+                        return buffer;
+                    }
         };
 
         // emit instruction.

@@ -438,13 +438,13 @@ class Register;
                 }
     };
     
-    class Function : public Node{
+    class Function : public Identifier{
         protected:
                 vector<Identifier*> parameters;
                 Type *returnType;
         public:
-                Function() : Node(-1){
-                    
+                Function() : Identifier((char*)""){
+                    dataType = new Type(__function_t, 8);
                 }
                 
                 void addParamterType(Identifier *fp){
