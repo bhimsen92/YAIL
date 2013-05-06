@@ -1,3 +1,0 @@
-Int[] a = [1, 2];
-
-printf("%d\n", a.length);

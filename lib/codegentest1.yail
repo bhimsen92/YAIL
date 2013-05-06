@@ -4,5 +4,4 @@ function foo(String a, Int b):Nothing{
 
 String o = "bhimsen";
 String u = "sagar";
-
-foo("I love you", 12);
+foo(o, 100);

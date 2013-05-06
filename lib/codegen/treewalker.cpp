@@ -564,6 +564,7 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                     // generate call instruction.
                                     Identifier *functName = CAST_TO(Identifier, ops->get(0));
                                     if(this->isFunction(functName)){
+                                        ctx->addInstruction(new Move(mov, new Integer(0), NULL, ctx->getRegister(rax)));
                                         ctx->addInstruction(new Call(call, functName));
                                     }
                                     else{
