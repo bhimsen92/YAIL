@@ -1,12 +1,19 @@
-function printArray(Int[] arr, Int index):Nothing{
+function fact(Int n):Int{
+	if(n == 0)
+		return 1;
+	else 
+		return n * fact(n - 1);
+}
+
+function printArray(Int[] arr, Int index, Function f):Nothing{
 	if(index == arr.length){
 		printf("\n");
 	}
 	else{
-		printf("%d ", arr[index]);
-		printArray(arr, index + 1);
+		printf("%d ", f(arr[index]));
+		printArray(arr, index + 1, f);
 	}
 }
 
-Int[] arr = [1, 2, 4];
-printArray(arr, 0);
+Int[] arr = [1, 2, 4, 5, 8, 7, 3];
+printArray(arr, 0, fact);
