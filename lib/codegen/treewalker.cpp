@@ -44,6 +44,7 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                         reg->addLocation(rval);
                                         rval->addLocation(reg);
                                         if(this->isFunction(id)){
+                                            //cout<<"Hello world in function\n";
                                             ctx->addInstruction(new MoveAddress(mov_address, new String(id->getName()), NULL, reg));
                                         }
                                         else{
@@ -234,8 +235,11 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                 else{
                                     // get the register.
                                     if(strcmp("length", mem->getName()) == 0){
+                                        Node *res = this->evaluate(ops->get(0), ctx, dtype);
                                         Register *reg = ctx->getRegister();
-                                        ctx->addInstruction(new Move(mov, new Integer(array->getArrayLength()), NULL, reg));
+                                        ctx->addInstruction(new Move(mov, new Offset(0, res), NULL, reg));
+                                        reg->setDataType(new Type(__integer, 8));
+                                        reg->setTypeClass(Type::getTypeClass(new Type(__integer, 8)));
                                         return reg;
                                     }
                                     else{

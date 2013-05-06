@@ -206,6 +206,12 @@ class Register;
                     else if(dtype == __string){
                         return new Type(__string, 8);
                     }
+                    else if(dtype == __function_t){
+                        return new Type(__function_t, 8);
+                    }
+                    else if(dtype == __array_int){
+                        return new Type(__array_int, 8);
+                    }
                     return NULL;
                 }
                 

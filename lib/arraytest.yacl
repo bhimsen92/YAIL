@@ -1,2 +1,12 @@
-Int c = 10;
-printf("Hello world: %d\n", c);
+function printArray(Int[] arr, Int index):Nothing{
+	if(index == arr.length){
+		printf("\n");
+	}
+	else{
+		printf("%d ", arr[index]);
+		printArray(arr, index + 1);
+	}
+}
+
+Int[] arr = [1, 2, 4];
+printArray(arr, 0);

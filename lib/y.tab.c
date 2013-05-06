@@ -2192,7 +2192,7 @@ yyreduce:
 
 /* Line 1806 of yacc.c  */
 #line 339 "parser.yacc"
-    {  (yyval.node) = new Type(__function_t, 0); }
+    {  (yyval.node) = new Type(__function_t, 8); }
     break;
 
   case 67:
