@@ -9,6 +9,7 @@ namespace yacl{
             allocate,
             mov,
             mov_address,
+            mov_at_address,
             add,
             sub,
             imul,

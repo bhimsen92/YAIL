@@ -239,6 +239,45 @@ Node* TreeWalker::evaluate( Node* astNode, Context* ctx, Type *dtype ){
                                     }
                                 }
                              }
+        case __indexOp:  {
+                            // get the operator node.
+                            Operator *indexOp = CAST_TO(Operator, astNode);
+                            // get the ops.
+                            Operands *ops = indexOp->getOperands();
+                            // get the indentifier.
+                            Identifier *name = CAST_TO(Identifier, ops->get(0));
+                            Node *id = ctx->get(string(name->getName()), 0);
+                            // get the expression node, evaluate it, make sure it is integer.
+                            // then issue an "add" instruction because our first field of the array 
+                            // contains the length info.
+                            Node *result = this->evaluate(ops->get(1), ctx, dtype);
+                            if(result->getDataType()->getDataType() == __integer){
+                                // issue an add instruction.
+                                ctx->addInstruction(new Add(add, new Integer(1), result, NULL));
+                                ctx->addInstruction(new Mul(imul, new Integer(8), result, NULL));
+                                // i have the offset.
+                                // now get a register and load the address of array into it.
+                                Register *arrReg = CAST_TO(Register, id->getLocation());
+                                if(arrReg == NULL){
+                                    arrReg = ctx->getRegister();
+                                    arrReg->addLocation(id);
+                                    id->addLocation(arrReg);
+                                }
+                                ctx->addInstruction(new Move(mov, id, NULL, arrReg));
+                                // generate an add instruction.
+                                ctx->addInstruction(new Add(add, result, arrReg, NULL));
+                                // then generate MoveAtAddress instruction.
+                                ctx->addInstruction(new MoveAtAddress(mov_at_address, arrReg, result));
+                                result->setDataType(id->getDataType());
+                                result->setTypeClass(id->getTypeClass());
+                                return result;
+                            }
+                            else{
+                                // index must be an integer.
+                                errorMessage(1, "Index of the array must be an integer...");
+                                exit(1);
+                            }
+                         }
         case __double:
                             break;
         case __return:

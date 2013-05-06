@@ -81,6 +81,20 @@ namespace yacl{
                         return buffer;                        
                     }
         };
+
+        // move at address instruction.
+        class MoveAtAddress: public IRCode{
+            public:
+                    MoveAtAddress(Instr instrType, Node *a1, Node *r): IRCode(instrType, a1, NULL, r){
+
+                    }
+
+                    char* emit(){
+                        char *buffer = new char[256];
+                        sprintf(buffer, "movq (%s), %s\n", arg1->toString(), result->toString());
+                        return buffer;
+                    }
+        };
         
         // add instruction.
         class Add : public IRCode{

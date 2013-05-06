@@ -1,0 +1,5 @@
+function add(Int a, Int b):Int{
+	return a + b;
+}
+
+printf("%d\n", add(1, 3));
