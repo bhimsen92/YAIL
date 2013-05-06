@@ -1,5 +1,3 @@
-function add(Int a, Int b):Int{
-	return a + b;
-}
-Int res = add(1, 2);
-printf("%d\n", res);
+
+Int a = 12;
+printf("Hello world: %d\n", a);
