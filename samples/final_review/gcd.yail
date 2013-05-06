@@ -1,0 +1,9 @@
+function gcd(Int a, Int b):Int{
+    if(b == 0)
+        return a;
+    else
+        return gcd(b, a % b);
+}
+
+print(gcd(8, 12));
+newline();

@@ -1,0 +1,9 @@
+function square(Int n):Int{
+    return n * n;
+}
+
+function dsquare(Double n):Double{
+    return n * n;
+}
+
+print(dsquare(2.4), "\n");

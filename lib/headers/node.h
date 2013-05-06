@@ -89,6 +89,20 @@ class Double: public Node{
         void setValue( double val );
 };
 
+class Bool: public Node{
+    protected:
+              bool truthValue;
+    public:
+          Bool(bool val):Node(__boolean){
+            truthValue = val;
+          }
+
+          bool getValue(){
+            return truthValue;
+          }
+          
+};
+
 class Type: public Node{
     protected:
             int type;

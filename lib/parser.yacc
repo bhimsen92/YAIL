@@ -39,6 +39,7 @@ int counter = 0;
 %token FUNCTION INTEGER_T DOUBLE_T STRING_T FUNCTION_T BOOL_T OR AND EQUAL LE GE IF ELSE NOT ELIF RETURN SPAWN SYNC
 %token <node> IDENTIFIER
 %token <node> STRING
+%token <node> BOOLEAN
 %token <node> INTEGER
 %token <node> DOUBLE
 %token <node> NOTHING
@@ -290,6 +291,13 @@ term: term '*' power                     {
                                               Operator *divNode = new Operator( __div, 2, operands );
                                               $$ = divNode;
                                           }
+    | term '%' power                      {
+                                              Operands *operands = new Operands();
+                                              operands->push_back( $1 );
+                                              operands->push_back( $3 );
+                                              Operator *modNode = new Operator( __modulo, 2, operands );
+                                              $$ = modNode;
+                                          }
     | power                               { $$ = $1; }
     ;
 
@@ -322,6 +330,7 @@ atom  : IDENTIFIER    { $$ = $1; }
       | INTEGER       { $$ = $1; }
       | DOUBLE        { $$ = $1; }
       | STRING        { $$ = $1; }
+      | BOOLEAN       { $$ = $1; }
       | NOTHING       { $$ = $1; }
       | EMPTY         { $$ = $1; }
       | functCall     { $$ = $1; }

@@ -77,6 +77,7 @@
 #include "headers/number.h"
 #include "headers/udf.h"
 #include "headers/array.h"
+#include "headers/bool.h"
 #include "headers/builtins.h"
 #include "headers/binaryop.h"
 #include "headers/interpreter.h"
@@ -114,6 +115,15 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                             integer = CAST_TO( bnk_astNodes::Integer, astNode );
                             if( integer != NULL ){
                                 return new bnk_types::Integer( integer->getValue() );
+                            }
+                            break;
+        case __boolean:
+                            {
+                                bnk_astNodes::Bool *b;
+                                b = CAST_TO(bnk_astNodes::Bool, astNode);
+                                if(b != NULL){
+                                    return new bnk_types::Boolean(b->getValue());
+                                }
                             }
                             break;
         case __nothing:
@@ -556,6 +566,10 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                     Operator *divNode;
                                     divNode = CAST_TO( bnk_astNodes::Operator, astNode );
                                     return this->execOperation( divNode, execContext, new DivOperation() );
+        case __modulo:
+                                    Operator *modNode;
+                                    modNode = CAST_TO(bnk_astNodes::Operator, astNode);
+                                    return this->execOperation(modNode, execContext, new ModuloOperation());
         case __power:
                                     break;
         case __or:

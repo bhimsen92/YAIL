@@ -157,6 +157,10 @@ Object* DivOperation::exec( double a, double b ){
     return new Double( a / b );    
 }
 
+Object* ModuloOperation::exec( int a, int b ){
+    return new Integer( a % b );
+}
+
 Object* OrOperation::exec( int a, int b ){
     return new Boolean( a || b );   
 }

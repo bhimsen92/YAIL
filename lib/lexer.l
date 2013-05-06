@@ -77,6 +77,15 @@ string     \"(.*)\"
                 return SYNC;
            }
 
+"true"     {
+                yylval.node = new Bool(true);
+                return BOOLEAN;
+           }
+"false"    {
+                yylval.node = new Bool(false);
+                return BOOLEAN;
+           }
+
 "Nothing"         {
                       Node *nothingNode = new bnk_astNodes::Nothing();
                       yylval.node = nothingNode;

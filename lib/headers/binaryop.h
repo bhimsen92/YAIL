@@ -84,6 +84,15 @@ class DivOperation: public BinaryOperation{
             Object* exec( double, double );
 };
 
+class ModuloOperation: public BinaryOperation{
+    public:
+            ModuloOperation(){
+            }
+            Object* exec( int, int );
+            Object* exec( int, double ){ return NULL; }
+            Object* exec( double, double ) { return NULL; }
+};
+
 class OrOperation: public BinaryOperation{
     public:
             OrOperation(){

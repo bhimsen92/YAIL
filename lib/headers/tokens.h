@@ -12,6 +12,7 @@ enum {
     __funct_call = 1,
     __integer = 2,
     __double = 3,
+    __boolean = 51,
     __string = 4,
     __funct_def = 5,
     __params = 6,
@@ -30,7 +31,8 @@ enum {
     __or = 26, __and = 27, __not = 28, __equality = 29, __lt = 30, __le = 31, __ge = 32, __gt = 33,
     __addition = 34, __subtraction = 35, __multiplication = 36, __div = 37, __power = 38, __uminus = 39,
     __nothing = 40, __empty = 41, __return = 42,
-    __if = 43, __else = 44, __elif = 45, __array_empty_t = 46, __sliceOp = 47, __memberShipOp = 48, __array_double_t = 49
+    __if = 43, __else = 44, __elif = 45, __array_empty_t = 46, __sliceOp = 47, __memberShipOp = 48, __array_double_t = 49,
+    __modulo = 50
 };
 
 enum{
