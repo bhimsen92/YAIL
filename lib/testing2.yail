@@ -1,8 +1,0 @@
-function f(Int a, Int b, Int c):Int{
-	return a + b + c;
-}
-
-Function o = f(1);
-Function k = f(1, 2);
-print(o(2, 3), "\n");
-print(k(5), "\n");
