@@ -77,13 +77,15 @@
 #include "headers/number.h"
 #include "headers/udf.h"
 #include "headers/array.h"
+#include "headers/bool.h"
 #include "headers/builtins.h"
 #include "headers/binaryop.h"
 #include "headers/interpreter.h"
 
 using namespace std;
+ThreadManager* Interpreter::threadManager = NULL;
 
-bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, int dataTypeInfo ){
+bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, int dataTypeInfo, Identifier *lId ){
     int nodeType = astNode->getType();
     switch( nodeType ){
         case __identifier:
@@ -105,7 +107,7 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                             bnk_astNodes::String *str;                                    
                             str = CAST_TO( bnk_astNodes::String, astNode );
                             if( str != NULL ){
-                                return new bnk_types::String( str->getString() ); 
+                                return new bnk_types::String( str->getString() );
                             }
                             break;
         case __integer:
@@ -115,6 +117,15 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                 return new bnk_types::Integer( integer->getValue() );
                             }
                             break;
+        case __boolean:
+                            {
+                                bnk_astNodes::Bool *b;
+                                b = CAST_TO(bnk_astNodes::Bool, astNode);
+                                if(b != NULL){
+                                    return new bnk_types::Boolean(b->getValue());
+                                }
+                            }
+                            break;
         case __nothing:
                             bnk_astNodes::Nothing *nothing;
                             nothing = CAST_TO( bnk_astNodes::Nothing, astNode );
@@ -122,6 +133,27 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                 return new bnk_types::Nothing( nothing->getValue() );
                             }
                             break;
+        case __spawn: 
+                      {
+                            // get the operator node.
+                            //cout<<"I am in spawn block..\n";
+                            Operator *spawnOp = CAST_TO(Operator, astNode);
+                            // get the operands.
+                            Operands *ops = spawnOp->getOperands();
+                            // create a new job.
+                            Job *task = new Job(ops->get(0), execContext, new Interpreter());
+                            task->setIdentifier(lId);
+                            // spawn the thread.
+                            this->spawn(task);
+                            return NULL;
+                      }
+
+        case __sync: 
+                      {
+                            // issue sync command to the interpreter.
+                            this->sync();
+                            return NULL;
+                      }
                             
         case __array_list:
                             bnk_astNodes::ValueList *vlist;
@@ -397,18 +429,23 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                     //operands->pop_front();
                                     if( !execContext->isBound( id ) ){
                                         // get the expression node.
-                                        Object *value = this->evaluate( operands->get(2), execContext, dataType );
-                                        // check whether the type of the expression matches
-                                        // with the defined type.
-                                        if( dataType == value->getDataType() ){
-                                            execContext->put( string( id->getName() ), value );
-                                        }
-                                        else if(dataType == __array_int_t && value->getDataType() == __array_empty_t ){
-                                            execContext->put( string( id->getName() ), value );   
+                                        if(operands->get(2)->getType() == __spawn){
+                                            this->evaluate( operands->get(2), execContext, dataType, id );
                                         }
                                         else{
-                                            errorMessage( 1, "Type of the expression does not match with defined type." );
-                                            exit(1);
+                                            Object *value = this->evaluate( operands->get(2), execContext, dataType );
+                                            // check whether the type of the expression matches
+                                            // with the defined type.
+                                            if( dataType == value->getDataType() ){
+                                                execContext->put( string( id->getName() ), value );
+                                            }
+                                            else if(dataType == __array_int_t && value->getDataType() == __array_empty_t ){
+                                                execContext->put( string( id->getName() ), value );   
+                                            }
+                                            else{
+                                                errorMessage( 1, "Type of the expression does not match with defined type." );
+                                                exit(1);
+                                            }
                                         }
                                     }
                                     else{
@@ -461,7 +498,48 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                       return this->evaluateBuiltInFunction( functName, operands, execContext );
                                     }
                                     else if( this->isUserDefinedFunction( functName, execContext ) ){
-                                      return this->evaluateUserDefinedFunction( functName, operands, execContext );
+                                      // get the function object from the current context.
+                                      //cout<<"In user defined function...\n";
+                                      UserDefinedFunction *f = CAST_TO(UserDefinedFunction, execContext->get(string(functName->getName())));
+                                      // get the formal parameter list
+                                      FormalParameterList *fplist = f->getFormalParameterList();
+                                      // get the arglist from function object.
+                                      ArgumentList *farglist =  f->getArgumentList();
+                                      // get arglist from current astNode.
+                                      ArgumentList *arglist = CAST_TO(ArgumentList, operands->get(1));
+                                      int argLength = farglist->getLength() + arglist->getLength(),
+                                          fpLength = fplist->getLength();
+                                      //cout<<"function_name: "<<functName->getName()<<endl;
+                                      //cout<<"arglength: "<<arglist->getLength()<<endl;
+                                      //cout<<"farglength: "<<farglist->getLength()<<endl;
+                                      ArgumentList *newArglist = new ArgumentList();
+                                      for(int i = 0; i < farglist->getLength(); i++){
+                                        newArglist->push_back(farglist->get(i));
+                                      }
+                                      for(int i = 0; i < arglist->getLength(); i++){
+                                        newArglist->push_back(arglist->get(i));
+                                      }
+                                      if(argLength < fpLength){
+                                        // it is a currying case.
+                                        // create a new UserDefinedFunction object, add these args to the existing
+                                        // arglist and return the object to the caller.
+                                        UserDefinedFunction *curriedFunction = new UserDefinedFunction(f->getFunctionName(),
+                                            f->getFormalParameterList(), f->getReturnType(), f->getStatementList(), f->getClosureContext());
+                                        curriedFunction->setArgumentList(newArglist);
+                                        //cout<<"Good work\n";
+                                        return curriedFunction;
+                                      }
+                                      else if(argLength == fpLength){
+                                        // set new arglist in current operands object.
+                                        Operands *ops = new Operands();
+                                        for(int i = 0; i < operands->size(); i++){
+                                            ops->push_back(operands->get(i));
+                                        }
+                                        ops->set(1, newArglist);
+                                        Object *rval = this->evaluateUserDefinedFunction( functName, ops, execContext );
+                                        OUTSIDE_FUNCTION;
+                                        return rval;
+                                      }        
                                     }
                                     else{
                                       errorMessage( 2, "Undefined function: ", functName->getName() );
@@ -488,6 +566,10 @@ bnk_types::Object* Interpreter::evaluate( Node* astNode, Context* execContext, i
                                     Operator *divNode;
                                     divNode = CAST_TO( bnk_astNodes::Operator, astNode );
                                     return this->execOperation( divNode, execContext, new DivOperation() );
+        case __modulo:
+                                    Operator *modNode;
+                                    modNode = CAST_TO(bnk_astNodes::Operator, astNode);
+                                    return this->execOperation(modNode, execContext, new ModuloOperation());
         case __power:
                                     break;
         case __or:
@@ -554,8 +636,11 @@ bool Interpreter::isBuiltInFunction( Identifier *functName ){
 }
 
 bool Interpreter::isUserDefinedFunction( Identifier *functName, Context *execContext ){
+    //cout<<"In user defined function...\n";
     string name = functName->getName();
-    Object *value = execContext->get( name );
+    //cout<<"Name: "<<name<<endl;
+    Object *value = execContext->get(name);
+    //cout<<"Wow it works...\n";
     if( value != NULL ){
         if( this->isCallable( value ) ){
             return true;
@@ -635,7 +720,9 @@ Object* Interpreter::evaluateUserDefinedFunction( Identifier *functName, Operand
             int stLength = stmtList->getLength();
             Object *tmpObj;
             for( i = 0; i < stLength; i++ ){
+                //cout<<"Statement is about to evaluated...\n";
                 tmpObj = this->evaluate( stmtList->get(i), newContext, -1 );
+                //cout<<"Statement evaluated...\n";
                 if( this->isReturnType( tmpObj ) ){
                     ReturnValue *robj = CAST_TO( ReturnValue, tmpObj );
                     if( robj != NULL ){
@@ -652,7 +739,7 @@ Object* Interpreter::evaluateUserDefinedFunction( Identifier *functName, Operand
         }
     }
     // delete the context.
-    delete newContext;
+    //delete newContext;
     return rval;
 }
 
@@ -686,4 +773,43 @@ void Interpreter::errorMessage( int size, ... ){
 
 bool Interpreter::isCallable( Object *value ){
     return ( value->getDataType() == __function_t );
+}
+
+void Interpreter::sync(void){
+    while(!jobStack.empty()){
+    // get the job from the stack.
+                Job* task = jobStack.front();
+                // valid task.
+                if(task){
+                    // get the thread id.
+                    while(!task->set()){
+                        //cout<<"Waiting in sync..."<<endl;
+                        usleep(10);
+                    }
+                    pthread_t threadId = task->getThreadId();
+                    // i am lazy thats why i am not removing this if else code.[who will do re intendation again boring..]
+                    if(true){
+                        // get the identifier and the return value.
+                        Identifier *id = task->getIdent();
+                        if(id != NULL){
+                            // get return value.
+                            Object *val = task->getReturnValue();
+                            if(val != NULL){
+                                // get the context object and put the id in it.
+                                Context *ctx = task->getContext();
+                                ctx->put(string(id->getName()), val);
+                            }
+                        }
+                    }
+                }
+                jobStack.pop();
+            }
+            if(threadManager->size() == 0 && mainThread){
+                threadManager->sync();
+            }
+}
+
+void Interpreter::spawn(Job *job){
+    jobStack.push(job);
+    threadManager->append(job);
 }

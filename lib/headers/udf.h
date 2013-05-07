@@ -18,6 +18,8 @@ namespace bnk_types{
 				int returnType;
 				StatementList *functBody;
 				Context *closureLink;
+				// Argument list member used for currying.
+				ArgumentList *arglist;				
 		public:
 				UserDefinedFunction( Operands *operands );
                 UserDefinedFunction( char* fName, FormalParameterList *fpl, int rt, StatementList *stList, Context* enclosingLink );
@@ -30,6 +32,16 @@ namespace bnk_types{
 				StatementList* getStatementList(void);
 				Context* getClosureContext(void);
 				Object* getCopy(void);
+
+				// used for currying.
+				ArgumentList* getArgumentList(){
+					return arglist;
+				}
+
+				void setArgumentList(ArgumentList *alist){
+					arglist = alist;
+				}
+
 	};
 }
 #endif

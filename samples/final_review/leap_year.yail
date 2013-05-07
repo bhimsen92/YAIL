@@ -1,0 +1,19 @@
+function isLeapYear(Int year):Bool{
+    if(year % 400 == 0)
+        return true;
+    elif(year % 100 == 0)
+        return false;
+    elif(year % 4 == 0)
+        return true;
+    else
+        return false;
+}
+
+Int year = 2000;
+
+if(isLeapYear(year)){
+    print(year, " is a leap year\n");
+}
+else{
+    print(year, " is not a leap year\n");
+}

@@ -32,6 +32,7 @@ namespace bnk_types{
                     //operands->pop_front();
                     // get the statementList of the function.
                     functBody = CAST_TO( StatementList, operands->get(3) );
+                    arglist = new ArgumentList();
                     if( functBody == NULL ){
                         cout<<"Error in udf.."<<endl;
                     }
@@ -45,7 +46,8 @@ namespace bnk_types{
         functBody = stList;
         closureLink = enclosingLink;
         functName = new char[ strlen( fName ) + 1 ];
-        strcpy( functName, fName );        
+        strcpy( functName, fName );
+        arglist = new ArgumentList();
     }
     // getter functions.
     Object* UserDefinedFunction::getCopy(){

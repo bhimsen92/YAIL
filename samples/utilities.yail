@@ -1,0 +1,75 @@
+function map_helper(Int[] list, Int index, Function f):Int[]{
+    if(index < list.length){    
+        return [f(list[index])] + map_helper(list, index + 1, f);
+    }
+    else{
+        return [];
+    }
+}
+
+function map(Int[] list, Function f):Int[]{
+    return map_helper(list, 0, f);
+}
+
+function reduce_helper(Int[] list, Int index, Int base, Function f):Int{
+    if(index < list.length){
+        Int result = f(base, list[index]);
+        return reduce_helper(list, index + 1, result, f);
+    }
+    else{
+        return base;
+    }
+}
+
+function reduce(Int[] list, Int base, Function f):Int{
+    return reduce_helper(list, 0, base, f);
+}
+
+function reverse_helper(Int[] list, Int index):Int[]{
+    if(index >= 0){
+        return [list[index]] + reverse_helper(list, index - 1);
+    }
+    else{
+        return [];
+    }
+}
+
+function reverse(Int[] list):Int[]{
+    return reverse_helper(list, list.length - 1);
+}
+
+function tail(Int[] list):Int[]{
+    if(list.length == 1)
+        return [];
+    else
+        return a[1:];
+}
+
+function sum(Int a, Int b):Int{
+    return a + b;
+}
+
+function square(Int n):Int{
+    return n * n;
+}
+
+function printArray(Int[] arr):Nothing{
+	if(arr.length > 0){
+		print(arr[0], " ");
+		printArray(arr[1:]);
+	}
+	else{
+		newline();
+	}
+}
+
+Int[] a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+print("Example of map function:\n");
+printArray(map(a, square));
+print("Example of reduce function:\n");
+print(reduce(a, 0, sum), "\n");
+print("Example of tail function:\n");
+printArray(tail(a));
+print("Example of reverse function:\n");
+printArray(reverse(a));

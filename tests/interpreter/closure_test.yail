@@ -1,0 +1,31 @@
+# checking function within a function.
+
+
+function outer():Function{
+    function inner():String{
+        return "Inner";
+    }
+    return inner;
+}
+
+# closure test.
+
+function nC(Int n):Function{
+    function fact(Int num):Int{
+        if(num == 0)
+            return 1;
+        else
+            return num * fact(num - 1);
+    }
+    Int topResult = fact(n);
+
+    function Cr(Int r):Int{
+        return topResult / (fact(r) * fact(n - r));
+    }
+    return Cr;
+}
+
+Function cb = outer();
+Function _5c = nC(5);
+print(cb(), "\n");
+print(_5c(2), "\n");

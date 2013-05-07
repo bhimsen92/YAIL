@@ -1,0 +1,15 @@
+# Simple variable initialization.
+
+Int a = 12;
+
+Double b = 2.4;
+
+String name = "Pesit";
+
+Int[] array = [1, 2, 3];
+
+print(a, "\n");
+print(b, "\n");
+print(name, "\n");
+print(array.length, "\n");
+print(array[1], "\n");

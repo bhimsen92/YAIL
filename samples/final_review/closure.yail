@@ -1,0 +1,25 @@
+# closure is a way of capturing the enclosing context of a function and using that context even after
+# the enclosing context has been exited[ or destroyed]
+# closure adds expressive power to the programs and it is also used in designing the decorators pattern.
+
+
+# closure example.
+function fact(Int n):Int{
+    if(n == 0)
+        return 1;
+    else
+        return n * fact(n - 1);
+}
+
+function nC(Int n):Function{
+    Int topResult = fact(n);
+    
+    function cR(Int r):Int{
+        return topResult / (fact(n - r) * fact(r));
+    }
+    return cR;
+}
+
+Function _5c = nC(5);
+
+print(_5c(2), "\n");

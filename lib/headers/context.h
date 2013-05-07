@@ -5,37 +5,36 @@
     If it does error is thrown.
     Created by : Bhimsen S K
 */
+#ifndef __CONTEXT
+#define __CONTEXT
 #include<iostream>
 #include<cstdlib>
 #include<string>
 #include<map>
 #include<list>
+#include<pthread.h>
 #include "object.h"
 #include "node.h"
 
-#ifndef __CONTEXT
-#define __CONTEXT
 using namespace std;
 using namespace bnk_types;
 class Context{
     private:
             map<string, Object*> *symbolTable;
             Context *enclosingEnv;
-//            stack<Thread*> spawnStack;
+            pthread_mutex_t door;
     public:
-            Context(void){
+            Context(){
                 enclosingEnv = NULL;
                 symbolTable = new map< string, Object* >();
             }
-            ~Context(void){                
+            ~Context(void){
                 //if( enclosingEnv != NULL )
                     //delete enclosingEnv;
                 //delete symbolTable;
             }
             map< string, Object* >* getSymbolTable();    
-//            stack< Thread* > getSpawnStack();
             void setSymbolTable( map< string, Object* > *symTab );
-//            void setSpawnStack( stack< Thread* > sStack );
             void put( string ident, Object* value );
             void setEnclosingContext( Context *altContext ){
                 enclosingEnv = altContext;

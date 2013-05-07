@@ -1,0 +1,14 @@
+function decorator(Function f):Function{
+    function doNothing(String msg):Nothing{
+        
+    }
+    return doNothing;
+}
+
+function stdout(String msg):Nothing{
+    print(msg, "\n");
+}
+
+Function echo = decorator(stdout);
+
+echo("Hello world");

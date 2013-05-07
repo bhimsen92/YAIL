@@ -1,0 +1,23 @@
+# function which takes nothing, returns nothing and does nothing.
+function fun1():Nothing{
+}
+
+# function which takes nothing but returns something.
+
+function fun2():String{
+    return "Testing fun2";
+}
+
+# function which takes two arguments and multiplies them returns the result.
+
+function mul(Int a, Int b):Int{
+    return a * b;
+}
+
+
+fun1();
+print("fun1 works\n");
+print(fun2(), "\n");
+Int res = mul(4, 2);
+print(res, "\n");
+

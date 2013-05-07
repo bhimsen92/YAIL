@@ -1,0 +1,29 @@
+# How to create function in yail.
+
+# You can create a function using the keyword "function" followed by the name of the function
+# and the parameters it is receiving with their types specified and followed by return type.
+# eventhough it follows the Pascal syntax, the way it works is different.
+# We can nest functions within functions as in Pascal and we can also return functions and pass function 
+# just like other objects which is not found in Pascal.
+
+
+# simple addition function.
+function add(Int a, Int b):Int{
+    return a + b;
+}
+
+# function within a fuction.
+
+function nestedFunction(Int a):Function{
+    function nested(Int b):Int{
+        return a + b;
+    }
+    return nested;
+}
+
+
+print(add(1, 2), "\n");
+
+
+Function fun = nestedFunction(5);
+print(fun(10), "\n");

@@ -1,0 +1,19 @@
+function fib(Int n):Int{
+	if(n == 0)
+		return 0;
+	elif(n == 1)
+		return 1;
+	else{
+		Int a = spawn fib(n - 1);
+		Int b = spawn fib(n - 2);
+		sync;
+		return a + b;
+	}
+}
+
+
+Int num = spawn fib(10);
+sync;
+
+print("Num: ", num);
+print("\n");

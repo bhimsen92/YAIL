@@ -1,0 +1,22 @@
+function reducer_helper(Int[] arr, Int base, Int index, Function f):Int{
+	if(index < arr.length){
+		Int result = f(base, arr[index]);
+		return reducer_helper(arr, result, index + 1, f);
+	}
+	else{
+		return base;
+	}
+}
+
+function reducer(Function f, Int base, Int[] arr):Int{
+	return reducer_helper(arr, base, 0, f);
+}
+
+function sum(Int a, Int b):Int{
+	return a + b;
+}
+
+Int[] a = [10, -5, 1, 9, 4, 0, 6, -7, 3, 2, 0, 0, 0, -100, 3, 12, 123, 121, 11, -1000, 3];
+
+Int[] b = quickSort(a);
+printArray(b);

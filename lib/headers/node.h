@@ -33,6 +33,12 @@ class Operands{
                 }
                 return NULL;
             }
+
+            void set(int index, Node *val){
+              if(index < operands.size()){
+                operands[index] = val;
+              }
+            }
             
             void pop_front(void){
                 operands.erase( operands.begin() );
@@ -81,6 +87,20 @@ class Double: public Node{
         void toDouble( char *str );
         double getValue(void);
         void setValue( double val );
+};
+
+class Bool: public Node{
+    protected:
+              bool truthValue;
+    public:
+          Bool(bool val):Node(__boolean){
+            truthValue = val;
+          }
+
+          bool getValue(){
+            return truthValue;
+          }
+          
 };
 
 class Type: public Node{
