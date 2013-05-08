@@ -13,7 +13,3 @@ How To Build
 6. Then execute the following command: <strong>../lib/bnK-lang &lt; file.yail[present in the <b>samples</b> directory.</strong>
 
 
-To-Do
-=====
-1. Need to add support for Threads.
-2. Machine code generation for closures.
