@@ -133,3 +133,30 @@ once the function is called.
     
     funct_name([arg,[arg..]]);
 
+
+# Creating Nested Functions and Closure
+<i><b>yail</b></i> supports nesting functions within function and supports closure to
+
+### Nested function example:
+
+    function outer():Nothing{
+      function inner():Nothing{
+         print("Hello world\n");
+      }
+      inner();
+    }
+    outer();
+
+### Closure example:
+
+    function nC(Int n):Function{
+      Int factN = fact(n);
+      function Cr(Int r):Int{
+         return factN/(fact(n - r) * fact(r));
+      }
+      return Cr;
+    }
+    
+    Function _5c = nC(5);
+    print("5C2: ", _5c(2));
+
