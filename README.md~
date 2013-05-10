@@ -32,4 +32,3 @@ A Functional Language Interpreter.
 
 Creating variables in <i><b>yail</b></i> language is similar to <i><b>C or Java</b></i>. First you need to specify the type and then
 the name of the variable. Since it is a functional language, all variables that you define must be initialized.
-
