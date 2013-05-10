@@ -190,8 +190,11 @@ on.
 I am still working on this project. Comments are really appreciated.
 
 Following People helped me a lot during my project.
+
 1. Ajey Bharadwaj A
+
 2. Gourav H Dhelaria 
+
 3. Prof. N S Kumar [our Project Guide]
 
 
