@@ -21,7 +21,7 @@ A Functional Language Interpreter.
 # What it can do
 1. It is typed.
 2. Supports basic arithmatic operations.
-3. Supports basic types like Integers, Float, String and Arrays[only for Integers and Double]
+3. Supports basic types like Integers, Float, String, Function and Arrays[only for Integers and Double]
 4. Supports the creation of functions and nested functions.
 5. Supports Closure and Currying.
 6. Supports creation of Threads.
@@ -32,7 +32,8 @@ A Functional Language Interpreter.
 
 Creating variables in <i><b>yail</b></i> language is similar to <i><b>C or Java</b></i>. First you need to specify the type and then
 the name of the variable. Since it is a functional language, all variables that you define must be initialized.
-Example:
+
+### Example:
 
     Int num = 12; # statements must end with semicoln.
     # or
@@ -51,7 +52,8 @@ There is no restriction on creation of variables, you can create them where ever
 ## Making Decisions
 You can control the flow of your program using good old if, else or elif structure. As in <i><b>Java</b></i> the coditional
 expression must result in boolean value otherwise error will be thrown.
-if Example:
+
+### if Example:
 
     Int a = 12, b = 10;
     if(a > b){
@@ -62,7 +64,8 @@ if Example:
     }
 <b>else</b> block is compulsory whenever you write <b>if</b> or <b>elif</b>.
 
-elif Example:
+### elif Example:
+
     Int a = 10, b = 23, c = 25;
     if(a > b){
       if(a > c){
@@ -78,4 +81,55 @@ elif Example:
     else{
       print("c is greater\n");
     }
+
+
+# Creating Functions
+In <i><b>yail</b></i> functions are basic way of creating abstractions. Function block are created using <i>function</i> keyword,
+followed by <i>name</i> of the function, then optional arguments and the return type followed by statements which you want to execute 
+once the function is called.
+### syntax for creating a function.
+
+    function funct_name([Type var,[Type var...]): ReturnType{
+         # list of statements.
+    }
+
+### Some Examples
+
+    # finding square.
+    function square(Int n):Int{
+        return n * n;
+    }
+
+    # finding factorial
+    function fact(Int n):Int{
+       if(n == 0)
+         return 1;
+       else
+         return n * fact(n - 1);
+    }
+    
+    # iterating through an array.
+    function printArray(Int[] arr):Nothing{
+      if(arr.length > 0){
+         print(arr[0], " ");
+         printArray(arr[1:]);
+      }
+      else{
+         print("\n");
+      }
+    }
+    
+    # simple map implementation.
+    function map(Int[] arr, Int index, Function f):Int[]{
+      if(index < arr.length){
+         return [f(arr[index])] + map(arr, index + 1, f);
+      }
+      else{
+         return [];
+      }
+    }
+
+### Calling syntax for functions
+    
+    funct_name([arg,[arg..]]);
 
