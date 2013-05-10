@@ -15,7 +15,7 @@ A Functional Language Interpreter.
 2. To understand how computer languages are designed and what it takes to build them.
 3. To have experience with writing large code base and learn how to maintain it.
 4. And finally to have fun. It`s really a humbling experience to see writing a simple program in your own language and see it executing 
-   on your machine.
+   on your own machine.
 
 
 # What it can do
@@ -106,7 +106,7 @@ Arrays support following operations:
     # concatenation
     Int[] b = a + [123, 34];
     
-    #slicing
+    # slicing
     Int[] c = b[1:4];
 
 
