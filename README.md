@@ -165,7 +165,8 @@ once the function is called.
 Currying is a technique in which a function is called with few parameters then it officially takes. After this <i>partial</i>
 application, a new Function object is returned which you can use it to pass left over arguments so that the function finally gets
 called.
-# currying example:
+
+### currying example:
 
     function addThreeNumbers(Int a, Int b, Int c):Int{
          return a + b + c;
@@ -176,4 +177,14 @@ called.
     Int result = add5(10); # result = 16
     print("Result: ", result);
     
-The samples directory contains a quick sort example, which uses currying concept.
+The samples directory contains a quicksort example, which uses currying concept.
+
+# What Needs To Be Done Yet
+Lots of things needs to be implemented in this project but i believe following are really important which i want to concentrate
+on.
+
+1. Implementing error module.[right now, if you get any error, interpreter just exists or a segmentation fault is thrown]
+2. Thread scheduling.
+
+
+I am still working on this project. 
