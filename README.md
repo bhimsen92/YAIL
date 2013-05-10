@@ -49,6 +49,12 @@ the name of the variable. Since it is a functional language, all variables that 
     
 There is no restriction on creation of variables, you can create them where ever you want and whenever you want.
 
+Multiple assignments are not allowed. So following code snippet will through an error and is in accordance with Functional language.
+
+    Int a = 12;
+    a = 34; # error
+
+
 ## Making Decisions
 You can control the flow of your program using good old if, else or elif structure. As in <i><b>Java</b></i> the coditional
 expression must result in boolean value otherwise error will be thrown.
@@ -81,6 +87,27 @@ expression must result in boolean value otherwise error will be thrown.
     else{
       print("c is greater\n");
     }
+
+# Arrays
+<i><b>yail</b></i> has only one container object Arrays. In this language arrays are fixed length and homogeneous meaning
+they contain values of the specified type. 
+
+Arrays support following operations:
+
+1. Indexing
+2. Concatenation
+3. Slicing
+
+### Array examples
+
+    # array creation
+    Int[] a = [1, 2, 3, 4, 5];
+    
+    # concatenation
+    Int[] b = a + [123, 34];
+    
+    #slicing
+    Int[] c = b[1:4];
 
 
 # Creating Functions
