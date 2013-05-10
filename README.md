@@ -89,7 +89,7 @@ expression must result in boolean value otherwise error will be thrown.
     }
 
 # Arrays
-<i><b>yail</b></i> has only one container object Arrays. In this language arrays are fixed length and homogeneous meaning
+<i><b>yail</b></i> has only one container object, Arrays. In this language arrays are fixed length and homogeneous, meaning
 they contain values of the specified type. 
 
 Arrays support following operations:
@@ -212,7 +212,7 @@ on.
 
 1. Implementing error module.[right now, if you get any error, interpreter just exits or a segmentation fault is thrown]
 2. Thread scheduling.
-
+3. Testing.
 
 I am still working on this project. Comments are really appreciated.
 
