@@ -1,9 +1,0 @@
-Interpreter:
-    1. Implement slice operation[done]
-    2. Then currying.[not required as it can be emulated by closure]
-
-
-Machine Code:
-    1. Implement array in assembly code.[will start from tomorrow]
-    2. Implement closure in assembly code.[will start from tomorrow]
-
