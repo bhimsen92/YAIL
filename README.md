@@ -183,8 +183,15 @@ The samples directory contains a quicksort example, which uses currying concept.
 Lots of things needs to be implemented in this project but i believe following are really important which i want to concentrate
 on.
 
-1. Implementing error module.[right now, if you get any error, interpreter just exists or a segmentation fault is thrown]
+1. Implementing error module.[right now, if you get any error, interpreter just exits or a segmentation fault is thrown]
 2. Thread scheduling.
 
 
-I am still working on this project. 
+I am still working on this project. Comments are really appreciated.
+
+Following People helped me a lot during my project.
+1. Ajey Bharadwaj A
+2. Gourav H Dhelaria 
+3. Prof. N S Kumar [our Project Guide]
+
+
