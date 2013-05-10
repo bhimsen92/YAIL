@@ -33,6 +33,7 @@ A Functional Language Interpreter.
 Creating variables in <i><b>yail</b></i> language is similar to <i><b>C or Java</b></i>. First you need to specify the type and then
 the name of the variable. Since it is a functional language, all variables that you define must be initialized.
 Example:
+
     Int num = 12; # statements must end with semicoln.
     # or
     Double d = 12.34; # To make value double, you need to write "." followed by some number.
@@ -42,6 +43,9 @@ Example:
     Int[] num = [1, 2, 3, 4];
     # or
     Double[] num = [1.3, 2.3];
+    # or
+    Bool flag = false;
     
 There is no restriction on creation of variables, you can create them where ever you want and whenever you want.
 
+## Making Decisions
