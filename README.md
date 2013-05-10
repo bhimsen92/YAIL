@@ -1,7 +1,7 @@
 # YAIL : Yet Another Interpreted Language
 A Functional Language Interpreter.
 
-# What Do You Need To Build It
+# What Do You Need To Build It ?
 1. flex[lex] tool
 2. bison[yacc] tool
 3. g++ compiler[latest version will be good]
@@ -16,7 +16,7 @@ A Functional Language Interpreter.
 6. Then execute the following command: <strong>../lib/bnK-lang &lt; file.yail [present in the <b>samples</b> directory.</strong>]
 
 
-# Why I built It
+# Why I built It ?
 1. To learn compiler design.
 2. To understand how computer languages are designed and what it takes to build them.
 3. To have experience with writing large code base and learn how to maintain it.
