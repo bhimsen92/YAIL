@@ -160,3 +160,20 @@ once the function is called.
     Function _5c = nC(5);
     print("5C2: ", _5c(2));
 
+
+# Currying
+Currying is a technique in which a function is called with few parameters then it officially takes. After this <i>partial</i>
+application, a new Function object is returned which you can use it to pass left over arguments so that the function finally gets
+called.
+# currying example:
+
+    function addThreeNumbers(Int a, Int b, Int c):Int{
+         return a + b + c;
+    }
+    
+    Function add1 = addThreeNumbers(1); # new function object gets returned which is ready to take 'b' and 'c'.
+    Function add5 = add1(5);
+    Int result = add5(10); # result = 16
+    print("Result: ", result);
+    
+The samples directory contains a quick sort example, which uses currying concept.
