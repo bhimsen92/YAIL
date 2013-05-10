@@ -49,3 +49,33 @@ Example:
 There is no restriction on creation of variables, you can create them where ever you want and whenever you want.
 
 ## Making Decisions
+You can control the flow of your program using good old if, else or elif structure. As in <i><b>Java</b></i> the coditional
+expression must result in boolean value otherwise error will be thrown.
+if Example:
+
+    Int a = 12, b = 10;
+    if(a > b){
+      print("a is grater\n");
+    }
+    else{
+      print("b is greater\n");
+    }
+<b>else</b> block is compulsory whenever you write <b>if</b> or <b>elif</b>.
+
+elif Example:
+    Int a = 10, b = 23, c = 25;
+    if(a > b){
+      if(a > c){
+        print("a is greater\n");
+      }
+      else{
+        print("c is greater\n");
+      }
+    }
+    elif(b > c){
+      print("b is greater\n");
+    }
+    else{
+      print("c is greater\n");
+    }
+
