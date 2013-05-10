@@ -1,6 +1,12 @@
 # YAIL : Yet Another Interpreted Language
 A Functional Language Interpreter.
 
+# What Do You Need To Build It
+1. flex[lex] tool
+2. bison[yacc] tool
+3. g++ compiler[latest version will be good]
+4. Linux OS.
+
 # How To Build
 1. Download zip file from github.
 2. Unzip it into any directory.
